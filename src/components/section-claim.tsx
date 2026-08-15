@@ -1,50 +1,76 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useInView } from "motion/react";
-import { CLAIM_COPY } from "@/content/hero";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import { CLAIM_COPY, TACTICAL_STATES } from "@/content/hero";
+import { MiniBoard } from "./mini-board";
 
 /**
  * Section 02: the claim.
  *
- * The page's one full-bleed orange band, spent on a single sentence. The
- * band is deliberately the loudest thing on the site and is used exactly
- * once, which is how HydraDB uses theirs.
+ * The page's one full-bleed orange band, and the whole section is scrubbed
+ * rather than played: the reader drives it.
  *
- * The motion is a strike-through: the two era names arrive underlined, then
- * a rule sweeps across them as the sentence resolves. Reading it should feel
- * like watching a claim get invalidated, because that is the argument.
+ * The sequence, as a fraction of the section's scroll:
+ *
+ *   the band arrives by this section scrolling over the sticky hero
+ *   0.15 - 0.45  the sentence reveals, line by line
+ *   0.40 - 0.55  a rule strikes through each era name in turn
+ *   0.30 - 0.62  the two boards separate out, 2011 above and 2021 below
+ *   0.62 - 0.86  they slide together and superimpose
+ *   0.80 - 1.00  the verdict lands on the merged, unreadable average
+ *
+ * The merge is the argument. A vector store returns the mean of the two
+ * shapes, and once they are on top of each other you can see that the mean
+ * describes neither. That is a thing to show, not to assert, which is why
+ * the section carries boards rather than an illustration.
  */
 
-const EASE = [0.4, 0, 0.2, 1] as const;
+const [GUARDIOLA, , KOEMAN] = TACTICAL_STATES;
 
-/**
- * An era name that gets struck through.
- *
- * Visibility is passed down from the section rather than each strike using
- * its own whileInView. Nested inside an already-animating parent, the inner
- * viewport detection fired inconsistently and only the second strike drew,
- * which read as a rendering bug rather than a choreographed one.
- */
-function Era({
+/** A line of the claim, revealed across its own slice of the scrub. */
+function Line({
+  progress,
+  from,
+  to,
   children,
-  delay,
-  show,
+  className,
 }: {
-  children: string;
-  delay: number;
-  show: boolean;
+  progress: ReturnType<typeof useSpring>;
+  from: number;
+  to: number;
+  children: React.ReactNode;
+  className?: string;
 }) {
+  const opacity = useTransform(progress, [from, to], [0, 1]);
+  const y = useTransform(progress, [from, to], [22, 0]);
+  return (
+    <motion.span style={{ opacity, y }} className={`block ${className ?? ""}`}>
+      {children}
+    </motion.span>
+  );
+}
+
+/** An era name with a rule that strikes across it on scroll. */
+function Era({
+  progress,
+  from,
+  to,
+  children,
+}: {
+  progress: ReturnType<typeof useSpring>;
+  from: number;
+  to: number;
+  children: string;
+}) {
+  const scaleX = useTransform(progress, [from, to], [0, 1]);
   return (
     <span className="relative inline-block whitespace-nowrap">
       {children}
-      {/* The strike. Grows from the left once the phrase has landed. */}
       <motion.span
         aria-hidden="true"
-        className="absolute left-0 top-[0.58em] block h-[0.07em] w-full origin-left bg-canvas"
-        initial={{ scaleX: 0 }}
-        animate={show ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ delay, duration: 0.55, ease: EASE }}
+        style={{ scaleX }}
+        className="absolute top-[0.58em] left-0 block h-[0.07em] w-full origin-left bg-canvas"
       />
     </span>
   );
@@ -52,85 +78,143 @@ function Era({
 
 export function SectionClaim() {
   const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15%" });
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+
+  // Spring-smoothed so the boards glide between positions rather than
+  // tracking raw wheel deltas, matching the hero's scrub.
+  const p = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 30,
+    mass: 0.4,
+  });
+
+  // Boards separate, then converge.
+  //
+  // Vertically, not horizontally: the boards live in a five-column lane
+  // roughly 480px wide, and a horizontal spread wide enough to read pushed
+  // the second board clean off the right edge of the viewport. The column
+  // has height to spare and none to spare across.
+  const topY = useTransform(p, [0.3, 0.62, 0.86], ["-3%", "-58%", "0%"]);
+  const bottomY = useTransform(p, [0.3, 0.62, 0.86], ["3%", "58%", "0%"]);
+  const boardsOpacity = useTransform(p, [0.28, 0.42], [0, 1]);
+
+  // Once superimposed, both drop to a wash. Neither shape is legible, which
+  // is the point being made.
+  const mergedOpacity = useTransform(p, [0.66, 0.9], [1, 0.5]);
+  const eyebrowOpacity = useTransform(p, [0.1, 0.2], [0, 1]);
+  const footnoteOpacity = useTransform(p, [0.88, 1], [0, 1]);
+  const labelOpacity = useTransform(p, [0.6, 0.72], [1, 0]);
+  const averageLabelOpacity = useTransform(p, [0.84, 0.95], [0, 1]);
 
   return (
     <section
       ref={ref}
       id="the-claim"
       aria-label={CLAIM_COPY.label}
-      className="relative bg-accent text-canvas"
+      // Tall enough that the whole sequence has room to breathe. The inner
+      // panel is sticky, so this height is scrub distance, not layout.
+      className="relative h-[320vh]"
     >
-      <div className="mx-auto w-full max-w-6xl px-5 py-24 sm:px-10 sm:py-32">
-        {/* Numbered section label. HydraDB numbers every section and rules a
-            thin line above the label; on the orange band the rule reads in
-            black rather than accent. */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : undefined}
-          transition={{ duration: 0.5 }}
-          className="flex items-center gap-3"
-        >
-          <span className="h-px w-8 bg-canvas/50" />
-          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-canvas/70">
-            {CLAIM_COPY.index} / {CLAIM_COPY.label}
-          </span>
-        </motion.div>
+      {/* The hero above is sticky, so this section scrolling up over it is
+          already the wipe. Transforming a band inside this sticky child on
+          top of that moved it twice and fought the handoff. */}
+      <div className="sticky top-0 h-screen overflow-hidden bg-accent">
+        <div className="relative mx-auto grid h-full w-full max-w-6xl grid-cols-1 content-center items-center gap-6 px-5 text-canvas sm:gap-10 sm:px-10 lg:grid-cols-12">
+          {/* ── The sentence ─────────────────────────────────────── */}
+          <div className="lg:col-span-7">
+            <motion.div
+              style={{ opacity: eyebrowOpacity }}
+              className="flex items-center gap-3"
+            >
+              <span className="h-px w-8 bg-canvas/50" />
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-canvas/70">
+                {CLAIM_COPY.index} / {CLAIM_COPY.label}
+              </span>
+            </motion.div>
 
-        <blockquote className="mt-10">
-          <p className="font-display text-[1.75rem] leading-[1.16] tracking-[-0.01em] sm:text-[3rem] lg:text-[3.9rem]">
-            <motion.span
-              className="inline-block"
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.6, ease: EASE }}
-            >
-              {CLAIM_COPY.lead}{" "}
-            </motion.span>
-            <motion.span
-              className="inline-block"
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : undefined}
-              transition={{ delay: 0.12, duration: 0.6, ease: EASE }}
-            >
-              <Era delay={0.95} show={inView}>
-                {CLAIM_COPY.subjectA}
-              </Era>{" "}
-              {CLAIM_COPY.middle}{" "}
-              <Era delay={1.12} show={inView}>
-                {CLAIM_COPY.subjectB}
-              </Era>{" "}
-            </motion.span>
-            <motion.span
-              className="inline-block"
-              initial={{ opacity: 0, y: 12 }}
-              animate={inView ? { opacity: 1, y: 0 } : undefined}
-              transition={{ delay: 0.24, duration: 0.6, ease: EASE }}
-            >
-              {CLAIM_COPY.tail}
-            </motion.span>
-          </p>
+            <blockquote className="mt-8">
+              <p className="font-display text-[1.5rem] leading-[1.16] tracking-[-0.01em] sm:text-[2.4rem] lg:text-[3rem]">
+                <Line progress={p} from={0.15} to={0.26}>
+                  {CLAIM_COPY.lead}
+                </Line>
+                <Line progress={p} from={0.22} to={0.34}>
+                  <Era progress={p} from={0.4} to={0.5}>
+                    {CLAIM_COPY.subjectA}
+                  </Era>{" "}
+                  {CLAIM_COPY.middle}
+                </Line>
+                <Line progress={p} from={0.28} to={0.4}>
+                  <Era progress={p} from={0.46} to={0.56}>
+                    {CLAIM_COPY.subjectB}
+                  </Era>{" "}
+                  {CLAIM_COPY.tail}
+                </Line>
+              </p>
 
-          {/* The punchline lands after the strike completes, so the rhythm is
-              claim, invalidation, verdict. */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={inView ? { opacity: 1, y: 0 } : undefined}
-            transition={{ delay: 1.5, duration: 0.6, ease: EASE }}
-            className="mt-6 font-display text-[1.75rem] leading-[1.16] tracking-[-0.01em] sm:text-[3rem] lg:text-[3.9rem]"
+              <Line
+                progress={p}
+                from={0.8}
+                to={0.92}
+                className="mt-5 font-display text-[1.5rem] leading-[1.16] tracking-[-0.01em] sm:text-[2.4rem] lg:text-[3rem]"
+              >
+                {CLAIM_COPY.punchline}
+              </Line>
+            </blockquote>
+
+            <motion.p
+              style={{ opacity: footnoteOpacity }}
+              className="mt-8 max-w-lg text-[13px] leading-relaxed text-canvas/75 sm:text-[15px]"
+            >
+              {CLAIM_COPY.footnote}
+            </motion.p>
+          </div>
+
+          {/* ── The boards ───────────────────────────────────────── */}
+          <motion.div
+            style={{ opacity: boardsOpacity }}
+            className="relative lg:col-span-5"
           >
-            {CLAIM_COPY.punchline}
-          </motion.p>
-        </blockquote>
+            <div className="relative mx-auto aspect-[420/272] w-full max-w-[13rem] sm:max-w-sm">
+              <motion.div
+                style={{ y: topY, opacity: mergedOpacity }}
+                className="absolute inset-0"
+              >
+                <MiniBoard state={GUARDIOLA} seed={9111} className="h-full w-full" />
+                <motion.span
+                  style={{ opacity: labelOpacity }}
+                  className="absolute -top-5 left-0 font-mono text-[10px] uppercase tracking-[0.14em] text-canvas/70"
+                >
+                  {GUARDIOLA.year} / {GUARDIOLA.era}
+                </motion.span>
+              </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : undefined}
-          transition={{ delay: 1.85, duration: 0.7 }}
-          className="mt-12 max-w-xl text-[13px] leading-relaxed text-canvas/75 sm:text-[15px]"
-        >
-          {CLAIM_COPY.footnote}
-        </motion.p>
+              <motion.div
+                style={{ y: bottomY, opacity: mergedOpacity }}
+                className="absolute inset-0"
+              >
+                <MiniBoard state={KOEMAN} seed={2021} className="h-full w-full" />
+                <motion.span
+                  style={{ opacity: labelOpacity }}
+                  className="absolute -bottom-5 left-0 font-mono text-[10px] uppercase tracking-[0.14em] text-canvas/70"
+                >
+                  {KOEMAN.year} / {KOEMAN.era}
+                </motion.span>
+              </motion.div>
+
+              {/* What the reader is left looking at once they overlap. */}
+              <motion.span
+                style={{ opacity: averageLabelOpacity }}
+                className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-center font-mono text-[10px] whitespace-nowrap uppercase tracking-[0.14em] text-canvas"
+              >
+                What similarity returns
+              </motion.span>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
