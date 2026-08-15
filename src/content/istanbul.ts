@@ -28,9 +28,28 @@ export type Deviation = {
   era_matches: number;
 };
 
+export type MemoryFact = {
+  fact_id: number;
+  dimension: string;
+  label: string;
+  band: string;
+  valid_from: string;
+  valid_to: string;
+  observations: number;
+  median_value: number;
+  cited_matches: string[];
+};
+
 const data = snapshot as unknown as {
   captured_at: string;
   graph_facts: number;
+  opponent_memory: {
+    team: string;
+    as_of: string;
+    sufficient: boolean;
+    total_evidence: number;
+    facts: MemoryFact[];
+  };
   match: {
     label: string;
     date: string;
@@ -49,6 +68,29 @@ const data = snapshot as unknown as {
 
 export const ISTANBUL = data.match;
 export const GRAPH_FACTS = data.graph_facts;
+
+/**
+ * What the graph holds about the opponent at that date.
+ *
+ * Deliberately not described anywhere as "what we knew before kick-off".
+ * These facts carry valid_from 2005-05-25 and cite the final among their
+ * source matches, so they are the club's profile as the graph holds it,
+ * not a pre-match scouting report. Claiming otherwise would be a leak.
+ */
+export const OPPONENT_MEMORY = data.opponent_memory;
+
+/** Plain phrasing for an opponent fact, so the screen reads like a product. */
+const BAND_PHRASE: Record<string, Record<string, string>> = {
+  possession_share_pct: { dominant: "Keeps the ball", even: "Shares the ball", low: "Plays without it" },
+  press_height: { high: "Presses high", mid: "Presses from midfield", low: "Sits off" },
+  defensive_action_height: { high: "High line", mid: "Middle block", low: "Deep block" },
+  team_width: { wide: "Stretches the pitch", balanced: "Balanced shape", narrow: "Plays narrow" },
+  pass_forward_ratio: { direct: "Goes direct", mixed: "Mixes it", patient: "Builds patiently" },
+};
+
+export function bandPhrase(dimension: string, band: string): string {
+  return BAND_PHRASE[dimension]?.[band] ?? band;
+}
 
 /** Human labels for the dimensions this section shows. */
 export const DIMENSION_LABEL: Record<string, string> = {
@@ -81,34 +123,11 @@ export const SIGNIFICANT_DEVIATIONS: Deviation[] = data.deviations
 
 export const OMITTED_DEVIATIONS = data.deviations.length - SIGNIFICANT_DEVIATIONS.length;
 
-/** Stage copy for the pipeline. One match, four steps. */
-export const PIPELINE = [
-  {
-    n: "01",
-    key: "ingest",
-    title: "Watch the half",
-    body: "Event data or tracked footage, it makes no difference downstream. Both emit the same match state: where the press triggered, how high the line sat, how wide the shape was, who had the ball.",
-    note: "Computer vision plugs into an interface that already exists, so the graph never waited on it.",
-  },
-  {
-    n: "02",
-    key: "state",
-    title: "Reduce it to state",
-    body: "Five measurements, taken the same way for every match in the set. No human tags a single event.",
-    note: null,
-  },
-  {
-    n: "03",
-    key: "memory",
-    title: "Ask what is normal for this team",
-    body: "The graph returns the facts it held about Liverpool on that date, not today's. Each one carries the window it was true for and the matches it came from.",
-    note: "This is the part a vector store cannot do. Similarity finds a near neighbour; it cannot tell you a fact expired.",
-  },
-  {
-    n: "04",
-    key: "read",
-    title: "Compare, then say something",
-    body: "The deviation from a team's own norm is the signal. A frontier model writes the halftime read from these dated, cited facts, and below the evidence threshold it declines rather than inventing a scouting report.",
-    note: null,
-  },
-] as const;
+/**
+ * The pipeline, as a strip rather than four paragraphs.
+ *
+ * Explaining each stage in prose was the page telling a judge how the
+ * product works instead of showing it working. The halftime screen does
+ * that job; this is just the spine, so the order stays legible.
+ */
+export const PIPELINE_STRIP = ["Footage", "State", "Memory", "Read"] as const;

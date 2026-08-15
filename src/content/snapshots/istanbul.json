@@ -63,5 +63,88 @@
       "era_matches": 13
     }
   ],
-  "highlights": []
+  "highlights": [],
+  "opponent_memory": {
+    "team": "AC Milan",
+    "as_of": "2005-05-25",
+    "sufficient": true,
+    "total_evidence": 200,
+    "facts": [
+      {
+        "fact_id": 848720005,
+        "dimension": "possession_share_pct",
+        "label": "possession share",
+        "band": "even",
+        "valid_from": "2005-05-25",
+        "valid_to": "present",
+        "observations": 40,
+        "median_value": 52.25,
+        "cited_matches": [
+          "AC Milan 3-3 Liverpool",
+          "AC Milan 2-1 Liverpool",
+          "Fiorentina 2-0 AC Milan"
+        ]
+      },
+      {
+        "fact_id": 848720000,
+        "dimension": "press_height",
+        "label": "pressing height",
+        "band": "mid",
+        "valid_from": "2005-05-25",
+        "valid_to": "present",
+        "observations": 40,
+        "median_value": 56.56,
+        "cited_matches": [
+          "AC Milan 3-3 Liverpool",
+          "AC Milan 2-1 Liverpool",
+          "Fiorentina 2-0 AC Milan"
+        ]
+      },
+      {
+        "fact_id": 848720001,
+        "dimension": "defensive_action_height",
+        "label": "defensive line height",
+        "band": "mid",
+        "valid_from": "2005-05-25",
+        "valid_to": "present",
+        "observations": 40,
+        "median_value": 52.39,
+        "cited_matches": [
+          "AC Milan 3-3 Liverpool",
+          "AC Milan 2-1 Liverpool",
+          "Fiorentina 2-0 AC Milan"
+        ]
+      },
+      {
+        "fact_id": 848720002,
+        "dimension": "team_width",
+        "label": "attacking width",
+        "band": "narrow",
+        "valid_from": "2005-05-25",
+        "valid_to": "2015-10-17",
+        "observations": 9,
+        "median_value": 25.27,
+        "cited_matches": [
+          "AC Milan 3-3 Liverpool",
+          "AC Milan 2-1 Liverpool",
+          "Fiorentina 2-0 AC Milan"
+        ]
+      },
+      {
+        "fact_id": 848720004,
+        "dimension": "pass_forward_ratio",
+        "label": "directness",
+        "band": "mixed",
+        "valid_from": "2005-05-25",
+        "valid_to": "present",
+        "observations": 40,
+        "median_value": 0.68,
+        "cited_matches": [
+          "AC Milan 3-3 Liverpool",
+          "AC Milan 2-1 Liverpool",
+          "Fiorentina 2-0 AC Milan"
+        ]
+      }
+    ]
+  }
 }
