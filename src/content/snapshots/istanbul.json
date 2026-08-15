@@ -1,0 +1,67 @@
+{
+  "captured_at": "2026-08-15T07:00:44",
+  "source": "tacticbench /api/deviation/Liverpool/2302764",
+  "graph_facts": 1803,
+  "match": {
+    "label": "AC Milan 3-3 Liverpool",
+    "date": "2005-05-25",
+    "date_ord": 732091,
+    "competition": "Champions League",
+    "possession_share_pct": 48.2,
+    "press_height": 49.4,
+    "defensive_action_height": 44.07,
+    "team_width": 23.45,
+    "pass_forward_ratio": 0.691,
+    "shots": 17,
+    "xg": 1.797,
+    "source": "event_data"
+  },
+  "deviations": [
+    {
+      "dimension": "press_height",
+      "normal_band": "mid",
+      "normal_value": 55.83,
+      "match_value": 49.4,
+      "delta": -6.43,
+      "fact_id": 690440000,
+      "era_matches": 44
+    },
+    {
+      "dimension": "defensive_action_height",
+      "normal_band": "mid",
+      "normal_value": 50.89,
+      "match_value": 44.07,
+      "delta": -6.82,
+      "fact_id": 690440001,
+      "era_matches": 44
+    },
+    {
+      "dimension": "team_width",
+      "normal_band": "balanced",
+      "normal_value": 23.7,
+      "match_value": 23.45,
+      "delta": -0.25,
+      "fact_id": 690440002,
+      "era_matches": 44
+    },
+    {
+      "dimension": "pass_forward_ratio",
+      "normal_band": "mixed",
+      "normal_value": 0.65,
+      "match_value": 0.69,
+      "delta": 0.04,
+      "fact_id": 690440003,
+      "era_matches": 44
+    },
+    {
+      "dimension": "possession_share_pct",
+      "normal_band": "low",
+      "normal_value": 49.3,
+      "match_value": 48.2,
+      "delta": -1.1,
+      "fact_id": 690440004,
+      "era_matches": 13
+    }
+  ],
+  "highlights": []
+}
