@@ -1,15 +1,16 @@
 import { ChalkFilters } from "@/components/chalk-filters";
 import { Hero } from "@/components/hero";
 import { ProvenanceNotice } from "@/components/provenance-notice";
+import { SectionClaim } from "@/components/section-claim";
 
 export default function Home() {
   return (
     <main className="flex-1">
       <ChalkFilters />
       <Hero />
-      {/* Section 02 onward lands here. Spacer keeps the hero's sticky
-          release visible while the rest is built out. */}
-      <div className="h-screen border-t border-rule" />
+      <SectionClaim />
+      {/* Section 03 onward lands here. */}
+      <div className="h-screen" />
       <ProvenanceNotice />
     </main>
   );

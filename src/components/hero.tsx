@@ -80,7 +80,10 @@ export function Hero() {
         {/* Scrim. Bottom-weighted now that the copy lives at the bottom,
             and kept shallow because by 2021 the press line has dropped to
             33m, which puts it behind the text. */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,var(--color-canvas)_4%,rgba(0,0,0,0.82)_26%,rgba(0,0,0,0.3)_48%,transparent_70%)]" />
+        {/* Reaches higher than it looks like it needs to. At shorter viewport
+            heights the copy block rides up into the board, and a solid white
+            ball landing behind the uppercase eyebrow is unreadable. */}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,var(--color-canvas)_5%,rgba(0,0,0,0.9)_34%,rgba(0,0,0,0.55)_55%,transparent_78%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-canvas/80 to-transparent" />
 
         {/* ── The copy, anchored bottom-left ────────────────────────── */}

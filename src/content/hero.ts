@@ -199,3 +199,28 @@ export const HERO_COPY = {
 
 /** True when every state on the page traces to the harness. */
 export const ALL_STATES_VERIFIED = TACTICAL_STATES.every((s) => s.verified);
+
+/**
+ * Section 02: the claim.
+ *
+ * The page's single full-bleed orange band, spent on one sentence. HydraDB's
+ * own design language uses that device exactly once, so using it twice would
+ * cost it its weight.
+ *
+ * The years are 2011 and 2021 rather than 2011 and 2024 because the source
+ * data runs 1974 to 2021. Guardiola's peak press against Koeman's low block
+ * is a real documented shift in the dimensions we measure, so the graph
+ * should surface it unaided.
+ */
+export const CLAIM_COPY = {
+  index: "02",
+  label: "The claim",
+  lead: "A vector store thinks",
+  subjectA: "Barcelona 2011",
+  middle: "and",
+  subjectB: "Barcelona 2021",
+  tail: "are the same team.",
+  punchline: "HydraDB doesn't.",
+  footnote:
+    "Similarity retrieval finds the nearest neighbour. It has no way to know a fact expired, so it answers with an average across eras that describes neither, and it answers confidently.",
+} as const;
