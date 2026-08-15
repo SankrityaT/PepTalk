@@ -191,6 +191,37 @@ export function SectionHowItWorks() {
           </figcaption>
         </motion.figure>
 
+        {/* ── The six minutes, rebuilt from the event data. ──────────── */}
+        {/* Not broadcast footage. Every ball position is a real logged touch
+            and each goal holds on the actual positions of every player on
+            the pitch at the moment it went in, straight out of the shot
+            freeze frames. This is also what the CV pipeline emits, so it
+            shows the product rather than borrowing someone's highlights. */}
+        <motion.figure {...reveal} className="relative mt-14">
+          <video
+            className="w-full border border-rule"
+            poster="/video/istanbul-comeback.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label="Bird's-eye reconstruction of Liverpool's three goals in six minutes, rebuilt from match event data."
+          >
+            <source src="/video/istanbul-comeback.webm" type="video/webm" />
+            <source src="/video/istanbul-comeback.mp4" type="video/mp4" />
+          </video>
+          <figcaption className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-2">
+            <span className="text-muted">
+              Three goals in six minutes, 53:04 to 59:52
+            </span>
+            <span>
+              Reconstructed from event data. Each goal holds on the real
+              positions of all players on the pitch.
+            </span>
+          </figcaption>
+        </motion.figure>
+
         {/* ── 01 Ingest ─────────────────────────────────────────────── */}
         <div className="mt-14">
           <Stage stage={ingest} />
