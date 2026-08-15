@@ -125,3 +125,68 @@ export function isoToMonthYear(iso: string): string {
   ];
   return `${months[Number(m) - 1]} ${y}`;
 }
+
+/**
+ * Plain-language phrasing for a fact.
+ *
+ * The graph speaks in bands and medians. A coach does not. Everything below
+ * turns a stored fact into the sentence a person would actually say, which
+ * is the difference between a product and a database browser.
+ *
+ * The raw fields are still available; section 03 keeps them behind a
+ * disclosure so a judge can audit and a coach never has to look.
+ */
+const PHRASES: Record<string, Record<string, string>> = {
+  possession_share_pct: {
+    dominant: "dominated the ball",
+    even: "shared the ball",
+    low: "played without the ball",
+  },
+  press_height: {
+    high: "pressed high up the pitch",
+    mid: "pressed from midfield",
+    low: "sat off and let you have it",
+  },
+  defensive_action_height: {
+    high: "defended with a high line",
+    mid: "held a middle block",
+    low: "dropped deep",
+  },
+  team_width: {
+    wide: "stretched the pitch",
+    balanced: "kept a balanced shape",
+    narrow: "played narrow",
+  },
+  pass_forward_ratio: {
+    direct: "went direct",
+    mixed: "mixed short and long",
+    patient: "built up patiently",
+  },
+};
+
+/** "dominated the ball", falling back to the raw band if unmapped. */
+export function phraseFor(dimensionKey: string, band: string): string {
+  return PHRASES[dimensionKey]?.[band] ?? band;
+}
+
+/** The unit a dimension's median is measured in. */
+export function unitFor(dimensionKey: string): string {
+  if (dimensionKey === "possession_share_pct") return "%";
+  if (dimensionKey === "press_height" || dimensionKey === "defensive_action_height")
+    return "m";
+  return "";
+}
+
+/**
+ * How long the fact held, in human terms.
+ * "for ten months", "and it still holds today".
+ */
+export function durationFor(fact: Fact): string {
+  if (fact.open_ended) return "and that is still true today";
+  const from = new Date(fact.valid_from_iso).getTime();
+  const to = new Date(fact.valid_to_iso).getTime();
+  const months = Math.max(1, Math.round((to - from) / (1000 * 60 * 60 * 24 * 30.44)));
+  if (months < 12) return `for ${months} month${months === 1 ? "" : "s"}`;
+  const years = Math.round(months / 12);
+  return `for about ${years} year${years === 1 ? "" : "s"}`;
+}
