@@ -1,0 +1,461 @@
+{
+  "captured_at": "2026-08-15T06:43:30",
+  "source": "tacticbench /api/compare",
+  "team": "Barcelona",
+  "at1": "2011-06-01",
+  "at2": "2021-06-01",
+  "dimensions": [
+    {
+      "key": "possession_share_pct",
+      "label": "possession share"
+    },
+    {
+      "key": "press_height",
+      "label": "pressing height"
+    },
+    {
+      "key": "defensive_action_height",
+      "label": "defensive line height"
+    },
+    {
+      "key": "team_width",
+      "label": "attacking width"
+    },
+    {
+      "key": "pass_forward_ratio",
+      "label": "directness"
+    }
+  ],
+  "compare": {
+    "possession_share_pct": {
+      "team": "Barcelona",
+      "dimension": "possession_share_pct",
+      "abstained": false,
+      "evidence": 531,
+      "with_memory": [
+        {
+          "at": "2011-06-01",
+          "fact": {
+            "id": 100010019,
+            "band": "dominant",
+            "valid_from": 734201,
+            "valid_to": 734510,
+            "observations": 27,
+            "median_value": 67.0,
+            "valid_from_iso": "2011-03-05",
+            "valid_to_iso": "2012-01-08",
+            "open_ended": false
+          },
+          "cited_matches": [
+            {
+              "label": "Barcelona 1-0 Real Zaragoza",
+              "date_ord": 734201,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Sevilla 1-1 Barcelona",
+              "date_ord": 734209,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-1 Getafe",
+              "date_ord": 734215,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Villarreal 0-1 Barcelona",
+              "date_ord": 734229,
+              "competition": "La Liga"
+            }
+          ]
+        },
+        {
+          "at": "2021-06-01",
+          "fact": {
+            "id": 100010020,
+            "band": "even",
+            "valid_from": 734510,
+            "valid_to": 99999999,
+            "observations": 333,
+            "median_value": 63.0,
+            "valid_from_iso": "2012-01-08",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Espanyol 1-1 Barcelona",
+              "date_ord": 734510,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 4-2 Real Betis",
+              "date_ord": 734517,
+              "competition": "La Liga"
+            },
+            {
+              "label": "M\u00e1laga 1-4 Barcelona",
+              "date_ord": 734524,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Villarreal 0-0 Barcelona",
+              "date_ord": 734530,
+              "competition": "La Liga"
+            }
+          ]
+        }
+      ],
+      "without_memory": {
+        "band": "even",
+        "observations": 333,
+        "valid_from": 734510,
+        "valid_to": 99999999
+      }
+    },
+    "press_height": {
+      "team": "Barcelona",
+      "dimension": "press_height",
+      "abstained": false,
+      "evidence": 531,
+      "with_memory": [
+        {
+          "at": "2011-06-01",
+          "fact": {
+            "id": 100010002,
+            "band": "mid",
+            "valid_from": 733075,
+            "valid_to": 99999999,
+            "observations": 461,
+            "median_value": 58.51,
+            "valid_from_iso": "2008-02-03",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Barcelona 1-0 Osasuna",
+              "date_ord": 733075,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Sevilla 1-1 Barcelona",
+              "date_ord": 733081,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Real Zaragoza 1-2 Barcelona",
+              "date_ord": 733088,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 5-1 Levante UD",
+              "date_ord": 733096,
+              "competition": "La Liga"
+            }
+          ]
+        },
+        {
+          "at": "2021-06-01",
+          "fact": {
+            "id": 100010002,
+            "band": "mid",
+            "valid_from": 733075,
+            "valid_to": 99999999,
+            "observations": 461,
+            "median_value": 58.51,
+            "valid_from_iso": "2008-02-03",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Barcelona 1-0 Osasuna",
+              "date_ord": 733075,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Sevilla 1-1 Barcelona",
+              "date_ord": 733081,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Real Zaragoza 1-2 Barcelona",
+              "date_ord": 733088,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 5-1 Levante UD",
+              "date_ord": 733096,
+              "competition": "La Liga"
+            }
+          ]
+        }
+      ],
+      "without_memory": {
+        "band": "mid",
+        "observations": 461,
+        "valid_from": 733075,
+        "valid_to": 99999999
+      }
+    },
+    "defensive_action_height": {
+      "team": "Barcelona",
+      "dimension": "defensive_action_height",
+      "abstained": false,
+      "evidence": 531,
+      "with_memory": [
+        {
+          "at": "2011-06-01",
+          "fact": {
+            "id": 100010004,
+            "band": "mid",
+            "valid_from": 732053,
+            "valid_to": 99999999,
+            "observations": 522,
+            "median_value": 53.16,
+            "valid_from_iso": "2005-04-17",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Barcelona 2-0 Getafe",
+              "date_ord": 732053,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-0 Albacete",
+              "date_ord": 732067,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-2 Real Zaragoza",
+              "date_ord": 732220,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 3-0 Osasuna",
+              "date_ord": 732241,
+              "competition": "La Liga"
+            }
+          ]
+        },
+        {
+          "at": "2021-06-01",
+          "fact": {
+            "id": 100010004,
+            "band": "mid",
+            "valid_from": 732053,
+            "valid_to": 99999999,
+            "observations": 522,
+            "median_value": 53.16,
+            "valid_from_iso": "2005-04-17",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Barcelona 2-0 Getafe",
+              "date_ord": 732053,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-0 Albacete",
+              "date_ord": 732067,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-2 Real Zaragoza",
+              "date_ord": 732220,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 3-0 Osasuna",
+              "date_ord": 732241,
+              "competition": "La Liga"
+            }
+          ]
+        }
+      ],
+      "without_memory": {
+        "band": "mid",
+        "observations": 522,
+        "valid_from": 732053,
+        "valid_to": 99999999
+      }
+    },
+    "team_width": {
+      "team": "Barcelona",
+      "dimension": "team_width",
+      "abstained": false,
+      "evidence": 531,
+      "with_memory": [
+        {
+          "at": "2011-06-01",
+          "fact": {
+            "id": 100010006,
+            "band": "balanced",
+            "valid_from": 731926,
+            "valid_to": 734887,
+            "observations": 231,
+            "median_value": 22.44,
+            "valid_from_iso": "2004-12-11",
+            "valid_to_iso": "2013-01-19",
+            "open_ended": false
+          },
+          "cited_matches": [
+            {
+              "label": "Albacete 1-2 Barcelona",
+              "date_ord": 731926,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-1 Levante UD",
+              "date_ord": 731936,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-0 Getafe",
+              "date_ord": 732053,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-0 Albacete",
+              "date_ord": 732067,
+              "competition": "La Liga"
+            }
+          ]
+        },
+        {
+          "at": "2021-06-01",
+          "fact": {
+            "id": 100010010,
+            "band": "balanced",
+            "valid_from": 736011,
+            "valid_to": 99999999,
+            "observations": 187,
+            "median_value": 22.58,
+            "valid_from_iso": "2016-02-17",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Sporting Gij\u00f3n 1-3 Barcelona",
+              "date_ord": 736011,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Las Palmas 1-2 Barcelona",
+              "date_ord": 736014,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 2-1 Sevilla",
+              "date_ord": 736022,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Rayo Vallecano 1-5 Barcelona",
+              "date_ord": 736026,
+              "competition": "La Liga"
+            }
+          ]
+        }
+      ],
+      "without_memory": {
+        "band": "balanced",
+        "observations": 231,
+        "valid_from": 731926,
+        "valid_to": 734887
+      }
+    },
+    "pass_forward_ratio": {
+      "team": "Barcelona",
+      "dimension": "pass_forward_ratio",
+      "abstained": false,
+      "evidence": 531,
+      "with_memory": [
+        {
+          "at": "2011-06-01",
+          "fact": {
+            "id": 100010013,
+            "band": "patient",
+            "valid_from": 734268,
+            "valid_to": 734481,
+            "observations": 17,
+            "median_value": 0.58,
+            "valid_from_iso": "2011-05-11",
+            "valid_to_iso": "2011-12-10",
+            "open_ended": false
+          },
+          "cited_matches": [
+            {
+              "label": "Levante UD 1-1 Barcelona",
+              "date_ord": 734268,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 3-1 Manchester United",
+              "date_ord": 734285,
+              "competition": "Champions League"
+            },
+            {
+              "label": "Barcelona 5-0 Villarreal",
+              "date_ord": 734378,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Real Sociedad 2-2 Barcelona",
+              "date_ord": 734390,
+              "competition": "La Liga"
+            }
+          ]
+        },
+        {
+          "at": "2021-06-01",
+          "fact": {
+            "id": 100010016,
+            "band": "mixed",
+            "valid_from": 734985,
+            "valid_to": 99999999,
+            "observations": 283,
+            "median_value": 0.6,
+            "valid_from_iso": "2013-04-27",
+            "valid_to_iso": "present",
+            "open_ended": true
+          },
+          "cited_matches": [
+            {
+              "label": "Athletic Club 2-2 Barcelona",
+              "date_ord": 734985,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 4-2 Real Betis",
+              "date_ord": 734993,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Atl\u00e9tico Madrid 1-2 Barcelona",
+              "date_ord": 735000,
+              "competition": "La Liga"
+            },
+            {
+              "label": "Barcelona 7-0 Levante UD",
+              "date_ord": 735098,
+              "competition": "La Liga"
+            }
+          ]
+        }
+      ],
+      "without_memory": {
+        "band": "mixed",
+        "observations": 283,
+        "valid_from": 734985,
+        "valid_to": 99999999
+      }
+    }
+  }
+}

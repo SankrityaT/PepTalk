@@ -1,7 +1,7 @@
 import { ChalkFilters } from "@/components/chalk-filters";
 import { Hero } from "@/components/hero";
-import { ProvenanceNotice } from "@/components/provenance-notice";
 import { SectionClaim } from "@/components/section-claim";
+import { SectionTimeTravel } from "@/components/section-time-travel";
 
 export default function Home() {
   return (
@@ -9,9 +9,8 @@ export default function Home() {
       <ChalkFilters />
       <Hero />
       <SectionClaim />
-      {/* Section 03 onward lands here. */}
-      <div className="h-screen" />
-      <ProvenanceNotice />
+      <SectionTimeTravel />
+      {/* Section 04 onward lands here. */}
     </main>
   );
 }
