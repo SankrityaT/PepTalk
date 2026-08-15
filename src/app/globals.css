@@ -1,0 +1,298 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Geist Pixel Square: HydraDB's display face.
+   SIL Open Font License 1.1, see public/fonts/GeistPixel-OFL.txt
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Geist Pixel Square";
+  src: url("/fonts/GeistPixel-Square.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens.
+
+   Sampled directly from hydradb.com's computed styles rather than eyeballed,
+   so the page reads as native to their brand when a judge lands on it.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Canvas: pure black, not off-black. */
+  --color-canvas: #000000;
+
+  /* The single accent. Used sparingly: one element per viewport, ideally. */
+  --color-accent: #ff571a;
+  --color-accent-dim: rgba(255, 87, 26, 0.1);
+
+  /* Type greys, in descending prominence. */
+  --color-chalk: #ffffff;
+  --color-chalk-2: #e1e1e1;
+  --color-chalk-3: #c8c8c8;
+  --color-muted: #999999;
+  --color-muted-2: #787878;
+
+  /* The field.
+     A near-black green. Deliberately just above pure black: enough to read
+     as grass at the edge of perception, not enough to become a second
+     accent competing with the orange press line. */
+  --color-pitch: #05100b;
+
+  /* Hairlines and panel fills. */
+  --color-rule: rgba(255, 255, 255, 0.1);
+  --color-rule-strong: rgba(255, 255, 255, 0.22);
+  --color-panel: #121212;
+
+  --font-display: "Geist Pixel Square", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* PlayVision's transition curve, measured off their site. */
+  --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html {
+  background: var(--color-canvas);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #000;
+}
+
+/* ---------------------------------------------------------------------------
+   Chalk rendering.
+
+   Real chalk is not a clean stroke: it skips, it varies in weight, and it
+   leaves dust. `chalk-stroke` fakes that with a slight blur bloom under the
+   line plus a hand-jitter filter, so SVG geometry stops reading as vector.
+   --------------------------------------------------------------------------- */
+@utility chalk-stroke {
+  filter: url(#chalk-texture);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Self-drawing lines. The dash length is set per-path in JS from
+   getTotalLength(), so a single keyframe works for any path. */
+@keyframes draw-on {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Logo motion.
+
+   Three states, all pure CSS so they cost nothing and cannot desync from a
+   JS animation loop:
+
+     lock-on   hover. The detection brackets pull outward the way a camera
+               acquires focus, and the scan line steps across.
+     draw      mount. The mark assembles itself: brackets snap in, bubble
+               draws, scan line drops, nodes pop.
+     scan      loop. The line sweeps the lanes and each node lights as it
+               passes, which is what a point-in-time query is doing.
+
+   SVG children need transform-box: fill-box so scaling happens about the
+   element's own centre rather than the viewBox origin.
+   --------------------------------------------------------------------------- */
+
+.mark-part {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ── Lock-on ─────────────────────────────────────────────────────────── */
+.mark-bracket {
+  transition: transform 0.4s var(--ease-ui);
+}
+.group:hover .mark-bracket-tl {
+  transform: translate(-1.5px, -1.5px);
+}
+.group:hover .mark-bracket-tr {
+  transform: translate(1.5px, -1.5px);
+}
+.group:hover .mark-bracket-br {
+  transform: translate(1.5px, 1.5px);
+}
+.group:hover .mark-bracket-bl {
+  transform: translate(-1.5px, 1.5px);
+}
+
+.mark-node {
+  transition:
+    transform 0.4s var(--ease-ui),
+    opacity 0.4s var(--ease-ui);
+}
+.group:hover .mark-node {
+  transform: scale(1.25);
+}
+
+/* ── Scan sweep ──────────────────────────────────────────────────────── */
+@keyframes mark-scan {
+  0%,
+  100% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* Nodes light as the sweep reaches them. Offset from each other so the
+   upper one fires on the way out and the lower on the way back. */
+@keyframes mark-node-flash-a {
+  0%,
+  30%,
+  100% {
+    opacity: 0.55;
+  }
+  15% {
+    opacity: 1;
+  }
+}
+
+@keyframes mark-node-flash-b {
+  0%,
+  55%,
+  100% {
+    opacity: 0.6;
+  }
+  72% {
+    opacity: 1;
+  }
+}
+
+@utility animate-mark-scan {
+  animation: mark-scan 3.4s var(--ease-ui) infinite;
+}
+
+.mark-scanning .mark-node-a {
+  animation: mark-node-flash-a 3.4s var(--ease-ui) infinite;
+}
+.mark-scanning .mark-node-b {
+  animation: mark-node-flash-b 3.4s var(--ease-ui) infinite;
+}
+
+/* ── Assemble on mount ───────────────────────────────────────────────── */
+@keyframes mark-bracket-in {
+  from {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes mark-line-in {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mark-node-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.mark-drawing .mark-bracket {
+  animation: mark-bracket-in 0.5s var(--ease-ui) both;
+}
+.mark-drawing .mark-bracket-tr {
+  animation-delay: 0.06s;
+}
+.mark-drawing .mark-bracket-br {
+  animation-delay: 0.12s;
+}
+.mark-drawing .mark-bracket-bl {
+  animation-delay: 0.18s;
+}
+
+.mark-drawing .mark-bubble {
+  animation: draw-on 0.7s var(--ease-ui) 0.28s both;
+}
+
+.mark-drawing .mark-line {
+  animation: mark-line-in 0.45s var(--ease-ui) 0.72s both;
+}
+
+.mark-drawing .mark-node-a {
+  animation: mark-node-in 0.35s var(--ease-ui) 0.98s both;
+}
+.mark-drawing .mark-node-b {
+  animation: mark-node-in 0.35s var(--ease-ui) 1.12s both;
+}
+
+/* The ball's resting pulse: a ring expanding out and fading. Keeps the
+   board alive when the page is not being scrolled. */
+@keyframes ball-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@utility animate-ball-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ball-pulse 2.8s var(--ease-ui) infinite;
+}
+
+@keyframes chalk-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.86;
+  }
+}
+
+/* Micro-label eyebrow: HydraDB's `// Use Cases //` signature. */
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
