@@ -156,17 +156,25 @@ export function MemoryScrubber() {
       : Math.round(lo + (hi - lo) * 0.75);
   }, [teamName, lo, hi]);
 
-  const [playhead, setPlayhead] = useState(initial);
   const [dragging, setDragging] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
   // Reset the playhead when the team changes: an ordinal from Barcelona's 1974
   // start is meaningless on a timeline that begins in 2018.
-  const lastTeam = useRef(teamName);
-  if (lastTeam.current !== teamName) {
-    lastTeam.current = teamName;
-    setPlayhead(initial);
-  }
+  //
+  // The team is held in state beside the playhead rather than in a ref. A ref
+  // read during render is not a supported way to detect a changed prop — React
+  // is free to discard the render — so the pair is compared and reset together.
+  const [pos, setPos] = useState({ team: teamName, playhead: initial });
+  if (pos.team !== teamName) setPos({ team: teamName, playhead: initial });
+  const playhead = pos.team === teamName ? pos.playhead : initial;
+  // Accepts a value or an updater, matching the useState signature it replaced
+  // — two callers pass a function.
+  const setPlayhead = (v: number | ((prev: number) => number)) =>
+    setPos((p) => ({
+      team: p.team,
+      playhead: typeof v === "function" ? v(p.playhead) : v,
+    }));
 
   const seek = useCallback(
     (clientX: number) => {
