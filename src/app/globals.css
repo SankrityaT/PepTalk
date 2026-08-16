@@ -305,6 +305,44 @@ body {
   color: var(--color-accent);
 }
 
+/* ---------------------------------------------------------------------------
+   The brief.
+
+   Two additions, kept beside the existing nine keyframes rather than starting
+   a second animation system: a pixel-grid loader cell and a shimmering label.
+   Both are used only while the agent is actually working.
+   --------------------------------------------------------------------------- */
+@keyframes pixel-on {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer-text {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Words resolving out of blur as the agent writes them. */
+@keyframes word-in {
+  from {
+    opacity: 0;
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChalkFilters } from "@/components/chalk-filters";
-import { Dashboard } from "@/components/dash/dashboard";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { MomentPitch } from "@/components/report/moment-pitch";
 import { PepFeed } from "@/components/report/pep-feed";
@@ -12,6 +11,7 @@ import { ThisWeek } from "@/components/report/this-week";
 import { Upload } from "@/components/report/upload";
 import { VersusUsual } from "@/components/report/versus-usual";
 import { Watching } from "@/components/report/watching";
+import { Workspace } from "@/components/shell/workspace";
 import { MATCH, MOMENTS, Moment, byPlayer, surname } from "@/content/pep";
 
 /**
@@ -48,7 +48,7 @@ export default function ReportPage() {
   }, [stage]);
 
   return (
-    <main className="min-h-screen px-5 py-10 sm:px-8">
+    <main className="min-h-screen">
       <ChalkFilters />
       <AnimatePresence mode="wait">
         {stage === "dashboard" && (
@@ -59,15 +59,14 @@ export default function ReportPage() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Dashboard
-              // Picking a clip on the dashboard carries that exact moment into
-              // the report, rather than dropping the coach on whatever was
+            <Workspace
+              // Picking a clip in the brief carries that exact moment into the
+              // report, rather than dropping the coach on whatever was
               // selected last.
-              onOpenMatch={(m) => {
-                if (m) setSelected(m);
+              onOpenMoment={(m) => {
+                setSelected(m);
                 setStage("report");
               }}
-              onAddGame={() => setStage("upload")}
             />
           </motion.div>
         )}
@@ -79,7 +78,7 @@ export default function ReportPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="pt-4"
+            className="px-5 pt-14 sm:px-8"
           >
             <BackTo onClick={() => setStage("dashboard")} />
             <Upload
