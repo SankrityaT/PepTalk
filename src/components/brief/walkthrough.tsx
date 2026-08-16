@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { Choice } from "@/components/brief/atoms/choice";
 import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Turn } from "@/components/brief/atoms/turn";
+import { ChalkFilters } from "@/components/chalk-filters";
+import { ChalkOverlay } from "@/components/brief/chalk-overlay";
 import { MomentFrame } from "@/components/report/moment-frame";
 import {
   CLIP_MOMENTS,
@@ -133,12 +135,16 @@ export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
   if (!current) return null;
 
   const frame = frameAt(current, t);
+  const prevFrame = frame
+    ? current.frames[Math.max(0, current.frames.indexOf(frame) - 3)]
+    : undefined;
   const dur = current.frames.length
     ? current.frames[current.frames.length - 1].t
     : current.pass_at + 4;
 
   return (
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+      <ChalkFilters />
       {/* ── The footage, pinned ───────────────────────────────────────── */}
       <div className="lg:sticky lg:top-4 lg:self-start">
         <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.06]">
@@ -186,6 +192,16 @@ export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
                 />
               ))}
             </div>
+
+            {/* Chalk on the picture, computed from the boxes on the picture. */}
+            {frame && (
+              <ChalkOverlay
+                players={frame.players}
+                previous={prevFrame?.players}
+                team={current.side === "defending" ? 0 : 1}
+                seed={current.id * 17 + 3}
+              />
+            )}
 
             <span className="pointer-events-none absolute top-3 left-3 rounded bg-black/75 px-2 py-1 font-mono text-[10px] tabular-nums text-chalk backdrop-blur-sm">
               {clockAt(current, t)}
