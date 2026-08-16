@@ -9,6 +9,7 @@ import { SourceChip } from "@/components/brief/atoms/source-chip";
 import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Trace } from "@/components/brief/atoms/trace";
 import { ClipCard } from "@/components/brief/clip-card";
+import { Walkthrough } from "@/components/brief/walkthrough";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { TapeRoom } from "@/components/report/tape-room";
 import { CLIPS, DETECTIONS } from "@/lib/tape";
@@ -236,19 +237,11 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
 
       {/* ── The one question ──────────────────────────────────────────── */}
       <AnimatePresence>
-        {at("ask") && (
+        {at("ask") && !picked && (
           <Choice
-            question="Want to go through them one by one on the tape?"
+            question="Want to go through them one by one?"
             picked={picked}
-            onPick={(k) => {
-              setPicked(k);
-              if (k !== "later") {
-                const first = MOMENTS.find((m) =>
-                  THEMES[0]?.moment_ids.includes(m.id),
-                );
-                if (first) onOpenMoment(first);
-              }
-            }}
+            onPick={setPicked}
             options={[
               { key: "yes", label: "Yes, take me through", primary: true },
               { key: "top", label: "Just the top one" },
@@ -257,6 +250,22 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
           />
         )}
       </AnimatePresence>
+
+      {/* ── Going through them, without leaving the page ──────────────── */}
+      {/* This used to navigate to a separate report, which threw away the
+          thread and made the coach find their place again. The walkthrough
+          appends to the stream instead. */}
+      {(picked === "yes" || picked === "top") && (
+        <Walkthrough
+          moments={picked === "top" ? MOMENTS.slice(0, 1) : MOMENTS}
+        />
+      )}
+
+      {picked === "later" && (
+        <p className="text-[15px] leading-relaxed text-warm-2">
+          <StreamText text="Fine. They are on the Tape tab whenever you want them, and you can ask me about any of it below." />
+        </p>
+      )}
 
       {/* ── Anything the coach asked ──────────────────────────────────── */}
       {asked.map((q) => (
