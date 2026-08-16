@@ -43,3 +43,7 @@ next-env.d.ts
 # playwright mcp artifacts
 .playwright-mcp/
 .render/
+
+# Match footage. Not ours to redistribute — the tape is fetched locally and
+# stays out of the repo. See README for how to supply your own clip.
+/public/tape/

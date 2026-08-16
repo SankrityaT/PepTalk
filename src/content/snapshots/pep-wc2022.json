@@ -1,0 +1,319 @@
+{
+ "match_id": 3869685,
+ "source": "tacticbench pass_options + xt (3,961 matches)",
+ "themes": [
+  {
+   "title": "Take the simple ball in",
+   "why": "Twice you had a pass into the box that was there for the taking \u2014 one from the byline, one with a single defender to beat \u2014 and you chose the safe ball instead, so drill finishing those moves with the delivery in, not around.",
+   "moment_ids": [
+    0,
+    2
+   ]
+  },
+  {
+   "title": "First look into the box",
+   "why": "Six times you turned back or played square in the final third when the ball forward was on, so train your players to check their shoulder before it arrives and make the pass in the first thought, not the last resort.",
+   "moment_ids": [
+    1,
+    3,
+    4,
+    5,
+    6,
+    7
+   ]
+  },
+  {
+   "title": "Fill the box with runners",
+   "why": "Almost every time you attacked down the left the ball came back out, and a pass into the box only exists if someone is arriving in it \u2014 so work on timing runs to the near post, penalty spot and back post every time the ball goes wide.",
+   "moment_ids": [
+    1,
+    3,
+    5,
+    7
+   ]
+  }
+ ],
+ "completion_model": {
+  "trained": true,
+  "n": 998,
+  "completion_rate": 0.799,
+  "coef_distance": -0.0247,
+  "coef_traffic": -0.6729,
+  "intercept": 2.8087
+ },
+ "moments_found": 803,
+ "moments": [
+  {
+   "minute": 8,
+   "player": "Rodrigo De Paul",
+   "name": "De Paul",
+   "team": "Argentina",
+   "played_zone": "right, by the byline",
+   "best_zone": "in the box",
+   "played_value": 0.023,
+   "best_value": 0.15,
+   "played_backwards": false,
+   "times_better": 6.6,
+   "best_completion": 0.83,
+   "played_completion": 0.85,
+   "best_defenders": 1,
+   "best_distance": 24,
+   "difficulty": "straightforward",
+   "no_riskier": true,
+   "id": 0,
+   "line": "You had the ball into the box from the byline \u2014 worth six times more, and no more likely to be cut out.",
+   "numbers": "threat +0.023 \u2192 +0.150 \u00b7 83% likely to arrive \u00b7 1 in the lane \u00b7 24 yds",
+   "from": [
+    95.2,
+    65.6
+   ],
+   "played_to": [
+    107.9,
+    72.9
+   ],
+   "best_to": [
+    108.9,
+    46.3
+   ],
+   "missed": 0.1042
+  },
+  {
+   "minute": 93,
+   "player": "Aur\u00e9lien Tchouam\u00e9ni",
+   "name": "Tchouam\u00e9ni",
+   "team": "France",
+   "played_zone": "left, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.018,
+   "best_value": 0.147,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.56,
+   "played_completion": 0.92,
+   "best_defenders": 3,
+   "best_distance": 22,
+   "difficulty": "tight",
+   "no_riskier": false,
+   "id": 1,
+   "line": "Ball went backwards there; the pass into the box from twenty-two yards was on through three bodies \u2014 tight, but that's the one.",
+   "numbers": "threat -0.018 \u2192 +0.147 \u00b7 56% likely to arrive \u00b7 3 in the lane \u00b7 22 yds",
+   "from": [
+    91.6,
+    33.7
+   ],
+   "played_to": [
+    89.3,
+    19.4
+   ],
+   "best_to": [
+    111.2,
+    44.2
+   ],
+   "missed": 0.0989
+  },
+  {
+   "minute": 114,
+   "player": "Youssouf Fofana",
+   "name": "Fofana",
+   "team": "France",
+   "played_zone": "right, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.005,
+   "best_value": 0.108,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.83,
+   "played_completion": 0.91,
+   "best_defenders": 1,
+   "best_distance": 21,
+   "difficulty": "straightforward",
+   "no_riskier": false,
+   "id": 2,
+   "line": "Square ball there \u2014 the pass into the box was on, one man to beat from twenty-one yards, and simple enough.",
+   "numbers": "threat -0.005 \u2192 +0.108 \u00b7 83% likely to arrive \u00b7 1 in the lane \u00b7 21 yds",
+   "from": [
+    86.3,
+    49.6
+   ],
+   "played_to": [
+    87.1,
+    69.7
+   ],
+   "best_to": [
+    105.5,
+    40.0
+   ],
+   "missed": 0.0946
+  },
+  {
+   "minute": 72,
+   "player": "Randal Kolo Muani",
+   "name": "Kolo Muani",
+   "team": "France",
+   "played_zone": "left, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.016,
+   "best_value": 0.157,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.48,
+   "played_completion": 0.85,
+   "best_defenders": 3,
+   "best_distance": 35,
+   "difficulty": "hard",
+   "no_riskier": false,
+   "id": 3,
+   "line": "You turned back instead of the ball into the box \u2014 thirty-five yards past three. Hard ask, but that's the one worth trying.",
+   "numbers": "threat -0.016 \u2192 +0.157 \u00b7 48% likely to arrive \u00b7 3 in the lane \u00b7 35 yds",
+   "from": [
+    92.0,
+    8.1
+   ],
+   "played_to": [
+    82.4,
+    22.0
+   ],
+   "best_to": [
+    105.2,
+    40.3
+   ],
+   "missed": 0.0892
+  },
+  {
+   "minute": 57,
+   "player": "Adrien Rabiot",
+   "name": "Rabiot",
+   "team": "France",
+   "played_zone": "right, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.027,
+   "best_value": 0.148,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.43,
+   "played_completion": 0.83,
+   "best_defenders": 4,
+   "best_distance": 16,
+   "difficulty": "hard",
+   "no_riskier": false,
+   "id": 4,
+   "line": "Ball went backwards \u2014 sixteen yards into the box with four bodies in the way was there. Hard, but that changes the game.",
+   "numbers": "threat -0.027 \u2192 +0.148 \u00b7 43% likely to arrive \u00b7 4 in the lane \u00b7 16 yds",
+   "from": [
+    94.6,
+    50.4
+   ],
+   "played_to": [
+    80.7,
+    68.2
+   ],
+   "best_to": [
+    107.5,
+    40.9
+   ],
+   "missed": 0.0861
+  },
+  {
+   "minute": 31,
+   "player": "Alexis Mac Allister",
+   "name": "Mac Allister",
+   "team": "Argentina",
+   "played_zone": "left, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.008,
+   "best_value": 0.105,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.54,
+   "played_completion": 0.93,
+   "best_defenders": 3,
+   "best_distance": 26,
+   "difficulty": "tight",
+   "no_riskier": false,
+   "id": 5,
+   "line": "You played it back; the ball into the box from twenty-six yards through three was on \u2014 tight window, far bigger reward.",
+   "numbers": "threat -0.008 \u2192 +0.105 \u00b7 54% likely to arrive \u00b7 3 in the lane \u00b7 26 yds",
+   "from": [
+    93.1,
+    11.9
+   ],
+   "played_to": [
+    87.1,
+    18.8
+   ],
+   "best_to": [
+    107.4,
+    33.4
+   ],
+   "missed": 0.0638
+  },
+  {
+   "minute": 57,
+   "player": "Randal Kolo Muani",
+   "name": "Kolo Muani",
+   "team": "France",
+   "played_zone": "in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.047,
+   "best_value": 0.181,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.14,
+   "played_completion": 0.71,
+   "best_defenders": 6,
+   "best_distance": 23,
+   "difficulty": "hard",
+   "no_riskier": false,
+   "id": 6,
+   "line": "Ball went back \u2014 six bodies between you and the box, twenty-three yards. Really hard, but nothing else comes close to it.",
+   "numbers": "threat -0.047 \u2192 +0.181 \u00b7 14% likely to arrive \u00b7 6 in the lane \u00b7 23 yds",
+   "from": [
+    112.6,
+    63.9
+   ],
+   "played_to": [
+    94.6,
+    50.4
+   ],
+   "best_to": [
+    112.6,
+    40.4
+   ],
+   "missed": 0.0591
+  },
+  {
+   "minute": 63,
+   "player": "Adrien Rabiot",
+   "name": "Rabiot",
+   "team": "France",
+   "played_zone": "left, in the final third",
+   "best_zone": "in the box",
+   "played_value": -0.008,
+   "best_value": 0.157,
+   "played_backwards": true,
+   "times_better": null,
+   "best_completion": 0.3,
+   "played_completion": 0.93,
+   "best_defenders": 4,
+   "best_distance": 39,
+   "difficulty": "hard",
+   "no_riskier": false,
+   "id": 7,
+   "line": "You went backwards \u2014 the ball into the box from thirty-nine yards over four defenders was on. Hard, but hugely dangerous.",
+   "numbers": "threat -0.008 \u2192 +0.157 \u00b7 30% likely to arrive \u00b7 4 in the lane \u00b7 39 yds",
+   "from": [
+    92.0,
+    9.8
+   ],
+   "played_to": [
+    83.7,
+    14.7
+   ],
+   "best_to": [
+    107.9,
+    45.5
+   ],
+   "missed": 0.0543
+  }
+ ]
+}

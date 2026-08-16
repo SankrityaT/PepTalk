@@ -1,0 +1,126 @@
+{
+ "Argentina": {
+  "matches": 22,
+  "evidence": {
+   "possession_share_pct": 22,
+   "press_height": 22,
+   "defensive_action_height": 22,
+   "team_width": 22,
+   "pass_forward_ratio": 22
+  },
+  "deviations": [
+   {
+    "dimension": "press_height",
+    "normal_band": "mid",
+    "normal_value": 57.18,
+    "match_value": 51.67,
+    "delta": -5.51,
+    "fact_id": 356620001,
+    "era_matches": 16,
+    "label": "pressing height"
+   },
+   {
+    "dimension": "defensive_action_height",
+    "normal_band": "mid",
+    "normal_value": 52.08,
+    "match_value": 48.88,
+    "delta": -3.2,
+    "fact_id": 356620003,
+    "era_matches": 12,
+    "label": "defensive line height"
+   },
+   {
+    "dimension": "team_width",
+    "normal_band": "balanced",
+    "normal_value": 23.09,
+    "match_value": 23.44,
+    "delta": 0.35,
+    "fact_id": 356620005,
+    "era_matches": 13,
+    "label": "attacking width"
+   },
+   {
+    "dimension": "pass_forward_ratio",
+    "normal_band": "mixed",
+    "normal_value": 0.59,
+    "match_value": 0.63,
+    "delta": 0.04,
+    "fact_id": 356620007,
+    "era_matches": 13,
+    "label": "directness"
+   },
+   {
+    "dimension": "possession_share_pct",
+    "normal_band": "even",
+    "normal_value": 56.6,
+    "match_value": 53.8,
+    "delta": -2.8,
+    "fact_id": 356620009,
+    "era_matches": 17,
+    "label": "possession share"
+   }
+  ]
+ },
+ "France": {
+  "matches": 25,
+  "evidence": {
+   "possession_share_pct": 25,
+   "press_height": 25,
+   "defensive_action_height": 25,
+   "team_width": 25,
+   "pass_forward_ratio": 25
+  },
+  "deviations": [
+   {
+    "dimension": "press_height",
+    "normal_band": "mid",
+    "normal_value": 54.86,
+    "match_value": 56.27,
+    "delta": 1.41,
+    "fact_id": 260060001,
+    "era_matches": 16,
+    "label": "pressing height"
+   },
+   {
+    "dimension": "defensive_action_height",
+    "normal_band": "mid",
+    "normal_value": 49.73,
+    "match_value": 51.88,
+    "delta": 2.15,
+    "fact_id": 260060003,
+    "era_matches": 16,
+    "label": "defensive line height"
+   },
+   {
+    "dimension": "team_width",
+    "normal_band": "balanced",
+    "normal_value": 24.02,
+    "match_value": 24.02,
+    "delta": 0.0,
+    "fact_id": 260060005,
+    "era_matches": 17,
+    "label": "attacking width"
+   },
+   {
+    "dimension": "pass_forward_ratio",
+    "normal_band": "mixed",
+    "normal_value": 0.6,
+    "match_value": 0.64,
+    "delta": 0.04,
+    "fact_id": 260060007,
+    "era_matches": 12,
+    "label": "directness"
+   },
+   {
+    "dimension": "possession_share_pct",
+    "normal_band": "even",
+    "normal_value": 49.7,
+    "match_value": 46.2,
+    "delta": -3.5,
+    "fact_id": 260060008,
+    "era_matches": 25,
+    "label": "possession share"
+   }
+  ]
+ }
+}

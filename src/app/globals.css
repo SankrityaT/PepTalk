@@ -44,6 +44,25 @@
   --color-rule-strong: rgba(255, 255, 255, 0.22);
   --color-panel: #121212;
 
+  /* ---------------------------------------------------------------------
+     Product surfaces.
+
+     The landing page is HydraDB's voice: pure black, hairlines, monospace
+     micro-labels, everything the same weight. That is right for a developer
+     landing on an infrastructure brand.
+
+     It is wrong for the product. A volunteer coach opening a report on a
+     Sunday met a terminal readout — cold, cramped, and with nowhere for the
+     eye to go. These tokens keep the family (dark, one orange) and change the
+     temperature: surfaces that lift off the page, a warmer neutral than pure
+     grey, and room to breathe.
+     --------------------------------------------------------------------- */
+  --color-surface: #131313;
+  --color-surface-2: #191919;
+  --color-surface-raised: #1f1f1f;
+  --color-warm: #d8d2cc;
+  --color-warm-2: #a39d97;
+
   --font-display: "Geist Pixel Square", ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;

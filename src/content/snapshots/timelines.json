@@ -1,0 +1,1485 @@
+{
+ "captured_at": "2026-08-15T15:49:08",
+ "source": "tacticbench graph: timeline + evidence per dimension",
+ "dimensions": [
+  {
+   "key": "possession_share_pct",
+   "label": "possession share"
+  },
+  {
+   "key": "press_height",
+   "label": "pressing height"
+  },
+  {
+   "key": "defensive_action_height",
+   "label": "defensive line height"
+  },
+  {
+   "key": "team_width",
+   "label": "attacking width"
+  },
+  {
+   "key": "pass_forward_ratio",
+   "label": "directness"
+  }
+ ],
+ "teams": {
+  "Barcelona": {
+   "team": "Barcelona",
+   "team_id": 1,
+   "matches": 531,
+   "first_match": "1974-02-17",
+   "last_match": "2021-05-16",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 531,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 100010017,
+       "band": "low",
+       "valid_from": 720671,
+       "valid_to": 731936,
+       "observations": 8,
+       "median_value": 55.9,
+       "from_iso": "1974-02-17",
+       "to_iso": "2004-12-21",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 0-5 Barcelona",
+        "Barcelona 3-1 Las Palmas",
+        "Barcelona 2-1 Real Madrid"
+       ]
+      },
+      {
+       "id": 100010018,
+       "band": "even",
+       "valid_from": 731936,
+       "valid_to": 734201,
+       "observations": 163,
+       "median_value": 61.7,
+       "from_iso": "2004-12-21",
+       "to_iso": "2011-03-05",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 2-1 Levante UD",
+        "Barcelona 2-0 Getafe",
+        "Barcelona 2-0 Albacete"
+       ]
+      },
+      {
+       "id": 100010019,
+       "band": "dominant",
+       "valid_from": 734201,
+       "valid_to": 734510,
+       "observations": 27,
+       "median_value": 67.0,
+       "from_iso": "2011-03-05",
+       "to_iso": "2012-01-08",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 1-0 Real Zaragoza",
+        "Sevilla 1-1 Barcelona",
+        "Barcelona 2-1 Getafe"
+       ]
+      },
+      {
+       "id": 100010020,
+       "band": "even",
+       "valid_from": 734510,
+       "valid_to": 99999999,
+       "observations": 333,
+       "median_value": 63.0,
+       "from_iso": "2012-01-08",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Espanyol 1-1 Barcelona",
+        "Barcelona 4-2 Real Betis",
+        "M\u00e1laga 1-4 Barcelona"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 531,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 100010000,
+       "band": "mid",
+       "valid_from": 720671,
+       "valid_to": 732977,
+       "observations": 60,
+       "median_value": 56.83,
+       "from_iso": "1974-02-17",
+       "to_iso": "2007-10-28",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 0-5 Barcelona",
+        "Barcelona 3-1 Las Palmas",
+        "Barcelona 2-1 Real Madrid"
+       ]
+      },
+      {
+       "id": 100010001,
+       "band": "deep",
+       "valid_from": 732977,
+       "valid_to": 733075,
+       "observations": 10,
+       "median_value": 53.92,
+       "from_iso": "2007-10-28",
+       "to_iso": "2008-02-03",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 2-0 Almer\u00eda",
+        "Real Valladolid 1-1 Barcelona",
+        "Barcelona 3-0 Real Betis"
+       ]
+      },
+      {
+       "id": 100010002,
+       "band": "mid",
+       "valid_from": 733075,
+       "valid_to": 99999999,
+       "observations": 461,
+       "median_value": 58.51,
+       "from_iso": "2008-02-03",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Barcelona 1-0 Osasuna",
+        "Sevilla 1-1 Barcelona",
+        "Real Zaragoza 1-2 Barcelona"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 531,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 100010003,
+       "band": "deep",
+       "valid_from": 720671,
+       "valid_to": 732053,
+       "observations": 9,
+       "median_value": 48.37,
+       "from_iso": "1974-02-17",
+       "to_iso": "2005-04-17",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 0-5 Barcelona",
+        "Barcelona 3-1 Las Palmas",
+        "Barcelona 2-1 Real Madrid"
+       ]
+      },
+      {
+       "id": 100010004,
+       "band": "mid",
+       "valid_from": 732053,
+       "valid_to": 99999999,
+       "observations": 522,
+       "median_value": 53.16,
+       "from_iso": "2005-04-17",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Barcelona 2-0 Getafe",
+        "Barcelona 2-0 Albacete",
+        "Barcelona 2-2 Real Zaragoza"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 531,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 100010005,
+       "band": "narrow",
+       "valid_from": 720671,
+       "valid_to": 731926,
+       "observations": 7,
+       "median_value": 21.71,
+       "from_iso": "1974-02-17",
+       "to_iso": "2004-12-11",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 0-5 Barcelona",
+        "Barcelona 3-1 Las Palmas",
+        "Barcelona 2-1 Real Madrid"
+       ]
+      },
+      {
+       "id": 100010006,
+       "band": "balanced",
+       "valid_from": 731926,
+       "valid_to": 734887,
+       "observations": 231,
+       "median_value": 22.44,
+       "from_iso": "2004-12-11",
+       "to_iso": "2013-01-19",
+       "open_ended": false,
+       "cited": [
+        "Albacete 1-2 Barcelona",
+        "Barcelona 2-1 Levante UD",
+        "Barcelona 2-0 Getafe"
+       ]
+      },
+      {
+       "id": 100010007,
+       "band": "narrow",
+       "valid_from": 734887,
+       "valid_to": 734944,
+       "observations": 8,
+       "median_value": 21.16,
+       "from_iso": "2013-01-19",
+       "to_iso": "2013-03-17",
+       "open_ended": false,
+       "cited": [
+        "Real Sociedad 3-2 Barcelona",
+        "Barcelona 5-1 Osasuna",
+        "Valencia 1-1 Barcelona"
+       ]
+      },
+      {
+       "id": 100010008,
+       "band": "balanced",
+       "valid_from": 734944,
+       "valid_to": 735888,
+       "observations": 82,
+       "median_value": 22.51,
+       "from_iso": "2013-03-17",
+       "to_iso": "2015-10-17",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 3-1 Rayo Vallecano",
+        "Celta Vigo 2-2 Barcelona",
+        "Athletic Club 2-2 Barcelona"
+       ]
+      },
+      {
+       "id": 100010009,
+       "band": "wide",
+       "valid_from": 735888,
+       "valid_to": 736011,
+       "observations": 16,
+       "median_value": 23.29,
+       "from_iso": "2015-10-17",
+       "to_iso": "2016-02-17",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 5-2 Rayo Vallecano",
+        "Barcelona 3-1 Eibar",
+        "Getafe 0-2 Barcelona"
+       ]
+      },
+      {
+       "id": 100010010,
+       "band": "balanced",
+       "valid_from": 736011,
+       "valid_to": 99999999,
+       "observations": 187,
+       "median_value": 22.58,
+       "from_iso": "2016-02-17",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Sporting Gij\u00f3n 1-3 Barcelona",
+        "Las Palmas 1-2 Barcelona",
+        "Barcelona 2-1 Sevilla"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 531,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 100010011,
+       "band": "direct",
+       "valid_from": 720671,
+       "valid_to": 733508,
+       "observations": 107,
+       "median_value": 0.64,
+       "from_iso": "1974-02-17",
+       "to_iso": "2009-04-11",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 0-5 Barcelona",
+        "Barcelona 3-1 Las Palmas",
+        "Barcelona 2-1 Real Madrid"
+       ]
+      },
+      {
+       "id": 100010012,
+       "band": "mixed",
+       "valid_from": 733508,
+       "valid_to": 734268,
+       "observations": 73,
+       "median_value": 0.6,
+       "from_iso": "2009-04-11",
+       "to_iso": "2011-05-11",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 2-0 Recreativo Huelva",
+        "Getafe 0-1 Barcelona",
+        "Valencia 2-2 Barcelona"
+       ]
+      },
+      {
+       "id": 100010013,
+       "band": "patient",
+       "valid_from": 734268,
+       "valid_to": 734481,
+       "observations": 17,
+       "median_value": 0.58,
+       "from_iso": "2011-05-11",
+       "to_iso": "2011-12-10",
+       "open_ended": false,
+       "cited": [
+        "Levante UD 1-1 Barcelona",
+        "Barcelona 3-1 Manchester United",
+        "Barcelona 5-0 Villarreal"
+       ]
+      },
+      {
+       "id": 100010014,
+       "band": "mixed",
+       "valid_from": 734481,
+       "valid_to": 734810,
+       "observations": 31,
+       "median_value": 0.6,
+       "from_iso": "2011-12-10",
+       "to_iso": "2012-11-03",
+       "open_ended": false,
+       "cited": [
+        "Real Madrid 1-3 Barcelona",
+        "Espanyol 1-1 Barcelona",
+        "Barcelona 4-2 Real Betis"
+       ]
+      },
+      {
+       "id": 100010015,
+       "band": "patient",
+       "valid_from": 734810,
+       "valid_to": 734985,
+       "observations": 20,
+       "median_value": 0.58,
+       "from_iso": "2012-11-03",
+       "to_iso": "2013-04-27",
+       "open_ended": false,
+       "cited": [
+        "Barcelona 3-1 Celta Vigo",
+        "Mallorca 2-4 Barcelona",
+        "Barcelona 3-1 Real Zaragoza"
+       ]
+      },
+      {
+       "id": 100010016,
+       "band": "mixed",
+       "valid_from": 734985,
+       "valid_to": 99999999,
+       "observations": 283,
+       "median_value": 0.6,
+       "from_iso": "2013-04-27",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Athletic Club 2-2 Barcelona",
+        "Barcelona 4-2 Real Betis",
+        "Atl\u00e9tico Madrid 1-2 Barcelona"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "Paris Saint-Germain": {
+   "team": "Paris Saint-Germain",
+   "team_id": 48993,
+   "matches": 95,
+   "first_match": "2015-08-07",
+   "last_match": "2023-06-03",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 95,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 589930009,
+       "band": "dominant",
+       "valid_from": 735817,
+       "valid_to": 735997,
+       "observations": 22,
+       "median_value": 64.36,
+       "from_iso": "2015-08-07",
+       "to_iso": "2016-02-03",
+       "open_ended": false,
+       "cited": [
+        "Lille 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-0 Gaz\u00e9lec Ajaccio",
+        "Montpellier 0-1 Paris Saint-Germain"
+       ]
+      },
+      {
+       "id": 589930010,
+       "band": "even",
+       "valid_from": 735997,
+       "valid_to": 99999999,
+       "observations": 73,
+       "median_value": 60.3,
+       "from_iso": "2016-02-03",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Paris Saint-Germain 3-1 Lorient",
+        "Olympique de Marseille 1-2 Paris Saint-Germain",
+        "Paris Saint-Germain 0-0 Lille"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 95,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 589930000,
+       "band": "deep",
+       "valid_from": 735817,
+       "valid_to": 735863,
+       "observations": 6,
+       "median_value": 52.95,
+       "from_iso": "2015-08-07",
+       "to_iso": "2015-09-22",
+       "open_ended": false,
+       "cited": [
+        "Lille 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-0 Gaz\u00e9lec Ajaccio",
+        "Montpellier 0-1 Paris Saint-Germain"
+       ]
+      },
+      {
+       "id": 589930001,
+       "band": "mid",
+       "valid_from": 735863,
+       "valid_to": 99999999,
+       "observations": 89,
+       "median_value": 58.99,
+       "from_iso": "2015-09-22",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Paris Saint-Germain 3-0 Guingamp",
+        "Nantes 1-4 Paris Saint-Germain",
+        "Paris Saint-Germain 2-1 Olympique de Marseille"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 95,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 589930002,
+       "band": "deep",
+       "valid_from": 735817,
+       "valid_to": 735863,
+       "observations": 6,
+       "median_value": 49.03,
+       "from_iso": "2015-08-07",
+       "to_iso": "2015-09-22",
+       "open_ended": false,
+       "cited": [
+        "Lille 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-0 Gaz\u00e9lec Ajaccio",
+        "Montpellier 0-1 Paris Saint-Germain"
+       ]
+      },
+      {
+       "id": 589930003,
+       "band": "mid",
+       "valid_from": 735863,
+       "valid_to": 738289,
+       "observations": 55,
+       "median_value": 53.9,
+       "from_iso": "2015-09-22",
+       "to_iso": "2022-05-14",
+       "open_ended": false,
+       "cited": [
+        "Paris Saint-Germain 3-0 Guingamp",
+        "Nantes 1-4 Paris Saint-Germain",
+        "Paris Saint-Germain 2-1 Olympique de Marseille"
+       ]
+      },
+      {
+       "id": 589930004,
+       "band": "high",
+       "valid_from": 738289,
+       "valid_to": 738408,
+       "observations": 8,
+       "median_value": 57.23,
+       "from_iso": "2022-05-14",
+       "to_iso": "2022-09-10",
+       "open_ended": false,
+       "cited": [
+        "Montpellier 0-4 Paris Saint-Germain",
+        "Paris Saint-Germain 5-0 Metz",
+        "Clermont Foot 0-5 Paris Saint-Germain"
+       ]
+      },
+      {
+       "id": 589930005,
+       "band": "mid",
+       "valid_from": 738408,
+       "valid_to": 99999999,
+       "observations": 26,
+       "median_value": 53.49,
+       "from_iso": "2022-09-10",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Paris Saint-Germain 1-0 Stade Brestois",
+        "Lyon 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-1 OGC Nice"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 95,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 589930006,
+       "band": "balanced",
+       "valid_from": 735817,
+       "valid_to": 99999999,
+       "observations": 95,
+       "median_value": 22.13,
+       "from_iso": "2015-08-07",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Lille 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-0 Gaz\u00e9lec Ajaccio",
+        "Montpellier 0-1 Paris Saint-Germain"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 95,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 589930007,
+       "band": "direct",
+       "valid_from": 735817,
+       "valid_to": 735896,
+       "observations": 10,
+       "median_value": 0.62,
+       "from_iso": "2015-08-07",
+       "to_iso": "2015-10-25",
+       "open_ended": false,
+       "cited": [
+        "Lille 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 2-0 Gaz\u00e9lec Ajaccio",
+        "Montpellier 0-1 Paris Saint-Germain"
+       ]
+      },
+      {
+       "id": 589930008,
+       "band": "mixed",
+       "valid_from": 735896,
+       "valid_to": 99999999,
+       "observations": 85,
+       "median_value": 0.59,
+       "from_iso": "2015-10-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Paris Saint-Germain 4-1 Saint-\u00c9tienne",
+        "Rennes 0-1 Paris Saint-Germain",
+        "Paris Saint-Germain 5-0 Toulouse"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "Liverpool": {
+   "team": "Liverpool",
+   "team_id": 59044,
+   "matches": 44,
+   "first_match": "2003-10-04",
+   "last_match": "2019-06-01",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 44,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 690440004,
+       "band": "low",
+       "valid_from": 731492,
+       "valid_to": 735896,
+       "observations": 13,
+       "median_value": 49.3,
+       "from_iso": "2003-10-04",
+       "to_iso": "2015-10-25",
+       "open_ended": false,
+       "cited": [
+        "Liverpool 1-2 Arsenal",
+        "Arsenal 4-2 Liverpool",
+        "AC Milan 3-3 Liverpool"
+       ]
+      },
+      {
+       "id": 690440005,
+       "band": "even",
+       "valid_from": 735896,
+       "valid_to": 99999999,
+       "observations": 31,
+       "median_value": 56.7,
+       "from_iso": "2015-10-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Liverpool 1-1 Southampton",
+        "Chelsea 1-3 Liverpool",
+        "Liverpool 1-2 Crystal Palace"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 44,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 690440000,
+       "band": "mid",
+       "valid_from": 731492,
+       "valid_to": 99999999,
+       "observations": 44,
+       "median_value": 55.83,
+       "from_iso": "2003-10-04",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Liverpool 1-2 Arsenal",
+        "Arsenal 4-2 Liverpool",
+        "AC Milan 3-3 Liverpool"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 44,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 690440001,
+       "band": "mid",
+       "valid_from": 731492,
+       "valid_to": 99999999,
+       "observations": 44,
+       "median_value": 50.89,
+       "from_iso": "2003-10-04",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Liverpool 1-2 Arsenal",
+        "Arsenal 4-2 Liverpool",
+        "AC Milan 3-3 Liverpool"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 44,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 690440002,
+       "band": "balanced",
+       "valid_from": 731492,
+       "valid_to": 99999999,
+       "observations": 44,
+       "median_value": 23.7,
+       "from_iso": "2003-10-04",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Liverpool 1-2 Arsenal",
+        "Arsenal 4-2 Liverpool",
+        "AC Milan 3-3 Liverpool"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 44,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 690440003,
+       "band": "mixed",
+       "valid_from": 731492,
+       "valid_to": 99999999,
+       "observations": 44,
+       "median_value": 0.65,
+       "from_iso": "2003-10-04",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Liverpool 1-2 Arsenal",
+        "Arsenal 4-2 Liverpool",
+        "AC Milan 3-3 Liverpool"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "AC Milan": {
+   "team": "AC Milan",
+   "team_id": 74872,
+   "matches": 40,
+   "first_match": "2005-05-25",
+   "last_match": "2016-05-14",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 40,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 848720005,
+       "band": "even",
+       "valid_from": 732091,
+       "valid_to": 99999999,
+       "observations": 40,
+       "median_value": 52.25,
+       "from_iso": "2005-05-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "AC Milan 3-3 Liverpool",
+        "AC Milan 2-1 Liverpool",
+        "Fiorentina 2-0 AC Milan"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 40,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 848720000,
+       "band": "mid",
+       "valid_from": 732091,
+       "valid_to": 99999999,
+       "observations": 40,
+       "median_value": 56.56,
+       "from_iso": "2005-05-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "AC Milan 3-3 Liverpool",
+        "AC Milan 2-1 Liverpool",
+        "Fiorentina 2-0 AC Milan"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 40,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 848720001,
+       "band": "mid",
+       "valid_from": 732091,
+       "valid_to": 99999999,
+       "observations": 40,
+       "median_value": 52.39,
+       "from_iso": "2005-05-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "AC Milan 3-3 Liverpool",
+        "AC Milan 2-1 Liverpool",
+        "Fiorentina 2-0 AC Milan"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 40,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 848720002,
+       "band": "narrow",
+       "valid_from": 732091,
+       "valid_to": 735888,
+       "observations": 9,
+       "median_value": 25.27,
+       "from_iso": "2005-05-25",
+       "to_iso": "2015-10-17",
+       "open_ended": false,
+       "cited": [
+        "AC Milan 3-3 Liverpool",
+        "AC Milan 2-1 Liverpool",
+        "Fiorentina 2-0 AC Milan"
+       ]
+      },
+      {
+       "id": 848720003,
+       "band": "balanced",
+       "valid_from": 735888,
+       "valid_to": 99999999,
+       "observations": 31,
+       "median_value": 24.33,
+       "from_iso": "2015-10-17",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Torino 1-1 AC Milan",
+        "AC Milan 2-1 Sassuolo",
+        "AC Milan 1-0 Chievo"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 40,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 848720004,
+       "band": "mixed",
+       "valid_from": 732091,
+       "valid_to": 99999999,
+       "observations": 40,
+       "median_value": 0.68,
+       "from_iso": "2005-05-25",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "AC Milan 3-3 Liverpool",
+        "AC Milan 2-1 Liverpool",
+        "Fiorentina 2-0 AC Milan"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "Arsenal": {
+   "team": "Arsenal",
+   "team_id": 12028,
+   "matches": 77,
+   "first_match": "2003-08-16",
+   "last_match": "2016-05-15",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 76,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 220280008,
+       "band": "even",
+       "valid_from": 731443,
+       "valid_to": 99999999,
+       "observations": 76,
+       "median_value": 56.35,
+       "from_iso": "2003-08-16",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Arsenal 2-1 Everton",
+        "Middlesbrough 0-4 Arsenal",
+        "Arsenal 2-0 Aston Villa"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 76,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 220280000,
+       "band": "deep",
+       "valid_from": 731443,
+       "valid_to": 731458,
+       "observations": 3,
+       "median_value": 47.02,
+       "from_iso": "2003-08-16",
+       "to_iso": "2003-08-31",
+       "open_ended": false,
+       "cited": [
+        "Arsenal 2-1 Everton",
+        "Middlesbrough 0-4 Arsenal",
+        "Arsenal 2-0 Aston Villa"
+       ]
+      },
+      {
+       "id": 220280001,
+       "band": "mid",
+       "valid_from": 731458,
+       "valid_to": 99999999,
+       "observations": 73,
+       "median_value": 53.98,
+       "from_iso": "2003-08-31",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Manchester City 1-2 Arsenal",
+        "Arsenal 1-1 Portsmouth",
+        "Manchester United 0-0 Arsenal"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 76,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 220280002,
+       "band": "deep",
+       "valid_from": 731443,
+       "valid_to": 731458,
+       "observations": 3,
+       "median_value": 43.72,
+       "from_iso": "2003-08-16",
+       "to_iso": "2003-08-31",
+       "open_ended": false,
+       "cited": [
+        "Arsenal 2-1 Everton",
+        "Middlesbrough 0-4 Arsenal",
+        "Arsenal 2-0 Aston Villa"
+       ]
+      },
+      {
+       "id": 220280003,
+       "band": "mid",
+       "valid_from": 731458,
+       "valid_to": 99999999,
+       "observations": 73,
+       "median_value": 47.97,
+       "from_iso": "2003-08-31",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Manchester City 1-2 Arsenal",
+        "Arsenal 1-1 Portsmouth",
+        "Manchester United 0-0 Arsenal"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 76,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 220280004,
+       "band": "wide",
+       "valid_from": 731443,
+       "valid_to": 731451,
+       "observations": 1,
+       "median_value": 25.1,
+       "from_iso": "2003-08-16",
+       "to_iso": "2003-08-24",
+       "open_ended": false,
+       "cited": [
+        "Arsenal 2-1 Everton"
+       ]
+      },
+      {
+       "id": 220280005,
+       "band": "balanced",
+       "valid_from": 731451,
+       "valid_to": 99999999,
+       "observations": 75,
+       "median_value": 23.45,
+       "from_iso": "2003-08-24",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Middlesbrough 0-4 Arsenal",
+        "Arsenal 2-0 Aston Villa",
+        "Manchester City 1-2 Arsenal"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 76,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 220280006,
+       "band": "direct",
+       "valid_from": 731443,
+       "valid_to": 731575,
+       "observations": 17,
+       "median_value": 0.69,
+       "from_iso": "2003-08-16",
+       "to_iso": "2003-12-26",
+       "open_ended": false,
+       "cited": [
+        "Arsenal 2-1 Everton",
+        "Middlesbrough 0-4 Arsenal",
+        "Arsenal 2-0 Aston Villa"
+       ]
+      },
+      {
+       "id": 220280007,
+       "band": "mixed",
+       "valid_from": 731575,
+       "valid_to": 99999999,
+       "observations": 59,
+       "median_value": 0.66,
+       "from_iso": "2003-12-26",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Arsenal 3-0 Wolverhampton Wanderers",
+        "Southampton 0-1 Arsenal",
+        "Everton 1-1 Arsenal"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "France": {
+   "team": "France",
+   "team_id": 16006,
+   "matches": 25,
+   "first_match": "1958-06-24",
+   "last_match": "2024-07-09",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 25,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 260060008,
+       "band": "even",
+       "valid_from": 714954,
+       "valid_to": 99999999,
+       "observations": 25,
+       "median_value": 49.7,
+       "from_iso": "1958-06-24",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Brazil 5-2 France",
+        "France 2-1 Australia",
+        "France 1-0 Peru"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 25,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 260060000,
+       "band": "deep",
+       "valid_from": 714954,
+       "valid_to": 737960,
+       "observations": 9,
+       "median_value": 48.07,
+       "from_iso": "1958-06-24",
+       "to_iso": "2021-06-19",
+       "open_ended": false,
+       "cited": [
+        "Brazil 5-2 France",
+        "France 2-1 Australia",
+        "France 1-0 Peru"
+       ]
+      },
+      {
+       "id": 260060001,
+       "band": "mid",
+       "valid_from": 737960,
+       "valid_to": 99999999,
+       "observations": 16,
+       "median_value": 54.86,
+       "from_iso": "2021-06-19",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Hungary 1-1 France",
+        "Portugal 2-2 France",
+        "France 3-3 Switzerland"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 25,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 260060002,
+       "band": "deep",
+       "valid_from": 714954,
+       "valid_to": 737960,
+       "observations": 9,
+       "median_value": 42.85,
+       "from_iso": "1958-06-24",
+       "to_iso": "2021-06-19",
+       "open_ended": false,
+       "cited": [
+        "Brazil 5-2 France",
+        "France 2-1 Australia",
+        "France 1-0 Peru"
+       ]
+      },
+      {
+       "id": 260060003,
+       "band": "mid",
+       "valid_from": 737960,
+       "valid_to": 99999999,
+       "observations": 16,
+       "median_value": 49.73,
+       "from_iso": "2021-06-19",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Hungary 1-1 France",
+        "Portugal 2-2 France",
+        "France 3-3 Switzerland"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 25,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 260060004,
+       "band": "narrow",
+       "valid_from": 714954,
+       "valid_to": 737956,
+       "observations": 8,
+       "median_value": 24.87,
+       "from_iso": "1958-06-24",
+       "to_iso": "2021-06-15",
+       "open_ended": false,
+       "cited": [
+        "Brazil 5-2 France",
+        "France 2-1 Australia",
+        "France 1-0 Peru"
+       ]
+      },
+      {
+       "id": 260060005,
+       "band": "balanced",
+       "valid_from": 737956,
+       "valid_to": 99999999,
+       "observations": 17,
+       "median_value": 24.02,
+       "from_iso": "2021-06-15",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "France 1-0 Germany",
+        "Hungary 1-1 France",
+        "Portugal 2-2 France"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 25,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 260060006,
+       "band": "direct",
+       "valid_from": 714954,
+       "valid_to": 738485,
+       "observations": 13,
+       "median_value": 0.64,
+       "from_iso": "1958-06-24",
+       "to_iso": "2022-11-26",
+       "open_ended": false,
+       "cited": [
+        "Brazil 5-2 France",
+        "France 2-1 Australia",
+        "France 1-0 Peru"
+       ]
+      },
+      {
+       "id": 260060007,
+       "band": "mixed",
+       "valid_from": 738485,
+       "valid_to": 99999999,
+       "observations": 12,
+       "median_value": 0.6,
+       "from_iso": "2022-11-26",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "France 2-1 Denmark",
+        "Tunisia 1-0 France",
+        "France 3-1 Poland"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "Argentina": {
+   "team": "Argentina",
+   "team_id": 25662,
+   "matches": 22,
+   "first_match": "1974-06-26",
+   "last_match": "2024-07-15",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 22,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 356620008,
+       "band": "low",
+       "valid_from": 720800,
+       "valid_to": 736861,
+       "observations": 5,
+       "median_value": 47.7,
+       "from_iso": "1974-06-26",
+       "to_iso": "2018-06-16",
+       "open_ended": false,
+       "cited": [
+        "Netherlands 4-0 Argentina",
+        "Argentina 2-1 England",
+        "Argentina 2-0 Belgium"
+       ]
+      },
+      {
+       "id": 356620009,
+       "band": "even",
+       "valid_from": 736861,
+       "valid_to": 99999999,
+       "observations": 17,
+       "median_value": 56.6,
+       "from_iso": "2018-06-16",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Argentina 1-1 Iceland",
+        "Argentina 0-3 Croatia",
+        "Nigeria 1-2 Argentina"
+       ]
+      }
+     ]
+    },
+    "press_height": {
+     "evidence": 22,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 356620000,
+       "band": "deep",
+       "valid_from": 720800,
+       "valid_to": 736866,
+       "observations": 6,
+       "median_value": 51.78,
+       "from_iso": "1974-06-26",
+       "to_iso": "2018-06-21",
+       "open_ended": false,
+       "cited": [
+        "Netherlands 4-0 Argentina",
+        "Argentina 2-1 England",
+        "Argentina 2-0 Belgium"
+       ]
+      },
+      {
+       "id": 356620001,
+       "band": "mid",
+       "valid_from": 736866,
+       "valid_to": 99999999,
+       "observations": 16,
+       "median_value": 57.18,
+       "from_iso": "2018-06-21",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Argentina 0-3 Croatia",
+        "Nigeria 1-2 Argentina",
+        "France 4-3 Argentina"
+       ]
+      }
+     ]
+    },
+    "defensive_action_height": {
+     "evidence": 22,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 356620002,
+       "band": "deep",
+       "valid_from": 720800,
+       "valid_to": 738485,
+       "observations": 10,
+       "median_value": 46.75,
+       "from_iso": "1974-06-26",
+       "to_iso": "2022-11-26",
+       "open_ended": false,
+       "cited": [
+        "Netherlands 4-0 Argentina",
+        "Argentina 2-1 England",
+        "Argentina 2-0 Belgium"
+       ]
+      },
+      {
+       "id": 356620003,
+       "band": "mid",
+       "valid_from": 738485,
+       "valid_to": 99999999,
+       "observations": 12,
+       "median_value": 52.08,
+       "from_iso": "2022-11-26",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Argentina 2-0 Mexico",
+        "Poland 0-2 Argentina",
+        "Argentina 2-1 Australia"
+       ]
+      }
+     ]
+    },
+    "team_width": {
+     "evidence": 22,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 356620004,
+       "band": "narrow",
+       "valid_from": 720800,
+       "valid_to": 738481,
+       "observations": 9,
+       "median_value": 21.55,
+       "from_iso": "1974-06-26",
+       "to_iso": "2022-11-22",
+       "open_ended": false,
+       "cited": [
+        "Netherlands 4-0 Argentina",
+        "Argentina 2-1 England",
+        "Argentina 2-0 Belgium"
+       ]
+      },
+      {
+       "id": 356620005,
+       "band": "balanced",
+       "valid_from": 738481,
+       "valid_to": 99999999,
+       "observations": 13,
+       "median_value": 23.09,
+       "from_iso": "2022-11-22",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Argentina 1-2 Saudi Arabia",
+        "Argentina 2-0 Mexico",
+        "Poland 0-2 Argentina"
+       ]
+      }
+     ]
+    },
+    "pass_forward_ratio": {
+     "evidence": 22,
+     "sufficient": true,
+     "eras": [
+      {
+       "id": 356620006,
+       "band": "direct",
+       "valid_from": 720800,
+       "valid_to": 738481,
+       "observations": 9,
+       "median_value": 0.71,
+       "from_iso": "1974-06-26",
+       "to_iso": "2022-11-22",
+       "open_ended": false,
+       "cited": [
+        "Netherlands 4-0 Argentina",
+        "Argentina 2-1 England",
+        "Argentina 2-0 Belgium"
+       ]
+      },
+      {
+       "id": 356620007,
+       "band": "mixed",
+       "valid_from": 738481,
+       "valid_to": 99999999,
+       "observations": 13,
+       "median_value": 0.59,
+       "from_iso": "2022-11-22",
+       "to_iso": "present",
+       "open_ended": true,
+       "cited": [
+        "Argentina 1-2 Saudi Arabia",
+        "Argentina 2-0 Mexico",
+        "Poland 0-2 Argentina"
+       ]
+      }
+     ]
+    }
+   }
+  },
+  "Werder Bremen": {
+   "team": "Werder Bremen",
+   "team_id": 2,
+   "matches": 4,
+   "first_match": "2015-09-26",
+   "last_match": "2024-04-14",
+   "dimensions": {
+    "possession_share_pct": {
+     "evidence": 0,
+     "sufficient": false,
+     "eras": []
+    },
+    "press_height": {
+     "evidence": 0,
+     "sufficient": false,
+     "eras": []
+    },
+    "defensive_action_height": {
+     "evidence": 0,
+     "sufficient": false,
+     "eras": []
+    },
+    "team_width": {
+     "evidence": 0,
+     "sufficient": false,
+     "eras": []
+    },
+    "pass_forward_ratio": {
+     "evidence": 0,
+     "sufficient": false,
+     "eras": []
+    }
+   }
+  }
+ }
+}
