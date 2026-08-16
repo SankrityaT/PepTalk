@@ -7,10 +7,9 @@ import { ContextCards } from "@/components/brief/atoms/context-card";
 import { PromptBar } from "@/components/brief/atoms/prompt-bar";
 import { SourceChip } from "@/components/brief/atoms/source-chip";
 import { StreamText } from "@/components/brief/atoms/stream-text";
+import { Turn } from "@/components/brief/atoms/turn";
 import { Trace } from "@/components/brief/atoms/trace";
 import { ClipCard } from "@/components/brief/clip-card";
-import { Conceded } from "@/components/brief/conceded";
-import { Walkthrough } from "@/components/brief/walkthrough";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { TapeRoom } from "@/components/report/tape-room";
 import { CLIPS, DETECTIONS } from "@/lib/tape";
@@ -61,12 +60,19 @@ const EASE = [0.4, 0, 0.2, 1] as const;
 /** Set at build time; the prompt bar says so rather than faking an answer. */
 const MODEL_CONNECTED = false;
 
-export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
+export function Brief({
+  onOpenMoment,
+  onReview,
+  onGoals,
+}: {
+  onOpenMoment: (m: Moment) => void;
+  onReview?: () => void;
+  onGoals?: () => void;
+}) {
   const [stage, setStage] = useState<Stage>("trace");
   const [picked, setPicked] = useState<string | null>(null);
   const [asked, setAsked] = useState<string[]>([]);
   const [openClip, setOpenClip] = useState<number | null>(null);
-  const [showConceded, setShowConceded] = useState(false);
 
   const at = (s: Stage): boolean =>
     (["trace", "context", "findings", "ask", "open"] as Stage[]).indexOf(stage) >=
@@ -209,26 +215,38 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
         )}
       </AnimatePresence>
 
-      {/* ── Going through them, without leaving the page ──────────────── */}
-      {/* This used to navigate to a separate report, which threw away the
-          thread and made the coach find their place again. The walkthrough
-          appends to the stream instead. */}
+      {/* ── Handing off ───────────────────────────────────────────────── */}
+      {/* Review used to unroll here. That meant a coach scrolled past the
+          whole brief to reach the thing they had just asked for, and anything
+          below it was effectively invisible. It is a destination now. */}
       {(picked === "yes" || picked === "top") && (
-        <Walkthrough onDone={() => setShowConceded(true)} />
+        <Turn showWho={false}>
+          <p className="text-[14px] leading-relaxed text-warm-2">
+            <StreamText text="Opening the tape." onDone={onReview} />
+          </p>
+        </Turn>
       )}
 
-      {/* The other half of the game. Everything above asks what the side
-          failed to do with the ball; this asks what happened in front of
-          them, which is the half a coach loses sleep over. */}
-      {showConceded && (
-        <section className="mt-2">
-          <div className="mb-3 flex items-baseline justify-between gap-3">
-            <span className="font-mono text-[10px] tracking-[0.14em] text-muted-2 uppercase">
-              How the goals went in
+      {/* A link, not four hundred pixels of scroll. */}
+      {at("ask") && onGoals && (
+        <Turn showWho={false}>
+          <button
+            onClick={onGoals}
+            className="flex w-full items-center justify-between gap-3 rounded-xl bg-surface p-3.5 text-left ring-1 ring-white/[0.06] transition-colors hover:bg-surface-2 hover:ring-white/[0.14]"
+          >
+            <span>
+              <span className="block text-[14px] font-medium text-chalk">
+                You conceded three, all to the same man
+              </span>
+              <span className="mt-0.5 block font-mono text-[11px] text-muted">
+                two penalties and one from open play
+              </span>
             </span>
-          </div>
-          <Conceded />
-        </section>
+            <span className="shrink-0 font-mono text-[10px] text-muted-2">
+              goals against &rarr;
+            </span>
+          </button>
+        </Turn>
       )}
 
       {picked === "later" && (

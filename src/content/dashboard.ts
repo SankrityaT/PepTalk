@@ -13,8 +13,25 @@ import dash from "./snapshots/dashboard.json";
  * line.
  */
 
+export type MatchResult = {
+  us: number;
+  them: number;
+  opponent: string;
+  outcome: "W" | "D" | "L";
+  scoreline: string;
+  went_to_penalties: boolean;
+  stage: string;
+  pens?: { us: number; them: number };
+};
+
 export type MatchRow = {
   id: number;
+  /**
+   * The real result, shootout included. The models exclude penalties, and
+   * letting that leak into the scoreline had a World Cup final Argentina won
+   * showing as `D 3-3`.
+   */
+  result: MatchResult;
   date: string;
   label: string;
   comp: string;
@@ -60,19 +77,12 @@ export function isHome(m: MatchRow): boolean {
   return m.label.startsWith(TEAM);
 }
 
-export function scoreline(m: MatchRow): { us: number; them: number; opponent: string } {
-  const home = isHome(m);
-  const [left, right] = m.label.split(/\s+\d+-\d+\s+/);
-  return {
-    us: home ? m.fh : m.fa,
-    them: home ? m.fa : m.fh,
-    opponent: (home ? right : left) ?? "—",
-  };
+export function scoreline(m: MatchRow): MatchResult {
+  return m.result;
 }
 
 export function result(m: MatchRow): "W" | "D" | "L" {
-  const { us, them } = scoreline(m);
-  return us > them ? "W" : us === them ? "D" : "L";
+  return m.result.outcome;
 }
 
 /** A metric across the feed, oldest first, for the sparklines. */
