@@ -169,7 +169,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
         >
           <StreamText
             startDelay={500}
-            text={`You won it playing unlike yourselves — ${labelFor(lead.dimension)} was ${Math.abs(lead.delta ?? 0).toFixed(1)}${unitFor(lead.dimension)}${lead.delta && lead.delta > 0 ? " higher" : " lower"} than your norm, which had held across ${lead.era_matches} games.`}
+            text={`You won it playing unlike yourselves. Your ${labelFor(lead.dimension)} was ${Math.abs(lead.delta ?? 0).toFixed(1)}${unitFor(lead.dimension)}${lead.delta && lead.delta > 0 ? " higher" : " lower"} than your norm, which had held across ${lead.era_matches} games.`}
             onDone={() => setStage("findings")}
           />
           {leadSource && <SourceChip source={leadSource} />}
@@ -227,7 +227,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
 
             <p className="mt-1 text-[13px] leading-relaxed text-muted">
               Found by checking every pass against what else was on
-              <SourceChip source={MODEL_SOURCE} /> — {MOMENTS_FOUND} of them in
+              <SourceChip source={MODEL_SOURCE} />. {MOMENTS_FOUND} of them in
               this game alone.
             </p>
           </motion.section>

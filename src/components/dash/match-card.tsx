@@ -45,7 +45,7 @@ function read(m: MatchRow, pressMean: number): string {
     return `Had the ball ${Math.round(m.poss)}% of the game and ${m.shots} shots from it.`;
   }
   if (m.poss <= 46) {
-    return `Gave up the ball — ${Math.round(m.poss)}% — and still got ${m.shots} away.`;
+    return `Gave up the ball at ${Math.round(m.poss)}% and still got ${m.shots} away.`;
   }
   const dp = m.press - pressMean;
   if (Math.abs(dp) >= 3) {

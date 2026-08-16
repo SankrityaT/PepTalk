@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Brief } from "@/components/brief/brief";
+import { TapeRoom } from "@/components/report/tape-room";
 import { MatchCard } from "@/components/dash/match-card";
 import { Pipeline } from "@/components/dash/pipeline";
 import { Sparkline } from "@/components/dash/sparkline";
@@ -22,7 +23,13 @@ import { Moment } from "@/content/pep";
 
 const EASE = [0.4, 0, 0.2, 1] as const;
 
-export function Workspace({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
+export function Workspace({
+  onOpenMoment,
+  onAddGame,
+}: {
+  onOpenMoment: (m: Moment) => void;
+  onAddGame?: () => void;
+}) {
   const [section, setSection] = useState<Section>("brief");
 
   useEffect(() => {
@@ -31,7 +38,14 @@ export function Workspace({ onOpenMoment }: { onOpenMoment: (m: Moment) => void 
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar active={section} onSelect={setSection} team={TEAM} badge={3} />
+      <Sidebar
+        active={section}
+        onSelect={setSection}
+        team={TEAM}
+        squad="First team"
+        badge={3}
+        onAddGame={onAddGame}
+      />
 
       <main className="min-w-0 flex-1 px-5 pb-24 pt-6 sm:px-8 lg:pb-6">
         <AnimatePresence mode="wait">
@@ -43,12 +57,28 @@ export function Workspace({ onOpenMoment }: { onOpenMoment: (m: Moment) => void 
             transition={{ duration: 0.28, ease: EASE }}
           >
             {section === "brief" && <Brief onOpenMoment={onOpenMoment} />}
+            {section === "tape" && <Tape />}
             {section === "games" && <Games />}
             {section === "model" && <Model />}
             {section === "roster" && <Roster />}
           </motion.div>
         </AnimatePresence>
       </main>
+    </div>
+  );
+}
+
+function Tape() {
+  return (
+    <div className="mx-auto w-full max-w-5xl">
+      <h1 className="text-[24px] font-medium text-chalk">Tape</h1>
+      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
+        Every box is a player the tracker found in that frame. Where it has no
+        frame, nothing is drawn rather than guessed.
+      </p>
+      <div className="mt-6">
+        <TapeRoom />
+      </div>
     </div>
   );
 }
@@ -123,7 +153,7 @@ function Roster() {
       <p className="mt-4 rounded-xl bg-surface px-4 py-3.5 text-[13px] leading-relaxed text-muted ring-1 ring-white/[0.06]">
         Not built yet. It needs stable player identity across the footage, which
         means persistent track ids rather than the per-frame detection running
-        now — so it is deliberately empty instead of showing invented players.
+        now, so it is deliberately empty instead of showing invented players.
       </p>
     </div>
   );

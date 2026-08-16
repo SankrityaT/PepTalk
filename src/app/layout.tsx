@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, JetBrains_Mono } from "next/font/google";
-import { SmoothScroll } from "@/components/smooth-scroll";
 import "./globals.css";
 
 // Geist Sans stands in for HydraDB's Aeonik, which they ship under a trial
@@ -29,7 +28,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-canvas text-chalk">
-        <SmoothScroll />
         {children}
       </body>
     </html>

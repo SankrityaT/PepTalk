@@ -67,6 +67,7 @@ export default function ReportPage() {
                 setSelected(m);
                 setStage("report");
               }}
+              onAddGame={() => setStage("upload")}
             />
           </motion.div>
         )}
@@ -156,7 +157,7 @@ function Report({
         </h1>
         <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-warm-2">
           Pep watched all of it. The short version: you kept turning back when
-          the box was open — {MOMENTS.length} times worth showing the group.
+          the box was open. {MOMENTS.length} times worth showing the group.
         </p>
       </header>
 
@@ -265,7 +266,7 @@ function Report({
           likely it was to arrive comes from a model fitted on this match&rsquo;s
           own passing. Pep only raises a moment when a better ball existed{" "}
           <em className="not-italic text-muted">after</em> accounting for the
-          chance it got cut out — which is why the spectacular ones usually
+          chance it got cut out, which is why the spectacular ones usually
           aren&rsquo;t recommended.
         </p>
       </footer>

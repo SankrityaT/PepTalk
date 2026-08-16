@@ -188,7 +188,7 @@ export function TapeRoom({ startAt = 0 }: { startAt?: number }) {
 
             {!frame && (
               <div className="pointer-events-none absolute bottom-3 left-3 rounded bg-black/70 px-2 py-1 font-mono text-[10px] text-muted backdrop-blur-sm">
-                not a live shot — drawing nothing
+                not a live shot, drawing nothing
               </div>
             )}
 

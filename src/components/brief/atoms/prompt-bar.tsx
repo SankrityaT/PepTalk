@@ -184,7 +184,7 @@ export function PromptBar({
             cite the graph
           </>
         ) : (
-          "model not connected in this build — the questions above are answered from the snapshot"
+          "model not connected in this build. the questions above are answered from the snapshot"
         )}
       </p>
     </div>

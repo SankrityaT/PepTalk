@@ -90,7 +90,7 @@ export function Watching({ onDone }: { onDone: () => void }) {
 
       <p className="mt-6 text-[13px] leading-relaxed text-muted-2">
         These are the real figures from this match. The analysis ran ahead of
-        time so the page loads instantly — nothing here is a placeholder.
+        time so the page loads instantly. Nothing here is a placeholder.
       </p>
     </div>
   );

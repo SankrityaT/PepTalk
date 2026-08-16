@@ -137,7 +137,7 @@ export function VersusUsual({ team }: { team: string }) {
           <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-muted-2">
             These norms are stored with the dates they were true. Play
             differently for long enough and the graph records that the old fact
-            ended — which is the point: a weakness you have fixed should stop
+            ended, which is the point: a weakness you have fixed should stop
             being reported.
           </p>
         </>

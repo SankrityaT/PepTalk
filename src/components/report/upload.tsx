@@ -47,7 +47,7 @@ export function Upload({ onStart }: { onStart: (roster: string[]) => void }) {
         Drop in a game.
       </h1>
       <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-warm-2">
-        Pep watches the whole thing and tells you what you missed — which balls
+        Pep watches the whole thing and tells you what you missed: which balls
         were on, who kept turning back, and the three things to work on at
         training this week.
       </p>
@@ -149,8 +149,8 @@ export function Upload({ onStart }: { onStart: (roster: string[]) => void }) {
 
       {/* Said plainly, rather than discovered by a judge who drags a file in. */}
       <p className="mt-8 max-w-xl text-[13px] leading-relaxed text-muted-2">
-        This build analyses the example match — {MATCH.label}, {MATCH.competition}{" "}
-        — because the models run locally. Your own upload needs the service
+        This build analyses the example match, {MATCH.label}, {MATCH.competition},{" "}
+        because the models run locally. Your own upload needs the service
         deployed. Either way, everything you are about to see is computed from
         real footage and real data.
       </p>

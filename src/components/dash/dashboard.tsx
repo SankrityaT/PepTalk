@@ -247,7 +247,7 @@ export function Dashboard({
         <p className="max-w-3xl text-[13px] leading-relaxed text-muted-2">
           Each game above is a row in the memory graph, stored with the date it
           was true. That is what lets Pep say a habit has changed rather than
-          just describing this weekend — and why the dashboard gets sharper the
+          just describing this weekend, and why the dashboard gets sharper the
           longer you use it, instead of resetting every match.
         </p>
       </footer>
