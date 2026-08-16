@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChalkFilters } from "@/components/chalk-filters";
 import { Dashboard } from "@/components/dash/dashboard";
+import { MomentFrame } from "@/components/report/moment-frame";
 import { MomentPitch } from "@/components/report/moment-pitch";
 import { PepFeed } from "@/components/report/pep-feed";
 import { ThisWeek } from "@/components/report/this-week";
@@ -58,7 +59,13 @@ export default function ReportPage() {
             transition={{ duration: 0.3 }}
           >
             <Dashboard
-              onOpenMatch={() => setStage("report")}
+              // Picking a clip on the dashboard carries that exact moment into
+              // the report, rather than dropping the coach on whatever was
+              // selected last.
+              onOpenMatch={(m) => {
+                if (m) setSelected(m);
+                setStage("report");
+              }}
               onAddGame={() => setStage("upload")}
             />
           </motion.div>
@@ -167,11 +174,24 @@ function Report({
 
         <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_21rem]">
           <div className="rounded-lg bg-surface p-5 ring-1 ring-white/[0.06]">
-            <MomentPitch moment={selected} />
+            {/* The freeze frame when we have one — showing the eleven other
+                players is the difference between an assertion and evidence.
+                Falls back to the bare chalk pitch for older snapshots. */}
+            {selected?.freeze?.length ? (
+              <MomentFrame moment={selected} />
+            ) : (
+              <MomentPitch moment={selected} />
+            )}
             {selected && (
-              <p className="mt-5 text-[16px] leading-relaxed text-warm">
-                {selected.line}
-              </p>
+              <>
+                <p className="mt-5 text-[16px] leading-relaxed text-warm">
+                  {selected.line}
+                </p>
+                <p className="mt-2 font-mono text-[11px] text-muted-2">
+                  {selected.minute}&rsquo; &middot; {surname(selected.player)}{" "}
+                  &middot; {selected.freeze?.length ?? 0} players tracked
+                </p>
+              </>
             )}
           </div>
 

@@ -40,11 +40,33 @@ export type Moment = {
   played_to: [number, number];
   best_to: [number, number];
   missed: number;
+  /**
+   * Everyone on the pitch at the instant the ball was struck, from StatsBomb's
+   * 360 freeze frame. This is what lets the interface show the moment instead
+   * of describing it — the claim is "someone better was open", and this is the
+   * evidence for it.
+   */
+  freeze?: FreezePlayer[];
+};
+
+export type FreezePlayer = {
+  x: number;
+  y: number;
+  /** On the passing side. */
+  mate: boolean;
+  /** The player with the ball. */
+  actor: boolean;
+  keeper: boolean;
 };
 
 export type Theme = {
   title: string;
-  why: string;
+  /** The long-form reason. Folded away — kept for anyone who wants it. */
+  why?: string;
+  /** What went wrong, in ten words or fewer. */
+  saw?: string;
+  /** The exercise to run on Tuesday, in twelve words or fewer. */
+  drill?: string;
   moment_ids: number[];
 };
 

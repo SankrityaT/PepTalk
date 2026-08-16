@@ -5,6 +5,7 @@ import { MatchCard } from "@/components/dash/match-card";
 import { Pipeline } from "@/components/dash/pipeline";
 import { Sparkline } from "@/components/dash/sparkline";
 import { XtPitch } from "@/components/dash/xt-pitch";
+import { ThisWeek } from "@/components/report/this-week";
 import {
   CAMPAIGN,
   FEATURED,
@@ -15,7 +16,7 @@ import {
   result,
   series,
 } from "@/content/dashboard";
-import { MOMENTS_FOUND, THEMES } from "@/content/pep";
+import { MOMENTS_FOUND, Moment } from "@/content/pep";
 
 /**
  * What the coach opens into.
@@ -92,7 +93,8 @@ export function Dashboard({
   onOpenMatch,
   onAddGame,
 }: {
-  onOpenMatch: () => void;
+  /** Passed a moment when the coach picked a specific clip. */
+  onOpenMatch: (m?: Moment) => void;
   onAddGame: () => void;
 }) {
   const poss = series("poss");
@@ -191,46 +193,12 @@ export function Dashboard({
       </div>
 
       {/* ── This week ─────────────────────────────────────────────────── */}
-      {THEMES.length > 0 && (
-        <section className="mt-12">
-          <div className="flex items-baseline justify-between gap-3">
-            <h2 className="text-[15px] font-medium text-chalk">
-              Work on this at training
-            </h2>
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-2">
-              this week
-            </span>
-          </div>
-          <ul className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
-            {THEMES.map((t, i) => (
-              <motion.li
-                key={t.title}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.07, ease: EASE }}
-                className="flex flex-col rounded-xl bg-surface p-5 ring-1 ring-white/[0.06]"
-              >
-                <span className="font-mono text-[11px] tabular-nums text-accent">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-2.5 text-[16px] font-medium leading-snug text-chalk">
-                  {t.title}
-                </h3>
-                <p className="mt-2 text-[14px] leading-relaxed text-warm-2">
-                  {t.why}
-                </p>
-                <button
-                  onClick={onOpenMatch}
-                  className="mt-4 self-start font-mono text-[10px] uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
-                >
-                  {t.moment_ids.length} clips &rarr;
-                </button>
-              </motion.li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {/* Shows the frozen moment, not a description of it. The old version was
+          three paragraphs, which is three paragraphs more than a coach reads
+          between sessions. */}
+      <section className="mt-12">
+        <ThisWeek onSelect={onOpenMatch} />
+      </section>
 
       {/* ── The model, and the intake ─────────────────────────────────── */}
       <section className="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-[1.55fr_1fr]">
@@ -262,7 +230,7 @@ export function Dashboard({
               featured={m.id === FEATURED}
               // Only the match we actually ran the video pipeline over opens a
               // report. The rest are analysed from event data and say so.
-              onOpen={m.id === FEATURED ? onOpenMatch : undefined}
+              onOpen={m.id === FEATURED ? () => onOpenMatch() : undefined}
             />
           ))}
         </div>
