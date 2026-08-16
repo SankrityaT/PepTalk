@@ -48,3 +48,18 @@ next-env.d.ts
 # stays out of the repo. See README for how to supply your own clip.
 /public/tape/
 /public/clips/
+
+# ── Backend ─────────────────────────────────────────────────────────────
+.cache/
+results/
+.venv/
+__pycache__/
+*.pyc
+.env
+hydradb-data/
+*.pt
+*.mkv
+*.mp4
+sn-data/
+.playwright-mcp/
+*.png
