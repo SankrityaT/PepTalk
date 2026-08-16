@@ -16,14 +16,7 @@ import { useLayoutEffect, useRef, useState } from "react";
  * it means hover and selection cannot disagree about where you are.
  */
 
-export type Section =
-  | "brief"
-  | "watch"
-  | "next"
-  | "roster"
-  | "games"
-  | "knows"
-  | "model";
+export type Section = "session" | "roster" | "games";
 
 type Item = {
   key: Section;
@@ -36,38 +29,22 @@ type Item = {
 
 // Review, Goals against and Tape were three rows that all meant "watch the
 // footage", and a coach could not tell them apart. One row, tabs inside it.
+// Three. The previous seven had five screens with no video on them, because a
+// screen is easy to add and a screen of prose is easier still.
 const ITEMS: Item[] = [
-  { key: "brief", label: "Brief", group: "Today", count: true },
-  { key: "watch", label: "Watch the game", group: "Today" },
-  // The job a coach is actually paid for: the week before the next one.
-  { key: "next", label: "Next match", group: "Today" },
+  { key: "session", label: "Session", group: "Today", count: true },
   { key: "roster", label: "Players", group: "Squad", plus: true, soon: true },
   { key: "games", label: "Your season", group: "Season" },
-  { key: "knows", label: "What Pep knows", group: "Season" },
-  { key: "model", label: "Threat map", group: "Season" },
 ];
 
 const GROUPS = ["Today", "Squad", "Season"];
 
 function Icon({ kind }: { kind: Section }) {
   const paths: Record<Section, React.ReactNode> = {
-    next: (
-      <g>
-        <path d="M4 12h14M13 6l6 6-6 6" />
-        <path d="M4 5v14" />
-      </g>
-    ),
-    watch: (
+    session: (
       <g>
         <rect x="2" y="5" width="20" height="14" rx="2" />
         <path d="M10 9.5l5 2.5-5 2.5z" />
-      </g>
-    ),
-    brief: (
-      <g>
-        <path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z" />
-        <path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-        <path d="M8 12h8M8 16h5" />
       </g>
     ),
     roster: (
@@ -81,18 +58,6 @@ function Icon({ kind }: { kind: Section }) {
       <g>
         <rect x="3" y="4" width="18" height="17" rx="2" />
         <path d="M3 9h18M8 2v4M16 2v4" />
-      </g>
-    ),
-    knows: (
-      <g>
-        <path d="M12 3v18M3 8h4M3 16h4M17 8h4M17 16h4" />
-        <rect x="7" y="4" width="10" height="16" rx="2" />
-      </g>
-    ),
-    model: (
-      <g>
-        <rect x="2.5" y="5" width="19" height="14" rx="1.5" />
-        <path d="M12 5v14M2.5 9.5h3M2.5 14.5h3M18.5 9.5h3M18.5 14.5h3" />
       </g>
     ),
   };
