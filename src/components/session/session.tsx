@@ -17,6 +17,22 @@ import { CLIP_MOMENTS } from "@/content/clip";
 import { MOMENTS } from "@/content/pep";
 import knowledge from "@/content/snapshots/knowledge.json";
 
+/** What this match measured on its own, with no graph involved. */
+const THIS_MATCH: Record<string, number | undefined> = {
+  "possession share": 53.8,
+  "pressing height": 51.67,
+  "attacking width": 23.44,
+  directness: 0.631,
+};
+
+const UNITS: Record<string, string> = {
+  "possession share": "%",
+  "pressing height": "m",
+  "defensive line height": "m",
+  "attacking width": "m",
+  directness: "",
+};
+
 const KNOW = knowledge as unknown as {
   scale: { teams: number; matches: number; facts: number };
   dimensions: {
@@ -184,56 +200,59 @@ function BeatBody({
 /**
  * What a question gets answered with.
  *
- * This is the switch at its sharpest: the same question asked twice. With the
- * graph, an answer is retrieved and carries the dates and counts behind it.
- * Without it the model is not lying, it simply has nothing to reach for, and
- * saying so is more useful than an educated guess dressed as a finding.
+ * The switch does not turn Pep off. Everything measured from the match in
+ * front of him still works without a graph: the tracking, the models, what
+ * happened on the day. An earlier version had him answer "I cannot tell you"
+ * to everything, which was both useless and untrue.
+ *
+ * What the graph adds is the second layer, and it is the layer a coach cannot
+ * get from watching their own game again: whether this is normal for them,
+ * when it changed, and where it sits among everyone else. So the answer is
+ * built in two parts, and only the second one disappears.
  */
 function Answer({ question, memory }: { question: string; memory: boolean }) {
   const q = question.toLowerCase();
   const dim =
     KNOW.dimensions.find((d) => q.includes(d.label.split(" ")[0])) ??
-    KNOW.dimensions.find((d) => q.includes("press")) ??
+    (q.includes("press") ? KNOW.dimensions.find((d) => d.label.includes("pressing")) : null) ??
     null;
 
-  if (!memory) {
-    return (
-      <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
-        <p className="text-[13px] leading-relaxed text-muted">
-          <StreamText text="I can see this one game. I cannot tell you what is usual for you, whether it has changed, or how it compares to anyone else, because none of those questions can be answered without dated facts to retrieve." />
-        </p>
-        <p className="mt-2 font-mono text-[10px] text-muted-2">
-          0 facts retrieved
-        </p>
-      </div>
-    );
-  }
+  const here = dim ? THIS_MATCH[dim.label] : null;
 
-  if (dim) {
-    return (
-      <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
-        <p className="text-[14px] leading-relaxed text-warm">
-          <StreamText
-            text={`Your ${dim.label} sits at ${dim.value}, which is ${dim.band} and puts you ${dim.percentile}th of ${dim.peers} sides. Drawn from ${dim.obs} of your games.`}
-          />
-        </p>
-        <p className="mt-2 font-mono text-[10px] text-muted-2">
-          retrieved from {KNOW.scale.facts.toLocaleString()} dated facts across{" "}
-          {KNOW.scale.teams} sides
-        </p>
-      </div>
-    );
-  }
+  const observed = dim
+    ? here !== undefined && here !== null
+      ? `In this game your ${dim.label} was ${here}${UNITS[dim.label] ?? ""}.`
+      : `I measured your ${dim.label} in this game.`
+    : `From this game I have ${MOMENTS.length} moments where a better ball was on and 3 goals against, all tracked off the footage.`;
+
+  const recalled = dim
+    ? `That is ${Math.abs(dim.value - (here ?? dim.value)).toFixed(1)}${UNITS[dim.label] ?? ""} ${
+        (here ?? dim.value) < dim.value ? "below" : "above"
+      } your norm of ${dim.value}, which held across ${dim.obs} games, and puts you ${dim.percentile}th of ${dim.peers} sides.`
+    : `Against ${KNOW.scale.matches.toLocaleString()} matches and ${KNOW.scale.teams} sides in the graph, the thing that stands out is how patiently you play.`;
 
   return (
     <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
       <p className="text-[14px] leading-relaxed text-warm">
-        <StreamText
-          text={`I have ${MOMENTS.length} moments and 3 goals from this game, and ${KNOW.scale.matches.toLocaleString()} matches behind them. Ask about pressing, possession, width or directness and I will give you the number and where it sits.`}
-        />
+        <StreamText text={observed} />
       </p>
-      <p className="mt-2 font-mono text-[10px] text-muted-2">
-        {KNOW.scale.facts.toLocaleString()} facts available
+
+      {memory ? (
+        <p className="mt-2 text-[14px] leading-relaxed text-warm">
+          <StreamText text={recalled} startDelay={500} />
+        </p>
+      ) : (
+        <p className="mt-2 text-[13px] leading-relaxed text-muted">
+          That is as far as this game takes me. Whether it is normal for you,
+          when it changed, or how it compares to anyone else all need the
+          memory.
+        </p>
+      )}
+
+      <p className="mt-2.5 font-mono text-[10px] text-muted-2">
+        {memory
+          ? `read off this match · ${KNOW.scale.facts.toLocaleString()} dated facts across ${KNOW.scale.teams} sides`
+          : "read off this match · 0 dated facts"}
       </p>
     </div>
   );

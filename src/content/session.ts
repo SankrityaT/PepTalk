@@ -174,7 +174,7 @@ export const BEATS: Beat[] = [
     // Without dated facts there is no "yours" to hold it against: the graph
     // can still say a game happened, not what was normal when it did.
     withoutMemory:
-      "Morning, coach. I went through the game. I have nothing to compare it to.",
+      "Morning, coach. I went through the game and found the moments worth showing you. What I cannot do is tell you whether any of it is normal for you.",
   },
   { id: "trace", kind: "trace", steps: STEPS, footer: TRACE_FOOTER },
   {
@@ -244,7 +244,7 @@ export const BEATS: Beat[] = [
     kind: "say",
     text: "That is the session. Ask me about any player, any clip, or anything I just showed you.",
     withoutMemory:
-      "That is everything I can say about one game in isolation. Turn the memory back on and the same footage gets a season behind it.",
+      "That is the game itself, and it holds up on its own. Turn the memory back on and the same footage gets a season and 354 sides behind it.",
   },
 ];
 
