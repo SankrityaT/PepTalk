@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { PepTalkMark } from "@/components/logo-marks";
 
 /**
  * Workspace navigation.
@@ -124,15 +125,13 @@ export function Sidebar({
           type="button"
           className="mb-2 flex w-full items-center gap-2.5 rounded-lg p-1.5 text-left transition-[background-color,transform] duration-100 hover:bg-white/[0.05] active:scale-[0.97]"
         >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-[13px] font-semibold text-canvas">
-            {team.slice(0, 1)}
-          </span>
+          <PepTalkMark size={26} className="shrink-0 text-chalk" />
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] leading-tight font-medium text-chalk">
-              {team}
+            <span className="block truncate font-display text-[13px] leading-tight text-chalk">
+              Pep Talk
             </span>
             <span className="block truncate text-[11px] leading-tight text-muted-2">
-              {squad}
+              {team} &middot; {squad}
             </span>
           </span>
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-2">

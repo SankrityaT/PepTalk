@@ -114,7 +114,7 @@ export type EvidenceCard =
   | { kind: "threat"; title: string };
 
 export type Beat =
-  | { id: string; kind: "say"; text: string }
+  | { id: string; kind: "say"; text: string; withoutMemory?: string }
   | { id: string; kind: "trace"; steps: Step[]; footer: string }
   | { id: string; kind: "moment"; moment: ClipMoment }
   | { id: string; kind: "goal"; goal: Goal }
@@ -171,6 +171,10 @@ export const BEATS: Beat[] = [
     id: "greet",
     kind: "say",
     text: `Morning, coach. I went through the game and held it against the ${TOTALS.in_graph} of yours I already have.`,
+    // Without dated facts there is no "yours" to hold it against: the graph
+    // can still say a game happened, not what was normal when it did.
+    withoutMemory:
+      "Morning, coach. I went through the game. I have nothing to compare it to.",
   },
   { id: "trace", kind: "trace", steps: STEPS, footer: TRACE_FOOTER },
   {
@@ -183,6 +187,8 @@ export const BEATS: Beat[] = [
     id: "after-attacking",
     kind: "say",
     text: "Both of those were a ball into the box you had and did not take. Same picture twice.",
+    withoutMemory:
+      "Both of those were a ball into the box you had and did not take. Whether that is a habit or a bad afternoon, I cannot tell you.",
   },
   ...momentBeats(defending),
   {
@@ -205,6 +211,8 @@ export const BEATS: Beat[] = [
     id: "after-goals",
     kind: "say",
     text: "All three to the same man. Two from the spot, so watch what happened before the whistle rather than the kick.",
+    withoutMemory:
+      "All three to the same man. I can show you them; I cannot tell you whether this is how you usually concede.",
   },
   {
     id: "benchmark",
@@ -235,6 +243,8 @@ export const BEATS: Beat[] = [
     id: "close",
     kind: "say",
     text: "That is the session. Ask me about any player, any clip, or anything I just showed you.",
+    withoutMemory:
+      "That is everything I can say about one game in isolation. Turn the memory back on and the same footage gets a season behind it.",
   },
 ];
 

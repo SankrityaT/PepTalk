@@ -57,6 +57,9 @@ export function TapePlayer({
   chalk = true,
   seed = 7,
   autoPlay = true,
+  onReachedStop,
+  playing,
+  onPlayingChange,
 }: {
   src: string;
   frames: Frame[];
@@ -67,6 +70,11 @@ export function TapePlayer({
   chalk?: boolean;
   seed?: number;
   autoPlay?: boolean;
+  /** Fired once when playback reaches `stopAt`. */
+  onReachedStop?: () => void;
+  /** Controlled transport, so the session and the tape cannot disagree. */
+  playing?: boolean;
+  onPlayingChange?: (playing: boolean) => void;
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const raf = useRef<number>(0);
@@ -93,6 +101,13 @@ export function TapePlayer({
     else v.addEventListener("loadedmetadata", go, { once: true });
   }, [src, autoPlay]);
 
+  // Fired once per clip: the session listens for it and moves the thread on,
+  // so the rhythm follows the passage rather than a stopwatch.
+  const announced = useRef(false);
+  useEffect(() => {
+    announced.current = false;
+  }, [src]);
+
   useEffect(() => {
     const tick = () => {
       const v = video.current;
@@ -101,13 +116,28 @@ export function TapePlayer({
         if (!v.paused && stopAt !== undefined && v.currentTime >= stopAt) {
           v.pause();
           setPaused(true);
+          onPlayingChange?.(false);
+          if (!announced.current) {
+            announced.current = true;
+            onReachedStop?.();
+          }
         }
       }
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf.current);
-  }, [stopAt]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stopAt, src]);
+
+  // Follow the session's transport when it is driving.
+  useEffect(() => {
+    const v = video.current;
+    if (!v || playing === undefined) return;
+    if (playing && v.paused) v.play().catch(() => {});
+    if (!playing && !v.paused) v.pause();
+    setPaused(!playing);
+  }, [playing]);
 
   const toggle = useCallback(() => {
     const v = video.current;
@@ -115,22 +145,29 @@ export function TapePlayer({
     // Replay rather than resume when we are sitting on the stop point, which
     // is where this player spends most of its life.
     if (v.paused) {
-      if (stopAt !== undefined && v.currentTime >= stopAt - 0.05) v.currentTime = 0;
+      if (stopAt !== undefined && v.currentTime >= stopAt - 0.05) {
+        v.currentTime = 0;
+        announced.current = false;
+      }
       v.play().catch(() => {});
       setPaused(false);
+      onPlayingChange?.(true);
     } else {
       v.pause();
       setPaused(true);
+      onPlayingChange?.(false);
     }
-  }, [stopAt]);
+  }, [stopAt, onPlayingChange]);
 
   const replay = useCallback(() => {
     const v = video.current;
     if (!v) return;
     v.currentTime = 0;
+    announced.current = false;
     v.play().catch(() => {});
     setPaused(false);
-  }, []);
+    onPlayingChange?.(true);
+  }, [onPlayingChange]);
 
   const frame = frameAt(frames, t);
   const prev = frame ? frames[Math.max(0, frames.indexOf(frame) - 3)] : undefined;
