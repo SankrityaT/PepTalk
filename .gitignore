@@ -1,0 +1,13 @@
+.cache/
+results/
+.venv/
+__pycache__/
+*.pyc
+.env
+hydradb-data/
+*.pt
+*.mkv
+*.mp4
+sn-data/
+.playwright-mcp/
+*.png

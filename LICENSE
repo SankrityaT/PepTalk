@@ -1,0 +1,37 @@
+MIT License
+
+Copyright (c) 2026 Sankritya Thakur
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+NOTE ON DATA
+
+This licence covers the source code in this repository only. It does not cover
+the football data the code operates on.
+
+Match data is StatsBomb Open Data, governed by the StatsBomb Public Data User
+Agreement (https://github.com/statsbomb/open-data), not by an OSI licence. That
+agreement permits analysis and research and permits conclusions to be shared
+publicly, but prohibits redistributing the data and prohibits commercial
+exploitation of the data or of any analysis derived from it.
+
+No StatsBomb data is committed to this repository. The code downloads it at
+runtime and caches it locally under paths that are gitignored.
