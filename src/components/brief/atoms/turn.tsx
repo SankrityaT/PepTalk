@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { PepTalkMark } from "@/components/logo-marks";
 
 /**
  * One turn in the thread.
@@ -51,8 +52,8 @@ export function Turn({
     >
       <span className="w-7 shrink-0 pt-0.5">
         {showWho && (
-          <span className="flex size-7 items-center justify-center rounded-full bg-accent/15 font-mono text-[10px] font-semibold text-accent">
-            P
+          <span className="flex size-7 items-center justify-center rounded-full bg-accent/12 text-accent">
+            <PepTalkMark size={16} />
           </span>
         )}
       </span>

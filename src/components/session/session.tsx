@@ -8,11 +8,26 @@ import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Trace } from "@/components/brief/atoms/trace";
 import { Turn } from "@/components/brief/atoms/turn";
 import { ChalkFilters } from "@/components/chalk-filters";
+import { PepTalkMark } from "@/components/logo-marks";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { Evidence } from "@/components/session/evidence";
 import { TapePlayer } from "@/components/tape/tape-player";
 import { BEATS, Beat, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
+import { MOMENTS } from "@/content/pep";
+import knowledge from "@/content/snapshots/knowledge.json";
+
+const KNOW = knowledge as unknown as {
+  scale: { teams: number; matches: number; facts: number };
+  dimensions: {
+    label: string;
+    value: number;
+    band: string;
+    obs: number;
+    percentile: number;
+    peers: number;
+  }[];
+};
 
 /**
  * The session. One screen.
@@ -166,6 +181,64 @@ function BeatBody({
   return null;
 }
 
+/**
+ * What a question gets answered with.
+ *
+ * This is the switch at its sharpest: the same question asked twice. With the
+ * graph, an answer is retrieved and carries the dates and counts behind it.
+ * Without it the model is not lying, it simply has nothing to reach for, and
+ * saying so is more useful than an educated guess dressed as a finding.
+ */
+function Answer({ question, memory }: { question: string; memory: boolean }) {
+  const q = question.toLowerCase();
+  const dim =
+    KNOW.dimensions.find((d) => q.includes(d.label.split(" ")[0])) ??
+    KNOW.dimensions.find((d) => q.includes("press")) ??
+    null;
+
+  if (!memory) {
+    return (
+      <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
+        <p className="text-[13px] leading-relaxed text-muted">
+          <StreamText text="I can see this one game. I cannot tell you what is usual for you, whether it has changed, or how it compares to anyone else, because none of those questions can be answered without dated facts to retrieve." />
+        </p>
+        <p className="mt-2 font-mono text-[10px] text-muted-2">
+          0 facts retrieved
+        </p>
+      </div>
+    );
+  }
+
+  if (dim) {
+    return (
+      <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
+        <p className="text-[14px] leading-relaxed text-warm">
+          <StreamText
+            text={`Your ${dim.label} sits at ${dim.value}, which is ${dim.band} and puts you ${dim.percentile}th of ${dim.peers} sides. Drawn from ${dim.obs} of your games.`}
+          />
+        </p>
+        <p className="mt-2 font-mono text-[10px] text-muted-2">
+          retrieved from {KNOW.scale.facts.toLocaleString()} dated facts across{" "}
+          {KNOW.scale.teams} sides
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
+      <p className="text-[14px] leading-relaxed text-warm">
+        <StreamText
+          text={`I have ${MOMENTS.length} moments and 3 goals from this game, and ${KNOW.scale.matches.toLocaleString()} matches behind them. Ask about pressing, possession, width or directness and I will give you the number and where it sits.`}
+        />
+      </p>
+      <p className="mt-2 font-mono text-[10px] text-muted-2">
+        {KNOW.scale.facts.toLocaleString()} facts available
+      </p>
+    </div>
+  );
+}
+
 export function Session() {
   const [at, setAt] = useState(0);
   const [memory, setMemory] = useState(true);
@@ -238,14 +311,19 @@ export function Session() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [at, current, atEnd, playing]);
 
-  /** The clip stopped on its moment: hold, let Pep talk, then move on. */
-  const onReachedStop = () => {
-    if (!playing) return;
-    const t = setTimeout(() => {
-      if (playing) advance();
-    }, 4200);
+  /**
+   * The clip reaching its moment is reported as a bump rather than handled in
+   * a callback. A callback closes over the render that created it, and the
+   * first version read a stale `playing` and never advanced.
+   */
+  const [reached, setReached] = useState(0);
+
+  useEffect(() => {
+    if (!reached || !playing || atEnd) return;
+    const t = setTimeout(advance, 4200);
     return () => clearTimeout(t);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reached, playing, atEnd]);
 
   return (
     <div className="flex h-[calc(100vh-3rem)] flex-col gap-4 lg:h-[calc(100vh-2rem)] lg:flex-row">
@@ -262,10 +340,14 @@ export function Session() {
             stopLabel={clip.label}
             chalkTeam={chalkTeam}
             seed={at * 17 + 5}
+            // Only the clip belonging to the current beat drives the
+            // transport. The one shown during the greeting is a preview: left
+            // to run, it reached its stop point and paused the whole session
+            // before the coach had read a line.
             autoPlay={clip.primed && playing}
-            playing={playing}
-            onPlayingChange={setPlaying}
-            onReachedStop={onReachedStop}
+            playing={clip.primed ? playing : false}
+            onPlayingChange={clip.primed ? setPlaying : undefined}
+            onReachedStop={clip.primed ? () => setReached((n) => n + 1) : undefined}
           />
         ) : (
           <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-surface ring-1 ring-white/[0.06]">
@@ -337,13 +419,15 @@ export function Session() {
       <div className="flex min-h-0 flex-1 flex-col rounded-xl bg-surface/40 ring-1 ring-white/[0.05]">
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
           <span className="flex items-center gap-2">
-            <span className="relative flex size-1.5">
-              {playing && !atEnd && (
+            <PepTalkMark size={18} className="text-chalk" />
+            <span className="font-display text-[13px] text-chalk">Pep</span>
+            {/* Live only while the session is actually running. */}
+            {playing && !atEnd && (
+              <span className="relative flex size-1.5">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-70" />
-              )}
-              <span className="relative inline-flex size-1.5 rounded-full bg-accent" />
-            </span>
-            <span className="text-[13px] font-medium text-chalk">Pep</span>
+                <span className="relative inline-flex size-1.5 rounded-full bg-accent" />
+              </span>
+            )}
           </span>
           <span className="font-mono text-[10px] tabular-nums text-muted-2">
             {Math.min(at + 1, BEATS.length)} / {BEATS.length}
@@ -400,9 +484,7 @@ export function Session() {
                   {q}
                 </p>
                 <Turn showWho={false}>
-                  <p className="text-[13px] leading-relaxed text-warm-2">
-                    <StreamText text="The model is not connected in this build, so I would rather say nothing than guess. Everything above came out of the graph." />
-                  </p>
+                  <Answer question={q} memory={memory} />
                 </Turn>
               </div>
             ))}
