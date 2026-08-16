@@ -25,7 +25,13 @@ import {
   sourceFor,
   unitFor,
 } from "@/content/brief";
-import { MOMENTS, MOMENTS_FOUND, Moment, THEMES } from "@/content/pep";
+import {
+  MOMENTS,
+  MOMENTS_FOUND,
+  Moment,
+  PASSES_WITH_AN_OPTION,
+  THEMES,
+} from "@/content/pep";
 import { TOTALS } from "@/content/dashboard";
 
 /**
@@ -68,7 +74,11 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
   const leadSource = lead ? sourceFor(lead) : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-40">
+    <div
+      className={`mx-auto flex w-full flex-col gap-6 pb-40 transition-[max-width] duration-500 ${
+        picked === "yes" ? "max-w-6xl" : "max-w-3xl"
+      }`}
+    >
       {/* ── Greeting ──────────────────────────────────────────────────── */}
       <header className="pt-2">
         <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-2">
@@ -227,9 +237,12 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
             })}
 
             <p className="mt-1 text-[13px] leading-relaxed text-muted">
-              Found by checking every pass against what else was on
-              <SourceChip source={MODEL_SOURCE} />. {MOMENTS_FOUND} of them in
-              this game alone.
+              I checked every pass against what else was on
+              <SourceChip source={MODEL_SOURCE} />.{" "}
+              {PASSES_WITH_AN_OPTION.toLocaleString()} had a better option
+              somewhere, but only {MOMENTS_FOUND} were a ball that would have
+              made a chance. The rest is ordinary circulation, which is how you
+              move a defence, not a mistake.
             </p>
           </motion.section>
         )}
@@ -239,7 +252,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
       <AnimatePresence>
         {at("ask") && !picked && (
           <Choice
-            question="Want to go through them on the tape, one by one?"
+            question="Want to go through them one by one?"
             picked={picked}
             onPick={setPicked}
             options={[

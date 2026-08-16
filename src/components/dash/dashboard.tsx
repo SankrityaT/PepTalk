@@ -178,13 +178,14 @@ export function Dashboard({
           values={xg}
           delay={0.15}
         />
-        {/* Scoped to the last game on purpose: 803 is what the pass engine
-            found in that match, not a season total, and rounding it up to one
-            would be the easiest lie on the page. */}
+        {/* Scoped to the last game on purpose, and counted after the
+            materiality bar: an earlier version headlined 803, which was every
+            pass with any better option at all. Almost all of those are
+            ordinary circulation rather than a missed chance. */}
         <Tile
           label="better balls found"
           value={MOMENTS_FOUND.toLocaleString()}
-          sub="in your last game alone"
+          sub="chances missed in your last game"
           values={shots}
           seriesLabel="shots per game"
           live

@@ -1,6 +1,6 @@
 import brief from "./snapshots/brief.json";
 import tracking from "./snapshots/wc-tracking.json";
-import { COMPLETION_MODEL, MOMENTS_FOUND } from "./pep";
+import { COMPLETION_MODEL, MOMENTS_FOUND, PASSES_WITH_AN_OPTION } from "./pep";
 import { TOTALS, XT_ACTIONS, XT_TRAINED_ON } from "./dashboard";
 import type { Source } from "@/components/brief/atoms/source-chip";
 import type { Chunk } from "@/components/brief/atoms/context-card";
@@ -79,8 +79,8 @@ export const STEPS: Step[] = [
     detail: `${TOTALS.in_graph} games, ${FACTS.length} dated facts`,
   },
   {
-    label: "found your moments",
-    detail: `${MOMENTS_FOUND} where a better ball was on`,
+    label: "sifted for what matters",
+    detail: `${PASSES_WITH_AN_OPTION} had an option, ${MOMENTS_FOUND} were chances`,
   },
 ];
 

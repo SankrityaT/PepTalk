@@ -81,6 +81,7 @@ type Snapshot = {
     coef_traffic: number;
   };
   moments_found: number;
+  passes_with_an_option?: number;
   moments: Moment[];
 };
 
@@ -89,7 +90,10 @@ const data = snapshot as unknown as Snapshot;
 export const MOMENTS: Moment[] = [...data.moments].sort((a, b) => a.minute - b.minute);
 /** The three things to take to training. The point of the whole report. */
 export const THEMES: Theme[] = data.themes ?? [];
+/** Moments that clear the materiality bar. Not the 803 that had *any* option. */
 export const MOMENTS_FOUND = data.moments_found;
+/** Every pass where some better option existed, almost all of it noise. */
+export const PASSES_WITH_AN_OPTION = data.passes_with_an_option ?? 0;
 export const COMPLETION_MODEL = data.completion_model;
 
 /**
