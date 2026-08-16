@@ -37,11 +37,26 @@ const EASE = [0.4, 0, 0.2, 1] as const;
 /** Set at build time; the prompt bar says so rather than faking an answer. */
 const MODEL_CONNECTED = false;
 
-function BeatBody({ beat, live }: { beat: Beat; live: boolean }) {
+function BeatBody({
+  beat,
+  live,
+  memory,
+}: {
+  beat: Beat;
+  live: boolean;
+  memory: boolean;
+}) {
   if (beat.kind === "say") {
+    // Some lines only hold because the graph has dates on it. With memory off
+    // they say the smaller, true thing instead of quietly staying the same.
+    const text = !memory && beat.withoutMemory ? beat.withoutMemory : beat.text;
     return (
-      <p className="text-[15px] leading-relaxed text-warm">
-        {live ? <StreamText text={beat.text} /> : beat.text}
+      <p
+        className={`text-[15px] leading-relaxed ${
+          !memory && beat.withoutMemory ? "text-muted" : "text-warm"
+        }`}
+      >
+        {live ? <StreamText text={text} /> : text}
       </p>
     );
   }
@@ -77,7 +92,7 @@ function BeatBody({ beat, live }: { beat: Beat; live: boolean }) {
         </p>
 
         <p className="mt-2.5 font-mono text-[10px] leading-relaxed text-muted">
-          {m.numbers}
+          {memory ? m.numbers : "threat and completion come from models fitted across the graph"}
         </p>
       </div>
     );
@@ -155,7 +170,7 @@ export function Session() {
   const [at, setAt] = useState(0);
   const [memory, setMemory] = useState(true);
   const [asked, setAsked] = useState<string[]>([]);
-  const [stopped, setStopped] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const tail = useRef<HTMLDivElement>(null);
 
   const shown = BEATS.slice(0, at + 1);
@@ -207,21 +222,30 @@ export function Session() {
     tail.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [at, asked.length]);
 
-  // Advance automatically through anything that is not a question, so the
-  // session plays rather than making a coach click through prose.
+  const advance = () => setAt((i) => Math.min(BEATS.length - 1, i + 1));
+
+  // Beats with footage move on when the clip reaches its moment and the coach
+  // has had a beat to read the line. Everything else is on a short timer.
+  // Tying the rhythm to the passage rather than a stopwatch is what stops the
+  // tape being swapped out from under someone mid-play.
   useEffect(() => {
-    if (stopped || atEnd || current.kind === "ask") return;
+    if (!playing || atEnd || current.kind === "ask") return;
+    if (current.kind === "moment" || current.kind === "goal") return;
     const dwell =
-      current.kind === "moment" || current.kind === "goal"
-        ? 9000
-        : current.kind === "evidence"
-          ? 7000
-          : current.kind === "trace"
-            ? 5200
-            : 3400;
-    const t = setTimeout(() => setAt((i) => i + 1), dwell);
+      current.kind === "evidence" ? 7000 : current.kind === "trace" ? 5200 : 3400;
+    const t = setTimeout(advance, dwell);
     return () => clearTimeout(t);
-  }, [at, current, atEnd, stopped]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [at, current, atEnd, playing]);
+
+  /** The clip stopped on its moment: hold, let Pep talk, then move on. */
+  const onReachedStop = () => {
+    if (!playing) return;
+    const t = setTimeout(() => {
+      if (playing) advance();
+    }, 4200);
+    return () => clearTimeout(t);
+  };
 
   return (
     <div className="flex h-[calc(100vh-3rem)] flex-col gap-4 lg:h-[calc(100vh-2rem)] lg:flex-row">
@@ -238,7 +262,10 @@ export function Session() {
             stopLabel={clip.label}
             chalkTeam={chalkTeam}
             seed={at * 17 + 5}
-            autoPlay={clip.primed}
+            autoPlay={clip.primed && playing}
+            playing={playing}
+            onPlayingChange={setPlaying}
+            onReachedStop={onReachedStop}
           />
         ) : (
           <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-surface ring-1 ring-white/[0.06]">
@@ -311,7 +338,7 @@ export function Session() {
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
           <span className="flex items-center gap-2">
             <span className="relative flex size-1.5">
-              {!stopped && !atEnd && (
+              {playing && !atEnd && (
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-70" />
               )}
               <span className="relative inline-flex size-1.5 rounded-full bg-accent" />
@@ -353,8 +380,8 @@ export function Session() {
                       question={b.question}
                       options={b.options}
                       onPick={(k) => {
-                        if (k === "yes") setAt((x) => x + 1);
-                        else setStopped(true);
+                        if (k === "yes") advance();
+                        else setPlaying(false);
                       }}
                     />
                   </Turn>
@@ -362,19 +389,10 @@ export function Session() {
               }
               return (
                 <Turn key={b.id} showWho={i === 0}>
-                  <BeatBody beat={b} live={live} />
+                  <BeatBody beat={b} live={live} memory={memory} />
                 </Turn>
               );
             })}
-
-            {stopped && (
-              <Turn showWho={false}>
-                <p className="text-[13px] leading-relaxed text-muted">
-                  Stopped there. Ask me anything below, or press play to carry
-                  on.
-                </p>
-              </Turn>
-            )}
 
             {asked.map((q) => (
               <div key={q} className="flex flex-col gap-2">
@@ -397,30 +415,24 @@ export function Session() {
         <div className="border-t border-white/[0.06] px-4 py-3">
           <div className="mb-2.5 flex items-center gap-2">
             <button
-              onClick={() => {
-                setStopped(false);
-                setAt((i) => Math.min(BEATS.length - 1, i + 1));
-              }}
+              onClick={advance}
               disabled={atEnd}
               className="rounded-lg bg-accent px-3 py-1.5 text-[12px] font-medium text-canvas transition-all enabled:hover:brightness-110 disabled:bg-white/[0.06] disabled:text-muted-2"
             >
               {atEnd ? "That is the session" : "Next"}
             </button>
             <button
-              onClick={() => setStopped((s) => !s)}
-              className="rounded-lg bg-white/[0.06] px-3 py-1.5 font-mono text-[11px] text-warm transition-colors hover:bg-white/[0.12] hover:text-chalk"
-            >
-              {stopped ? "play" : "pause"}
-            </button>
-            <button
               onClick={() => {
                 setAt(0);
-                setStopped(false);
+                setPlaying(true);
               }}
               className="rounded-lg bg-white/[0.06] px-3 py-1.5 font-mono text-[11px] text-warm transition-colors hover:bg-white/[0.12] hover:text-chalk"
             >
               start again
             </button>
+            <span className="ml-auto font-mono text-[10px] text-muted-2">
+              {playing ? "playing" : "paused"}
+            </span>
           </div>
 
           <PromptBar
@@ -428,7 +440,7 @@ export function Session() {
             suggestions={asked.length ? [] : SUGGESTIONS}
             onSend={(q) => {
               setAsked((a) => [...a, q]);
-              setStopped(true);
+              setPlaying(false);
             }}
             mentions={CLIP_MOMENTS.map((m) => ({
               key: m.key,
