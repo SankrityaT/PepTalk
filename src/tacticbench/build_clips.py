@@ -17,6 +17,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from . import workspace
+
+WS = workspace.load()
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "results"
 CLIPS = ROOT / ".cache" / "clips"
@@ -35,8 +38,8 @@ def main() -> None:
     manifest = json.loads((RESULTS / "clip_manifest.json").read_text())
     by_key = {w["key"]: w for w in manifest}
 
-    out = analyse(3869685)
-    names = display_names(3869685)
+    out = analyse(WS.match_id)
+    names = display_names(WS.match_id)
 
     PUBLIC.mkdir(parents=True, exist_ok=True)
     moments = []
@@ -86,7 +89,7 @@ def main() -> None:
         mm["id"] = i
 
     payload = {
-        "match_id": 3869685,
+        "match_id": WS.match_id,
         "source": "broadcast clock read off the overlay; one offset per period",
         "moments": moments,
     }

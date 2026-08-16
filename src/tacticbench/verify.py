@@ -184,7 +184,9 @@ def check_conversation(g: Graph) -> None:
     from .demo import team_id
     from .graph import date_ord
 
-    tid = team_id("Argentina")
+    from . import workspace
+
+    tid = team_id(workspace.load().team)
     facts = [
         dict(r)
         for r in g.run(

@@ -30,7 +30,7 @@ from pathlib import Path
 
 import httpx
 
-from . import data
+from . import data, workspace
 from .pass_options import load_360
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -187,7 +187,8 @@ def build(match_id: int, team: str) -> list[dict]:
 
 
 def main() -> None:
-    goals = build(3869685, "Argentina")
+    ws = workspace.load()
+    goals = build(ws.match_id, ws.team)
     print(f"{len(goals)} goals conceded\n")
     for g in goals:
         d = g["defence"]

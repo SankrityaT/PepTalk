@@ -31,15 +31,17 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-VIDEO_ID = "RgqKdplLIk4"
-URL = f"https://www.youtube.com/watch?v={VIDEO_ID}"
+from . import workspace
 
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "results"
 CLIPS = ROOT / ".cache" / "clips"
 
-#: Video-time offset per period, read off the broadcast clock.
-PERIOD_OFFSET = {1: 96.0, 2: 599.0}
+#: Read from the active workspace rather than baked in, so a second team is a
+#: config file rather than a patch across eight modules.
+WS = workspace.load()
+PERIOD_OFFSET = WS.period_offset
+URL = WS.url
 
 #: Seconds of run-in before the pass, so a coach sees the ball arrive, and a
 #: short tail after so the pause does not land on the very last frame.
@@ -89,7 +91,7 @@ def plan(moments: list[dict]) -> list[Window]:
     ordered = sorted(moments, key=lambda m: (m["minute"], m.get("second") or 0))
     for m in ordered:
         minute, second = m["minute"], m.get("second") or 0
-        # Extra time needs its own probe; 90+ has no offset yet.
+        # Whichever periods the workspace measured; the rest are skipped.
         period = 1 if minute < 45 else 2 if minute < 90 else 3
         v = video_time(period, minute, second)
         if v is None:
@@ -150,7 +152,7 @@ def fetch(w: Window, force: bool = False) -> Path | None:
 def main() -> None:
     from .pass_options import analyse
 
-    out = analyse(3869685)
+    out = analyse(WS.match_id)
     windows = plan(out["top_missed"])
 
     print(f"{len(out['top_missed'])} moments -> {len(windows)} windows\n")

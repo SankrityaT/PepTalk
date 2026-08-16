@@ -232,6 +232,11 @@ uv run python -m tacticbench.bootstrap   # cuts and tracks the footage
 pnpm dev            # landing page on /, the coach's dashboard on /dashboard
 ```
 
+**Pointing this at another team** is a JSON file, not a patch:
+`docs/NEW-WORKSPACE.md`. Nothing is hardcoded to the World Cup; pick a
+competition with StatsBomb 360 data, write `workspaces/<key>/workspace.json`,
+and run `PEPTALK_WORKSPACE=<key> uv run python -m tacticbench.bootstrap`.
+
 **The repository ships no video.** Broadcast footage is not ours to
 redistribute, so `public/clips` and `public/tape` are gitignored and a fresh
 clone renders the dashboard with empty players. `bootstrap` rebuilds them from

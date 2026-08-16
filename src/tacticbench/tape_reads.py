@@ -29,6 +29,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from . import workspace
+
 RESULTS = Path("results")
 
 # A shot must run this long to be worth a line of its own; below it the log
@@ -54,7 +56,8 @@ def classify(frame: dict) -> str:
     return "play"
 
 
-TEAM_NAMES = ("Argentina", "France")
+#: Lighter kit first, matching the clustering convention.
+TEAM_NAMES = workspace.load().kits
 
 # One line every few seconds. Faster reads as a strobe; slower and the feed
 # looks frozen while the video plays.
