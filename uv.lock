@@ -1939,16 +1939,16 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.dev-dependencies]
 cv = [
     { name = "torch" },
     { name = "torchvision" },
     { name = "ultralytics" },
 ]
+dev = [
+    { name = "pytest" },
+]
+
+[package.dev-dependencies]
 dev = [
     { name = "pytest" },
 ]
@@ -1963,16 +1963,14 @@ requires-dist = [
     { name = "opencv-python", specifier = ">=5.0.0.93" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "scikit-learn", specifier = ">=1.9.0" },
+    { name = "torch", marker = "extra == 'cv'", specifier = ">=2.2" },
+    { name = "torchvision", marker = "extra == 'cv'", specifier = ">=0.17" },
+    { name = "ultralytics", marker = "extra == 'cv'", specifier = ">=8.3" },
     { name = "uvicorn", specifier = ">=0.52.3" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "cv"]
 
 [package.metadata.requires-dev]
-cv = [
-    { name = "torch", specifier = ">=2.2" },
-    { name = "torchvision", specifier = ">=0.17" },
-    { name = "ultralytics", specifier = ">=8.3" },
-]
 dev = [{ name = "pytest", specifier = ">=8.0" }]
 
 [[package]]
