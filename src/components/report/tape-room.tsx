@@ -2,8 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import tracking from "@/content/snapshots/wc-tracking.json";
 import reads from "@/content/snapshots/tape-reads.json";
+import {
+  DETECTIONS,
+  DURATION,
+  KIT,
+  OFFICIALS,
+  VIDEO,
+  clock,
+  nearestFrame,
+} from "@/lib/tape";
 
 /**
  * The tape, with Pep talking over it.
@@ -31,8 +39,6 @@ import reads from "@/content/snapshots/tape-reads.json";
  * screen rather than buried here.
  */
 
-type Player = { box: number[]; team: number };
-type Frame = { idx: number; t: number; grass: number; players: Player[] };
 type Entry = {
   id: number;
   t: number;
@@ -42,56 +48,26 @@ type Entry = {
   tracked: number;
 };
 
-const TAPE = tracking as unknown as {
-  source: string;
-  video: string;
-  frames: Frame[];
-  detections: number;
-  excluded_non_team: number;
-};
 const FEED = (reads as unknown as { entries: Entry[] }).entries;
-const FRAMES = TAPE.frames;
-
-/**
- * How far the nearest tracked frame may be from the video's current time
- * before we refuse to draw. Broadcast cuts in a single frame, so without this
- * the last wide shot's positions get painted over a close-up and the boxes
- * land on the crowd — which is exactly what happened. Drawing nothing is the
- * honest answer: the system has not seen this frame.
- */
-const MAX_STALENESS_S = 0.16;
-
-const KIT = ["#7ec8f0", "var(--color-accent)"] as const;
 const EASE = [0.4, 0, 0.2, 1] as const;
-const DURATION = FRAMES.length ? FRAMES[FRAMES.length - 1].t : 90;
 
-function nearestFrame(t: number): Frame | null {
-  if (!FRAMES.length) return null;
-  let lo = 0;
-  let hi = FRAMES.length - 1;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (FRAMES[mid].t < t) lo = mid + 1;
-    else hi = mid;
-  }
-  const a = FRAMES[Math.max(0, lo - 1)];
-  const b = FRAMES[lo];
-  const best = Math.abs(a.t - t) <= Math.abs(b.t - t) ? a : b;
-  return Math.abs(best.t - t) <= MAX_STALENESS_S ? best : null;
-}
-
-function clock(t: number): string {
-  return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(
-    Math.floor(t % 60),
-  ).padStart(2, "0")}`;
-}
-
-export function TapeRoom() {
+export function TapeRoom({ startAt = 0 }: { startAt?: number }) {
   const video = useRef<HTMLVideoElement>(null);
   const list = useRef<HTMLUListElement>(null);
-  const [t, setT] = useState(0);
+  const [t, setT] = useState(startAt);
   const [playing, setPlaying] = useState(true);
   const raf = useRef<number>(0);
+
+  // Jump to the segment the coach opened, once the file is seekable.
+  useEffect(() => {
+    const v = video.current;
+    if (!v || !startAt) return;
+    const go = () => {
+      v.currentTime = startAt;
+    };
+    if (v.readyState >= 1) go();
+    else v.addEventListener("loadedmetadata", go, { once: true });
+  }, [startAt]);
 
   // Driven off requestAnimationFrame rather than `timeupdate`, which fires
   // about four times a second and makes the boxes visibly trail the players
@@ -160,8 +136,8 @@ export function TapeRoom() {
           </span>
         </div>
         <span className="truncate font-mono text-[10px] text-muted-2">
-          {TAPE.detections.toLocaleString()} detections &middot;{" "}
-          {TAPE.excluded_non_team} officials dropped
+          {DETECTIONS.toLocaleString()} detections &middot;{" "}
+          {OFFICIALS} officials dropped
         </span>
       </div>
 
@@ -171,7 +147,7 @@ export function TapeRoom() {
           <div className="relative aspect-video w-full bg-black">
             <video
               ref={video}
-              src={TAPE.video}
+              src={VIDEO}
               className="absolute inset-0 h-full w-full object-cover"
               playsInline
               muted

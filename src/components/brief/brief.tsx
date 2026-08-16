@@ -8,7 +8,10 @@ import { PromptBar } from "@/components/brief/atoms/prompt-bar";
 import { SourceChip } from "@/components/brief/atoms/source-chip";
 import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Trace } from "@/components/brief/atoms/trace";
+import { ClipCard } from "@/components/brief/clip-card";
 import { MomentFrame } from "@/components/report/moment-frame";
+import { TapeRoom } from "@/components/report/tape-room";
+import { CLIPS, DETECTIONS } from "@/lib/tape";
 import {
   CHUNKS,
   DEVIATIONS,
@@ -54,6 +57,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
   const [stage, setStage] = useState<Stage>("trace");
   const [picked, setPicked] = useState<string | null>(null);
   const [asked, setAsked] = useState<string[]>([]);
+  const [openClip, setOpenClip] = useState<number | null>(null);
 
   const at = (s: Stage): boolean =>
     (["trace", "context", "findings", "ask", "open"] as Stage[]).indexOf(stage) >=
@@ -89,13 +93,66 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
         onDone={() => setStage("context")}
       />
 
+      {/* ── The footage ───────────────────────────────────────────────── */}
+      {/* Leads, because a coach recognises their game from the picture of it.
+          An earlier version of this brief opened with pitch diagrams and the
+          actual tape was three clicks away, which is exactly backwards. */}
+      <AnimatePresence>
+        {at("context") && (
+          <motion.section
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="flex flex-col gap-2.5"
+          >
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-2">
+                Highlights I went through
+              </span>
+              <span className="font-mono text-[10px] tabular-nums text-muted-2">
+                {DETECTIONS.toLocaleString()} detections
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+              {CLIPS.map((c) => (
+                <ClipCard
+                  key={c.id}
+                  from={c.from}
+                  to={c.to}
+                  label={c.label}
+                  active={openClip === c.id}
+                  onOpen={() => setOpenClip(openClip === c.id ? null : c.id)}
+                />
+              ))}
+            </div>
+
+            <AnimatePresence initial={false}>
+              {openClip !== null && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-1">
+                    <TapeRoom startAt={CLIPS[openClip].from} />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       {/* ── What it pulled in ─────────────────────────────────────────── */}
       <AnimatePresence>
         {at("context") && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
+            transition={{ duration: 0.4, delay: 0.15, ease: EASE }}
           >
             <ContextCards chunks={CHUNKS} label="Pulled from your memory" />
           </motion.div>
