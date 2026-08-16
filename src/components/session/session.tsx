@@ -12,7 +12,7 @@ import { PepTalkMark } from "@/components/logo-marks";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { Evidence } from "@/components/session/evidence";
 import { TapePlayer } from "@/components/tape/tape-player";
-import { BEATS, Beat, SUGGESTIONS, clipFor } from "@/content/session";
+import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
 import { MOMENTS } from "@/content/pep";
 import knowledge from "@/content/snapshots/knowledge.json";
@@ -262,6 +262,7 @@ export function Session() {
   const [at, setAt] = useState(0);
   const [memory, setMemory] = useState(true);
   const [asked, setAsked] = useState<string[]>([]);
+  const [attached, setAttached] = useState<string[]>([]);
   const [playing, setPlaying] = useState(true);
   const tail = useRef<HTMLDivElement>(null);
 
@@ -497,6 +498,27 @@ export function Session() {
               );
             })}
 
+            {/* Attaching footage is a real path and a partly manual one. Say
+                which half runs where rather than showing a spinner that is
+                not attached to anything. */}
+            {attached.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
+                  {attached.join(", ")}
+                </p>
+                <Turn showWho={false}>
+                  <p className="text-[14px] leading-relaxed text-warm">
+                    {attached.length === 1 ? "That file goes" : "Those files go"} through the same
+                    pipeline this session came out of: detection and kit clustering per frame, the
+                    broadcast clock read off the overlay to line video time up with match time, then
+                    the moments and the chalk. It runs as a command in this build, not an upload, so
+                    it is <span className="font-mono text-[12.5px] text-chalk">peptalk analyse</span>{" "}
+                    on your machine and the next session opens on it.
+                  </p>
+                </Turn>
+              </div>
+            )}
+
             {asked.map((q) => (
               <div key={q} className="flex flex-col gap-2">
                 <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
@@ -540,18 +562,36 @@ export function Session() {
             connected={MODEL_CONNECTED}
             suggestions={asked.length ? [] : SUGGESTIONS}
             onSend={(q) => {
+              // A command is a jump, not a question. Anything Pep would have
+              // to answer in prose about a beat that exists is better served
+              // by putting the coach on that beat.
+              const cmd = COMMANDS.find((c) => q.toLowerCase().startsWith(`/${c.label}`));
+              if (cmd) {
+                const to = BEATS.findIndex((b) => b.id === cmd.to);
+                if (to >= 0) {
+                  setAt(to);
+                  setPlaying(true);
+                  return;
+                }
+              }
               setAsked((a) => [...a, q]);
               setPlaying(false);
             }}
+            sources={SOURCES}
             mentions={CLIP_MOMENTS.map((m) => ({
               key: m.key,
               label: m.surname,
               hint: m.match_clock,
             }))}
-            commands={[
-              { key: "goals", label: "goals", hint: "the three conceded" },
-              { key: "next", label: "next", hint: "who you play" },
-            ]}
+            commands={COMMANDS}
+            memory={memory}
+            onMemory={setMemory}
+            memoryOn={`${SCALE.facts.toLocaleString()} dated facts across ${SCALE.teams} sides, with when each one held`}
+            memoryOff="this game only, with nothing to hold it against"
+            onAttach={(files) => {
+              setAttached((a) => [...a, ...files.map((f) => f.name)]);
+              setPlaying(false);
+            }}
           />
         </div>
       </div>
