@@ -129,8 +129,18 @@ export function Evidence({
   const dims = Object.keys(card.labels).filter(
     (d) => card.mine.norms[d] && card.theirs.norms[d],
   );
+  // A thin opponent is a real situation, not a failure. Say which it is: five
+  // games of someone is a different brief from five hundred, and a coach who
+  // is not told cannot weigh what follows.
+  const thin = card.games < 12;
+
   return (
-    <Frame title={card.title} note={`${card.games} games on record`}>
+    <Frame
+      title={card.title}
+      note={`${card.fixture.date} · ${card.fixture.competition}${
+        card.fixture.stage ? ` ${card.fixture.stage.toLowerCase()}` : ""
+      }`}
+    >
       <div className="overflow-hidden rounded-lg bg-surface ring-1 ring-white/[0.06]">
         <div className="grid grid-cols-[1fr_auto_1fr] gap-2 border-b border-white/[0.06] px-3 py-2 font-mono text-[10px] tracking-[0.1em] text-muted-2 uppercase">
           <span>you</span>
@@ -186,8 +196,15 @@ export function Evidence({
         {memory ? (
           <>
             Held since {card.theirs.norms[dims[0]]?.since ?? "?"} across{" "}
-            {card.theirs.norms[dims[0]]?.obs ?? "?"} games. That is what you are
-            preparing against.
+            {card.theirs.norms[dims[0]]?.obs ?? "?"} games
+            {thin ? (
+              <>
+                , which is all I have of them. Thin enough that I would treat it
+                as a lean rather than a habit.
+              </>
+            ) : (
+              <>. That is what you are preparing against.</>
+            )}
           </>
         ) : (
           <>
