@@ -239,12 +239,11 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
       <AnimatePresence>
         {at("ask") && !picked && (
           <Choice
-            question="Want to go through them one by one?"
+            question="Want to go through them on the tape, one by one?"
             picked={picked}
             onPick={setPicked}
             options={[
               { key: "yes", label: "Yes, take me through", primary: true },
-              { key: "top", label: "Just the top one" },
               { key: "later", label: "Not now" },
             ]}
           />
@@ -255,11 +254,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
       {/* This used to navigate to a separate report, which threw away the
           thread and made the coach find their place again. The walkthrough
           appends to the stream instead. */}
-      {(picked === "yes" || picked === "top") && (
-        <Walkthrough
-          moments={picked === "top" ? MOMENTS.slice(0, 1) : MOMENTS}
-        />
-      )}
+      {(picked === "yes" || picked === "top") && <Walkthrough />}
 
       {picked === "later" && (
         <p className="text-[15px] leading-relaxed text-warm-2">
