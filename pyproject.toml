@@ -29,3 +29,8 @@ packages = ["src/tacticbench"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# So the suite runs from a fresh clone before `uv pip install -e .`. Without
+# it, `uv run pytest` in an environment lacking pytest falls back to an
+# ephemeral one that cannot see the package, and twelve modules fail to
+# import for a reason that looks like a code error and is not.
+pythonpath = ["src"]
