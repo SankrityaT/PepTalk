@@ -82,10 +82,23 @@ const KNOW = knowledge as unknown as {
   };
   dimensions: Dim[];
 };
+/**
+ * The next fixture is a query now, not a pick. `fixture` is null when the
+ * workspace's match is the last one in the data, which is where a workspace
+ * mid-season starts life, and the interface says so rather than inventing an
+ * opponent.
+ */
 const SCOUT = scout as unknown as {
   team: string;
   labels: Record<string, string>;
   mine: { norms: Record<string, Norm>; flat: Record<string, Flat> };
+  after: { label: string; date: string; competition: string; stage: string | null };
+  fixture: {
+    opponent: string;
+    date: string;
+    competition: string;
+    stage: string | null;
+  } | null;
   opponents: Record<
     string,
     { norms: Record<string, Norm>; flat: Record<string, Flat>; games: number }
@@ -107,6 +120,7 @@ export type EvidenceCard =
       kind: "opponent";
       title: string;
       opponent: string;
+      fixture: { date: string; competition: string; stage: string | null };
       games: number;
       labels: Record<string, string>;
       mine: { norms: Record<string, Norm>; flat: Record<string, Flat> };
@@ -155,7 +169,8 @@ const standout = [...KNOW.dimensions].sort(
   (a, b) => Math.abs(50 - b.percentile) - Math.abs(50 - a.percentile),
 )[0];
 
-const opponent = Object.keys(SCOUT.opponents)[0];
+const FIXTURE = SCOUT.fixture;
+const opponent = FIXTURE?.opponent ?? null;
 
 function momentBeats(list: ClipMoment[]): Beat[] {
   return list.map((m) => ({ id: `moment-${m.key}`, kind: "moment" as const, moment: m }));
@@ -227,23 +242,38 @@ export const BEATS: Beat[] = [
       scale: KNOW.scale,
     },
   },
-  {
-    id: "opponent",
-    kind: "evidence",
-    card: {
-      kind: "opponent",
-      title: `Next up: ${opponent}`,
-      opponent,
-      games: SCOUT.opponents[opponent].games,
-      labels: SCOUT.labels,
-      mine: SCOUT.mine,
-      theirs: SCOUT.opponents[opponent],
-    },
-  },
+  // Only if there is a next match. A workspace whose latest game is the one
+  // just watched has nobody to prepare for, and says that instead.
+  ...(FIXTURE && opponent
+    ? [
+        {
+          id: "opponent",
+          kind: "evidence" as const,
+          card: {
+            kind: "opponent" as const,
+            title: `Next up: ${opponent}`,
+            opponent,
+            fixture: FIXTURE,
+            games: SCOUT.opponents[opponent].games,
+            labels: SCOUT.labels,
+            mine: SCOUT.mine,
+            theirs: SCOUT.opponents[opponent],
+          },
+        },
+      ]
+    : [
+        {
+          id: "opponent",
+          kind: "say" as const,
+          text: `That was ${SCOUT.after.label} on ${SCOUT.after.date}, and it is the last game I hold for you. Send me the next one and I will have it ready before you sit down.`,
+        },
+      ]),
   {
     id: "close",
     kind: "say",
-    text: "That is the session. Ask me about any player, any clip, or anything I just showed you.",
+    text: opponent
+      ? `That is the session. ${opponent} next, on ${FIXTURE?.date}. Ask me about any player, any clip, or anything I just showed you.`
+      : "That is the session. Ask me about any player, any clip, or anything I just showed you.",
     withoutMemory:
       "That is the game itself, and it holds up on its own. Turn the memory back on and the same footage gets a season and 354 sides behind it.",
   },
@@ -287,12 +317,16 @@ export const SOURCES: Source[] = [
     desc: `${TOTALS.in_graph} games on record`,
     glyph: "season",
   },
-  {
-    key: "opponent",
-    name: opponent,
-    desc: `${SCOUT.opponents[opponent].games} of theirs in the graph`,
-    glyph: "shield",
-  },
+  ...(opponent
+    ? [
+        {
+          key: "opponent",
+          name: opponent,
+          desc: `${SCOUT.opponents[opponent].games} of theirs in the graph`,
+          glyph: "shield" as const,
+        },
+      ]
+    : []),
 ];
 
 /**
@@ -313,6 +347,8 @@ export const COMMANDS: { key: string; label: string; hint: string; to: string }[
       ]
     : []),
   { key: "season", label: "season", hint: `you against ${KNOW.scale.teams} sides`, to: "benchmark" },
-  { key: "next", label: "next", hint: `what ${opponent} do`, to: "opponent" },
+  ...(opponent
+    ? [{ key: "next", label: "next", hint: `what ${opponent} do`, to: "opponent" }]
+    : []),
   { key: "again", label: "again", hint: "from the top", to: "greet" },
 ];
