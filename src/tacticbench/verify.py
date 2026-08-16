@@ -173,6 +173,62 @@ def check_api() -> None:
         check("api: abstention", False, str(exc)[:80])
 
 
+def check_conversation(g: Graph) -> None:
+    """A turn must round-trip with its citations intact.
+
+    The claim the interface makes is that a source chip resolves to a real
+    dated fact. This is the check that keeps that true: write a turn citing
+    facts pulled out of the graph, read it back, and confirm the citations
+    still point at nodes that exist and carry their dimension.
+    """
+    from .demo import team_id
+    from .graph import date_ord
+
+    tid = team_id("Argentina")
+    facts = [
+        dict(r)
+        for r in g.run(
+            "MATCH (t:Team {id: $tid})-[:HAS_FACT]->(f:Fact) "
+            "RETURN f.id AS id LIMIT 2",
+            tid=tid,
+        )
+    ]
+    if len(facts) < 2:
+        check("conversation: fixture facts available", False, "need 2 facts")
+        return
+
+    cites = tuple(f["id"] for f in facts)
+    # A fixed id range so repeated runs overwrite rather than accumulate.
+    sid, base = 99_001, 99_001_00
+    ordinal = date_ord("2026-08-15")
+
+    g.start_session(tid, sid, ordinal)
+    g.add_turn(sid, base, 0, "coach", "Are we still pressing high?", ordinal)
+    g.add_turn(sid, base + 1, 1, "pep", "No — 5.5m lower than your norm.",
+               ordinal, cites=cites, prev_turn_id=base)
+
+    turns = g.session_turns(sid)
+    check(
+        "conversation: turns round-trip in order",
+        len(turns) >= 2 and [t["seq"] for t in turns[:2]] == [0, 1],
+        f"{len(turns)} turns, seq ordered",
+    )
+
+    cited = g.turn_citations(base + 1)
+    check(
+        "conversation: citations resolve to real facts",
+        len(cited) == len(cites) and all(c.get("dimension") for c in cited),
+        f"{len(cited)} facts, e.g. {cited[0]['dimension'] if cited else '—'}",
+    )
+
+    recalled = g.recall(tid, limit=5)
+    check(
+        "conversation: recall returns prior turns",
+        len(recalled) >= 2,
+        f"{len(recalled)} turns back",
+    )
+
+
 def main() -> int:
     g = Graph()
     try:
@@ -180,6 +236,7 @@ def main() -> int:
         check_temporal_integrity(g)
         check_known_results(g)
         check_abstention(g)
+        check_conversation(g)
     finally:
         g.close()
     check_api()

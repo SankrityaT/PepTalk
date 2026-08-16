@@ -66,6 +66,10 @@ CITATIONS_PER_FACT = 12
 # StatsBomb games, so sharing the space would collide unrelated fixtures.
 CV_MATCH_ID_BASE = 20_000_000
 
+# Conversation lives in the same graph as the football, in its own id ranges.
+SESSION_ID_BASE = 400_000_000
+TURN_ID_BASE = 500_000_000
+
 
 def team_id_for(name: str) -> int:
     """Deterministic team id, matching demo.team_id (crc32, not salted hash)."""
@@ -459,6 +463,103 @@ class Graph:
             mid=MATCH_ID_BASE + statsbomb_id, hid=highlight_id, kind=kind,
             minute=minute, label=label, url=clip_url,
         )
+
+    # ── Conversation ─────────────────────────────────────────────────────
+    #
+    # The chat lives in the same graph as the football, and that is the whole
+    # point. A turn cites a `Fact` by id, so "you asked about pressing last
+    # week" is a traversal rather than a string search, and an answer can cite
+    # the same dated fact the report cited.
+    #
+    # It also inherits the temporal discipline: turns carry ordinals from
+    # `date_ord`, so conversation and football sort on one timeline. A fact
+    # that gets superseded does not silently rewrite what Pep said last week —
+    # the old turn still points at the old fact, which is the honest record of
+    # what was believed at the time.
+
+    def start_session(self, team_id: int, session_id: int, started_ord: int) -> None:
+        self.run(
+            "CREATE (t:Team {id: $tid})-[:HAS_SESSION]->"
+            "(s:Session {id: $sid, team_id: $tid, started_ord: $ord, last_ord: $ord})",
+            tid=team_id, sid=SESSION_ID_BASE + session_id, ord=started_ord,
+        )
+
+    def add_turn(
+        self,
+        session_id: int,
+        turn_id: int,
+        seq: int,
+        role: str,
+        text: str,
+        ts_ord: int,
+        cites: tuple[int, ...] = (),
+        prev_turn_id: int | None = None,
+    ) -> int:
+        """Append one turn, with its citations.
+
+        `cites` are node ids that already exist — facts, matches, highlights.
+        A citation to something absent would make the chip a decoration, which
+        is the thing this schema exists to prevent, so callers pass ids they
+        got out of the graph rather than ids they hope are there.
+        """
+        sid = SESSION_ID_BASE + session_id
+        tid = TURN_ID_BASE + turn_id
+        self.run(
+            "CREATE (s:Session {id: $sid})-[:HAS_TURN]->"
+            "(t:Turn {id: $tid, session_id: $sid, seq: $seq, role: $role, "
+            "text: $text, ts_ord: $ord})",
+            sid=sid, tid=tid, seq=seq, role=role, text=text, ord=ts_ord,
+        )
+        if prev_turn_id is not None:
+            # Explicit ordering rather than trusting scan order to come back
+            # sorted, which it is under no obligation to do.
+            self.run(
+                "CREATE (a:Turn {id: $prev})-[:NEXT]->(b:Turn {id: $cur})",
+                prev=TURN_ID_BASE + prev_turn_id, cur=tid,
+            )
+        for node_id in cites:
+            self.run(
+                "CREATE (t:Turn {id: $tid})-[:CITES]->(f:Fact {id: $fid})",
+                tid=tid, fid=node_id,
+            )
+        self.run(
+            "MATCH (s:Session {id: $sid}) SET s.last_ord = $ord", sid=sid, ord=ts_ord
+        )
+        return tid
+
+    def session_turns(self, session_id: int, limit: int = 50) -> list[dict]:
+        rows = self.run(
+            "MATCH (s:Session {id: $sid})-[:HAS_TURN]->(t:Turn) "
+            "RETURN t.id AS id, t.seq AS seq, t.role AS role, t.text AS text, "
+            "t.ts_ord AS ts_ord ORDER BY t.seq LIMIT $limit",
+            sid=SESSION_ID_BASE + session_id, limit=limit,
+        )
+        return [dict(r) for r in rows]
+
+    def turn_citations(self, turn_id: int) -> list[dict]:
+        rows = self.run(
+            "MATCH (t:Turn {id: $tid})-[:CITES]->(f:Fact) "
+            "RETURN f.id AS id, f.dimension AS dimension, f.band AS band, "
+            "f.observations AS observations, f.median_value AS median_value",
+            tid=TURN_ID_BASE + turn_id,
+        )
+        return [dict(r) for r in rows]
+
+    def recall(self, team_id: int, limit: int = 12) -> list[dict]:
+        """What this coach has asked before, newest last.
+
+        This is the retrieval half: prior turns come back as context for the
+        next answer, so the assistant carries a memory of the conversation as
+        well as of the football.
+        """
+        rows = self.run(
+            "MATCH (t:Team {id: $tid})-[:HAS_SESSION]->(s:Session)-[:HAS_TURN]->(turn:Turn) "
+            "RETURN turn.id AS id, turn.role AS role, turn.text AS text, "
+            "turn.ts_ord AS ts_ord, s.id AS session_id "
+            "ORDER BY turn.ts_ord DESC, turn.seq DESC LIMIT $limit",
+            tid=team_id, limit=limit,
+        )
+        return list(reversed([dict(r) for r in rows]))
 
     def highlights(self, statsbomb_id: int) -> list[dict]:
         rows = self.run(
