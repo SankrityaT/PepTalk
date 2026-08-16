@@ -18,12 +18,10 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 export type Section =
   | "brief"
-  | "review"
-  | "goals"
-  | "tape"
+  | "watch"
   | "roster"
   | "games"
-  | "memory"
+  | "knows"
   | "model";
 
 type Item = {
@@ -35,17 +33,14 @@ type Item = {
   soon?: boolean;
 };
 
+// Review, Goals against and Tape were three rows that all meant "watch the
+// footage", and a coach could not tell them apart. One row, tabs inside it.
 const ITEMS: Item[] = [
   { key: "brief", label: "Brief", group: "Today", count: true },
-  // The two things a coach came to look at. They were buried at the bottom of
-  // the brief, which meant scrolling past everything to reach them and no way
-  // to know they were there.
-  { key: "review", label: "Review", group: "Today" },
-  { key: "goals", label: "Goals against", group: "Today" },
-  { key: "tape", label: "Tape", group: "Today" },
-  { key: "roster", label: "Roster", group: "Squad", plus: true, soon: true },
-  { key: "games", label: "Games", group: "Season" },
-  { key: "memory", label: "Memory", group: "Season" },
+  { key: "watch", label: "Watch the game", group: "Today" },
+  { key: "roster", label: "Players", group: "Squad", plus: true, soon: true },
+  { key: "games", label: "Your season", group: "Season" },
+  { key: "knows", label: "What Pep knows", group: "Season" },
   { key: "model", label: "Threat map", group: "Season" },
 ];
 
@@ -53,16 +48,10 @@ const GROUPS = ["Today", "Squad", "Season"];
 
 function Icon({ kind }: { kind: Section }) {
   const paths: Record<Section, React.ReactNode> = {
-    review: (
+    watch: (
       <g>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M10 9l5 3-5 3z" />
-      </g>
-    ),
-    goals: (
-      <g>
-        <path d="M3 21V9l9-6 9 6v12" />
-        <path d="M3 21h18M8 21v-6h8v6" />
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <path d="M10 9.5l5 2.5-5 2.5z" />
       </g>
     ),
     brief: (
@@ -70,12 +59,6 @@ function Icon({ kind }: { kind: Section }) {
         <path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z" />
         <path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
         <path d="M8 12h8M8 16h5" />
-      </g>
-    ),
-    tape: (
-      <g>
-        <rect x="2" y="5" width="20" height="14" rx="2" />
-        <path d="M10 9.5l5 2.5-5 2.5z" />
       </g>
     ),
     roster: (
@@ -91,7 +74,7 @@ function Icon({ kind }: { kind: Section }) {
         <path d="M3 9h18M8 2v4M16 2v4" />
       </g>
     ),
-    memory: (
+    knows: (
       <g>
         <path d="M12 3v18M3 8h4M3 16h4M17 8h4M17 16h4" />
         <rect x="7" y="4" width="10" height="16" rx="2" />
