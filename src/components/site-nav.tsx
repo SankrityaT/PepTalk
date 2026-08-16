@@ -34,9 +34,17 @@ export function SiteNav() {
         </a>
         <a
           href="https://github.com"
-          className="border border-rule px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-chalk transition-colors duration-150 ease-[var(--ease-ui)] hover:bg-white/5"
+          className="hidden border border-rule px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-chalk transition-colors duration-150 ease-[var(--ease-ui)] hover:bg-white/5 sm:block"
         >
           GitHub
+        </a>
+        {/* The way in. Without this the landing page describes a product
+            nobody can reach. */}
+        <a
+          href="/dashboard"
+          className="bg-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-canvas transition-all duration-150 ease-[var(--ease-ui)] hover:brightness-110"
+        >
+          Open the dashboard
         </a>
       </nav>
     </header>
