@@ -152,6 +152,36 @@ def describe(moment: dict) -> dict:
     }
 
 
+#: The coach's own side. Everything is written from their bench.
+def side_of(moment: dict, team: str) -> str:
+    """Attacking if our player had the ball, defending if theirs did."""
+    return "attacking" if moment.get("team") == team else "defending"
+
+
+def defensive_line(f: dict) -> str:
+    """What a moment means when the opponent had the ball.
+
+    Half the flagged moments in a match belong to the other side, and reading
+    them out as "you had this on" to the wrong bench is nonsense. From this
+    bench they are the chances that were there and did not arrive, which is the
+    defensive half of the report and the thing a coach is most exposed by.
+
+    `best_defenders` counts bodies in the passing lane, and when the opponent
+    is passing those bodies are ours. That makes it the one genuinely
+    defensive number the engine already produces, so the line leads with it.
+    """
+    where = f["best_zone"]
+    bodies = f["best_defenders"]
+    if bodies >= 3:
+        cover = f"{bodies} of yours were in the lane, which is why it did not get played"
+    elif bodies == 0:
+        cover = "nobody was in the lane; that one was open"
+    else:
+        cover = f"only {bodies} of yours in the lane"
+    odds = f"{f['best_completion']:.0%} to arrive"
+    return f"They had the ball {where} on there. {cover[0].upper()}{cover[1:]}, {odds}."
+
+
 PROMPT = """You are Pep, an assistant coach reviewing match video with a
 lower-division manager who has no analyst and no time.
 
