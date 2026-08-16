@@ -16,6 +16,15 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+
+# uv syncs a group named `dev` automatically, so `uv run pytest` uses the
+# project environment. Declared only under optional-dependencies, pytest is
+# not a project dependency at all, and `uv run pytest` falls back to running
+# it as a standalone tool in an environment with none of the project's
+# packages: neo4j and cv2 go missing and five modules fail to import for a
+# reason that looks like a code error.
+[dependency-groups]
+dev = ["pytest>=8.0"]
 # Vision extras. Kept optional so the core install stays light: judges running
 # the graph and API should not have to pull ~2GB of torch.
 cv = ["torch>=2.2", "torchvision>=0.17", "ultralytics>=8.3"]
