@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Turn } from "@/components/brief/atoms/turn";
 import conceded from "@/content/snapshots/conceded.json";
-import { KIT } from "@/content/clip";
+import { TapePlayer } from "@/components/tape/tape-player";
 import type { FreezePlayer } from "@/content/pep";
 
 /**
@@ -71,123 +70,21 @@ const DATA = conceded as unknown as {
   goals: Goal[];
 };
 
-const MAX_STALENESS_S = 0.14;
-
-function frameAt(frames: Frame[], t: number): Frame | null {
-  if (!frames.length) return null;
-  let lo = 0;
-  let hi = frames.length - 1;
-  while (lo < hi) {
-    const mid = (lo + hi) >> 1;
-    if (frames[mid].t < t) lo = mid + 1;
-    else hi = mid;
-  }
-  const a = frames[Math.max(0, lo - 1)];
-  const b = frames[lo];
-  const best = Math.abs(a.t - t) <= Math.abs(b.t - t) ? a : b;
-  return Math.abs(best.t - t) <= MAX_STALENESS_S ? best : null;
-}
-
 function surname(full: string): string {
   const p = full.trim().split(/\s+/);
   return p.length > 1 ? p[p.length - 1] : full;
 }
 
 function GoalVideo({ goal }: { goal: Goal }) {
-  const video = useRef<HTMLVideoElement>(null);
-  const raf = useRef<number>(0);
-  const [t, setT] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  const stopAt = goal.goal_at ?? 0;
-
-  useEffect(() => {
-    const tick = () => {
-      const v = video.current;
-      if (v) {
-        setT(v.currentTime);
-        if (!v.paused && stopAt && v.currentTime >= stopAt) {
-          v.pause();
-          setPaused(true);
-        }
-      }
-      raf.current = requestAnimationFrame(tick);
-    };
-    raf.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf.current);
-  }, [stopAt]);
-
-  const frame = frameAt(goal.frames, t);
-
-  const replay = () => {
-    const v = video.current;
-    if (!v) return;
-    v.currentTime = 0;
-    v.play().catch(() => {});
-    setPaused(false);
-  };
-
   return (
-    <div className="overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.06]">
-      <div className="relative aspect-video w-full bg-black">
-        <video
-          ref={video}
-          src={goal.clip ?? undefined}
-          className="absolute inset-0 h-full w-full object-cover"
-          playsInline
-          muted
-          preload="auto"
-          autoPlay
-          onClick={replay}
-        />
-        <div className="pointer-events-none absolute inset-0">
-          {frame?.players.map((p, i) => (
-            <span
-              key={i}
-              className="absolute border"
-              style={{
-                left: `${p.box[0] * 100}%`,
-                top: `${p.box[1] * 100}%`,
-                width: `${(p.box[2] - p.box[0]) * 100}%`,
-                height: `${(p.box[3] - p.box[1]) * 100}%`,
-                borderColor: KIT[p.team] ?? "rgba(255,255,255,0.4)",
-                boxShadow: "0 0 0 1px rgba(0,0,0,0.45)",
-              }}
-            />
-          ))}
-        </div>
-
-        <span className="pointer-events-none absolute top-3 left-3 rounded bg-black/75 px-2 py-1 font-mono text-[10px] tabular-nums text-chalk backdrop-blur-sm">
-          {frame ? `${frame.players.length} tracked` : "no tracking"}
-        </span>
-
-        <AnimatePresence>
-          {paused && (
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="pointer-events-none absolute top-3 right-3 rounded bg-accent px-2 py-1 font-mono text-[10px] tracking-[0.1em] text-canvas uppercase"
-            >
-              in the net
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="flex items-center justify-between gap-3 px-3.5 py-2.5">
-        <span className="font-mono text-[10px] text-muted-2">
-          {goal.detections.toLocaleString()} detections &middot; build up from{" "}
-          {goal.passage[0]?.minute}:{String(goal.passage[0]?.second ?? 0).padStart(2, "0")}
-        </span>
-        <button
-          onClick={replay}
-          className="rounded-lg bg-white/[0.05] px-2.5 py-1.5 font-mono text-[10px] text-warm transition-colors hover:bg-white/[0.11] hover:text-chalk"
-        >
-          run it again
-        </button>
-      </div>
-    </div>
+    <TapePlayer
+      src={goal.clip ?? ""}
+      frames={goal.frames}
+      stopAt={goal.goal_at}
+      stopLabel="in the net"
+      chalkTeam={0}
+      seed={goal.clock.length * 13}
+    />
   );
 }
 

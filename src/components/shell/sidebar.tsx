@@ -16,7 +16,15 @@ import { useLayoutEffect, useRef, useState } from "react";
  * it means hover and selection cannot disagree about where you are.
  */
 
-export type Section = "brief" | "tape" | "roster" | "games" | "model";
+export type Section =
+  | "brief"
+  | "review"
+  | "goals"
+  | "tape"
+  | "roster"
+  | "games"
+  | "memory"
+  | "model";
 
 type Item = {
   key: Section;
@@ -29,9 +37,15 @@ type Item = {
 
 const ITEMS: Item[] = [
   { key: "brief", label: "Brief", group: "Today", count: true },
+  // The two things a coach came to look at. They were buried at the bottom of
+  // the brief, which meant scrolling past everything to reach them and no way
+  // to know they were there.
+  { key: "review", label: "Review", group: "Today" },
+  { key: "goals", label: "Goals against", group: "Today" },
   { key: "tape", label: "Tape", group: "Today" },
   { key: "roster", label: "Roster", group: "Squad", plus: true, soon: true },
   { key: "games", label: "Games", group: "Season" },
+  { key: "memory", label: "Memory", group: "Season" },
   { key: "model", label: "Threat map", group: "Season" },
 ];
 
@@ -39,6 +53,18 @@ const GROUPS = ["Today", "Squad", "Season"];
 
 function Icon({ kind }: { kind: Section }) {
   const paths: Record<Section, React.ReactNode> = {
+    review: (
+      <g>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M10 9l5 3-5 3z" />
+      </g>
+    ),
+    goals: (
+      <g>
+        <path d="M3 21V9l9-6 9 6v12" />
+        <path d="M3 21h18M8 21v-6h8v6" />
+      </g>
+    ),
     brief: (
       <g>
         <path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z" />
@@ -63,6 +89,12 @@ function Icon({ kind }: { kind: Section }) {
       <g>
         <rect x="3" y="4" width="18" height="17" rx="2" />
         <path d="M3 9h18M8 2v4M16 2v4" />
+      </g>
+    ),
+    memory: (
+      <g>
+        <path d="M12 3v18M3 8h4M3 16h4M17 8h4M17 16h4" />
+        <rect x="7" y="4" width="10" height="16" rx="2" />
       </g>
     ),
     model: (

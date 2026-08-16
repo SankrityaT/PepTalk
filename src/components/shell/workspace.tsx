@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Brief } from "@/components/brief/brief";
+import { Conceded } from "@/components/brief/conceded";
+import { Walkthrough } from "@/components/brief/walkthrough";
+import { MemoryView } from "@/components/memory/memory-view";
 import { TapeRoom } from "@/components/report/tape-room";
 import { MatchCard } from "@/components/dash/match-card";
 import { Pipeline } from "@/components/dash/pipeline";
@@ -56,7 +59,16 @@ export function Workspace({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.28, ease: EASE }}
           >
-            {section === "brief" && <Brief onOpenMoment={onOpenMoment} />}
+            {section === "brief" && (
+              <Brief
+                onOpenMoment={onOpenMoment}
+                onReview={() => setSection("review")}
+                onGoals={() => setSection("goals")}
+              />
+            )}
+            {section === "review" && <Review />}
+            {section === "goals" && <Goals />}
+            {section === "memory" && <MemoryView />}
             {section === "tape" && <Tape />}
             {section === "games" && <Games />}
             {section === "model" && <Model />}
@@ -64,6 +76,38 @@ export function Workspace({
           </motion.div>
         </AnimatePresence>
       </main>
+    </div>
+  );
+}
+
+/* Its own screen. Buried at the bottom of the brief it needed a long scroll to
+   reach and gave no sign it was there. */
+function Review() {
+  return (
+    <div className="mx-auto w-full max-w-6xl">
+      <h1 className="text-[24px] font-medium text-chalk">Review</h1>
+      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
+        The moments worth stopping the tape for, one at a time. Footage on the
+        left, what was on beside it.
+      </p>
+      <div className="mt-6">
+        <Walkthrough />
+      </div>
+    </div>
+  );
+}
+
+function Goals() {
+  return (
+    <div className="mx-auto w-full max-w-6xl">
+      <h1 className="text-[24px] font-medium text-chalk">Goals against</h1>
+      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
+        How each one went in, read off where every player stood when the ball
+        was struck.
+      </p>
+      <div className="mt-6">
+        <Conceded />
+      </div>
     </div>
   );
 }
@@ -117,9 +161,10 @@ function Games() {
       </div>
 
       <p className="mt-5 max-w-3xl text-[12px] leading-relaxed text-muted-2">
-        Scorelines cover open play and extra time. Shootouts are excluded
-        everywhere, because eight penalties would swamp a match&rsquo;s chance
-        count and tell you nothing about how the side played.
+        Scorelines are the real result, shootouts included. The{" "}
+        <em className="not-italic text-muted">models</em> exclude penalties,
+        because eight of them would swamp a match&rsquo;s chance count and say
+        nothing about how a side played, but who won is not a model input.
       </p>
     </div>
   );
