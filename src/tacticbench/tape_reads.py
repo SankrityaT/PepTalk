@@ -108,7 +108,7 @@ def build(tracking: Path, out_path: Path) -> dict:
         # enough on this clip to report 12 France shirts, which is two more
         # than a team can field, and printing it would be an obvious lie.
         if crowded:
-            headline = f"{n} bodies in the picture — most yet."
+            headline = f"{n} bodies in the picture, the most yet."
             detail = "the box is filling up"
         elif n < 10:
             headline = f"{n} tracked."

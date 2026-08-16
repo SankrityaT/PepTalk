@@ -272,8 +272,10 @@ Rules:
   shape and a constraint so a coach can set it up without thinking.
   Good: "4v2 in the corner. Two touches max, must finish first time."
   Bad: "Work on timing runs and being more decisive in the final third."
-- Second person. No analytics vocabulary, no decimals, no player names — the
+- Second person. No analytics vocabulary, no decimals, no player names. The
   interface prints those separately.
+- NEVER use an em dash or an en dash. Use a comma, a full stop, or a colon.
+  A coach reads this on a phone and dashes make it scan as an essay.
 - Order them by what would win the most points, not by what is easiest.
 - If several moments share a cause, that is one theme, not three.
 
