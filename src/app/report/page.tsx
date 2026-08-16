@@ -7,6 +7,7 @@ import { Dashboard } from "@/components/dash/dashboard";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { MomentPitch } from "@/components/report/moment-pitch";
 import { PepFeed } from "@/components/report/pep-feed";
+import { TapeRoom } from "@/components/report/tape-room";
 import { ThisWeek } from "@/components/report/this-week";
 import { Upload } from "@/components/report/upload";
 import { VersusUsual } from "@/components/report/versus-usual";
@@ -159,6 +160,14 @@ function Report({
           the box was open — {MOMENTS.length} times worth showing the group.
         </p>
       </header>
+
+      {/* ── The tape ────────────────────────────────────────────────── */}
+      {/* First, because it is the thing being talked about. A coach who scrolls
+          into a set of diagrams without seeing the footage they came from has
+          been handed homework. */}
+      <section>
+        <TapeRoom />
+      </section>
 
       {/* ── The point of the whole thing ────────────────────────────── */}
       <ThisWeek onSelect={onSelect} />

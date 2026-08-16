@@ -1,0 +1,296 @@
+{
+ "video": "/tape/wc2022.mp4",
+ "source": "2022 FIFA World Cup Final \u2014 Argentina v France",
+ "detections": 3598,
+ "excluded_non_team": 234,
+ "fps": 25,
+ "frames_tracked": 297,
+ "entries": [
+  {
+   "id": 0,
+   "t": 0.0,
+   "kind": "crowd",
+   "headline": "16 bodies in the picture \u2014 most yet.",
+   "detail": "the box is filling up",
+   "tracked": 16,
+   "kits": [
+    7,
+    9
+   ],
+   "grass": 0.787
+  },
+  {
+   "id": 1,
+   "t": 3.0,
+   "kind": "read",
+   "headline": "13 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 13,
+   "kits": [
+    5,
+    8
+   ],
+   "grass": 0.726
+  },
+  {
+   "id": 2,
+   "t": 6.0,
+   "kind": "read",
+   "headline": "16 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 16,
+   "kits": [
+    7,
+    9
+   ],
+   "grass": 0.703
+  },
+  {
+   "id": 3,
+   "t": 9.0,
+   "kind": "read",
+   "headline": "15 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 15,
+   "kits": [
+    8,
+    7
+   ],
+   "grass": 0.701
+  },
+  {
+   "id": 4,
+   "t": 12.0,
+   "kind": "read",
+   "headline": "14 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 14,
+   "kits": [
+    6,
+    8
+   ],
+   "grass": 0.719
+  },
+  {
+   "id": 5,
+   "t": 15.0,
+   "kind": "crowd",
+   "headline": "17 bodies in the picture \u2014 most yet.",
+   "detail": "the box is filling up",
+   "tracked": 17,
+   "kits": [
+    8,
+    9
+   ],
+   "grass": 0.768
+  },
+  {
+   "id": 6,
+   "t": 18.0,
+   "kind": "read",
+   "headline": "16 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 16,
+   "kits": [
+    4,
+    12
+   ],
+   "grass": 0.789
+  },
+  {
+   "id": 7,
+   "t": 21.0,
+   "kind": "read",
+   "headline": "13 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 13,
+   "kits": [
+    5,
+    8
+   ],
+   "grass": 0.667
+  },
+  {
+   "id": 8,
+   "t": 23.33,
+   "kind": "read",
+   "headline": "13 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 13,
+   "kits": [
+    4,
+    9
+   ],
+   "grass": 0.56
+  },
+  {
+   "id": 9,
+   "t": 27.0,
+   "kind": "read",
+   "headline": "12 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 12,
+   "kits": [
+    5,
+    7
+   ],
+   "grass": 0.536
+  },
+  {
+   "id": 10,
+   "t": 30.0,
+   "kind": "read",
+   "headline": "12 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 12,
+   "kits": [
+    5,
+    7
+   ],
+   "grass": 0.575
+  },
+  {
+   "id": 11,
+   "t": 48.0,
+   "kind": "read",
+   "headline": "8 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 8,
+   "kits": [
+    4,
+    4
+   ],
+   "grass": 0.645
+  },
+  {
+   "id": 12,
+   "t": 49.67,
+   "kind": "read",
+   "headline": "9 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 9,
+   "kits": [
+    3,
+    6
+   ],
+   "grass": 0.627
+  },
+  {
+   "id": 13,
+   "t": 63.5,
+   "kind": "read",
+   "headline": "9 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 9,
+   "kits": [
+    4,
+    5
+   ],
+   "grass": 0.456
+  },
+  {
+   "id": 14,
+   "t": 66.0,
+   "kind": "read",
+   "headline": "9 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 9,
+   "kits": [
+    3,
+    6
+   ],
+   "grass": 0.526
+  },
+  {
+   "id": 15,
+   "t": 69.0,
+   "kind": "read",
+   "headline": "11 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 11,
+   "kits": [
+    4,
+    7
+   ],
+   "grass": 0.555
+  },
+  {
+   "id": 16,
+   "t": 72.0,
+   "kind": "read",
+   "headline": "12 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 12,
+   "kits": [
+    5,
+    7
+   ],
+   "grass": 0.569
+  },
+  {
+   "id": 17,
+   "t": 78.0,
+   "kind": "read",
+   "headline": "9 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 9,
+   "kits": [
+    3,
+    6
+   ],
+   "grass": 0.588
+  },
+  {
+   "id": 18,
+   "t": 81.0,
+   "kind": "read",
+   "headline": "8 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 8,
+   "kits": [
+    1,
+    7
+   ],
+   "grass": 0.543
+  },
+  {
+   "id": 19,
+   "t": 84.0,
+   "kind": "read",
+   "headline": "9 tracked.",
+   "detail": "camera has tightened; too few to read shape",
+   "tracked": 9,
+   "kits": [
+    3,
+    6
+   ],
+   "grass": 0.536
+  },
+  {
+   "id": 20,
+   "t": 87.0,
+   "kind": "read",
+   "headline": "10 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 10,
+   "kits": [
+    5,
+    5
+   ],
+   "grass": 0.536
+  },
+  {
+   "id": 21,
+   "t": 90.0,
+   "kind": "read",
+   "headline": "11 tracked.",
+   "detail": "two kits separated, officials dropped",
+   "tracked": 11,
+   "kits": [
+    3,
+    8
+   ],
+   "grass": 0.53
+  }
+ ]
+}
