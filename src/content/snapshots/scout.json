@@ -1,1 +1,169 @@
-{"team": "Argentina", "labels": {"possession_share_pct": "possession share", "press_height": "pressing height", "defensive_action_height": "defensive line height", "team_width": "attacking width", "pass_forward_ratio": "directness"}, "mine": {"norms": {"press_height": {"band": "mid", "value": 57.18, "obs": 16, "since": "2018-06-21", "id": 356620001}, "defensive_action_height": {"band": "mid", "value": 52.08, "obs": 12, "since": "2022-11-26", "id": 356620003}, "team_width": {"band": "balanced", "value": 23.09, "obs": 13, "since": "2022-11-22", "id": 356620005}, "pass_forward_ratio": {"band": "mixed", "value": 0.59, "obs": 13, "since": "2022-11-22", "id": 356620007}, "possession_share_pct": {"band": "even", "value": 56.6, "obs": 17, "since": "2018-06-16", "id": 356620009}}, "flat": {"possession_share_pct": {"band": "even", "observations": 17, "valid_from": 736861, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 16, "valid_from": 736866, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 12, "valid_from": 738485, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 13, "valid_from": 738481, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 13, "valid_from": 738481, "valid_to": 99999999}}}, "opponents": {"Barcelona": {"norms": {"press_height": {"band": "mid", "value": 58.51, "obs": 461, "since": "2008-02-03", "id": 100010002}, "defensive_action_height": {"band": "mid", "value": 53.16, "obs": 522, "since": "2005-04-17", "id": 100010004}, "team_width": {"band": "balanced", "value": 22.58, "obs": 187, "since": "2016-02-17", "id": 100010010}, "pass_forward_ratio": {"band": "mixed", "value": 0.6, "obs": 283, "since": "2013-04-27", "id": 100010016}, "possession_share_pct": {"band": "even", "value": 63.0, "obs": 333, "since": "2012-01-08", "id": 100010020}}, "flat": {"possession_share_pct": {"band": "even", "observations": 333, "valid_from": 734510, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 461, "valid_from": 733075, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 522, "valid_from": 732053, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 231, "valid_from": 731926, "valid_to": 734887}, "pass_forward_ratio": {"band": "mixed", "observations": 283, "valid_from": 734985, "valid_to": 99999999}}, "games": 531}, "Paris Saint-Germain": {"norms": {"press_height": {"band": "mid", "value": 58.99, "obs": 89, "since": "2015-09-22", "id": 589930001}, "defensive_action_height": {"band": "mid", "value": 53.49, "obs": 26, "since": "2022-09-10", "id": 589930005}, "team_width": {"band": "balanced", "value": 22.13, "obs": 95, "since": "2015-08-07", "id": 589930006}, "pass_forward_ratio": {"band": "mixed", "value": 0.59, "obs": 85, "since": "2015-10-25", "id": 589930008}, "possession_share_pct": {"band": "even", "value": 60.3, "obs": 73, "since": "2016-02-03", "id": 589930010}}, "flat": {"possession_share_pct": {"band": "even", "observations": 73, "valid_from": 735997, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 89, "valid_from": 735863, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 55, "valid_from": 735863, "valid_to": 738289}, "team_width": {"band": "balanced", "observations": 95, "valid_from": 735817, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 85, "valid_from": 735896, "valid_to": 99999999}}, "games": 95}, "Villarreal": {"norms": {"press_height": {"band": "mid", "value": 53.59, "obs": 91, "since": "2005-12-04", "id": 274380000}, "defensive_action_height": {"band": "mid", "value": 49.22, "obs": 91, "since": "2005-12-04", "id": 274380001}, "team_width": {"band": "balanced", "value": 23.77, "obs": 91, "since": "2005-12-04", "id": 274380002}, "pass_forward_ratio": {"band": "mixed", "value": 0.71, "obs": 21, "since": "2023-11-25", "id": 274380005}, "possession_share_pct": {"band": "even", "value": 43.65, "obs": 90, "since": "2007-04-22", "id": 274380007}}, "flat": {"possession_share_pct": {"band": "even", "observations": 90, "valid_from": 732788, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 91, "valid_from": 732284, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 91, "valid_from": 732284, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 91, "valid_from": 732284, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 56, "valid_from": 732284, "valid_to": 737151}}, "games": 91}, "Manchester City WFC": {"norms": {"press_height": {"band": "mid", "value": 66.93, "obs": 75, "since": "2018-10-21", "id": 962220001}, "defensive_action_height": {"band": "mid", "value": 62.02, "obs": 76, "since": "2018-10-14", "id": 962220003}, "team_width": {"band": "balanced", "value": 24.23, "obs": 78, "since": "2018-09-23", "id": 962220005}, "pass_forward_ratio": {"band": "patient", "value": 0.55, "obs": 11, "since": "2024-01-28", "id": 962220008}, "possession_share_pct": {"band": "even", "value": 58.6, "obs": 79, "since": "2018-09-20", "id": 962220010}}, "flat": {"possession_share_pct": {"band": "even", "observations": 79, "valid_from": 736957, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 75, "valid_from": 736988, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 76, "valid_from": 736981, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 78, "valid_from": 736960, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 65, "valid_from": 736981, "valid_to": 738913}}, "games": 80}, "Arsenal WFC": {"norms": {"press_height": {"band": "mid", "value": 68.73, "obs": 24, "since": "2021-05-02", "id": 292680002}, "defensive_action_height": {"band": "mid", "value": 59.63, "obs": 79, "since": "2018-09-09", "id": 292680003}, "team_width": {"band": "balanced", "value": 24.04, "obs": 65, "since": "2019-03-14", "id": 292680005}, "pass_forward_ratio": {"band": "mixed", "value": 0.6, "obs": 79, "since": "2018-09-09", "id": 292680006}, "possession_share_pct": {"band": "even", "value": 58.7, "obs": 79, "since": "2018-09-09", "id": 292680007}}, "flat": {"possession_share_pct": {"band": "even", "observations": 79, "valid_from": 736946, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 46, "valid_from": 736946, "valid_to": 737828}, "defensive_action_height": {"band": "mid", "observations": 79, "valid_from": 736946, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 65, "valid_from": 737132, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 79, "valid_from": 736946, "valid_to": 99999999}}, "games": 79}, "Brighton & Hove Albion WFC": {"norms": {"press_height": {"band": "mid", "value": 56.91, "obs": 65, "since": "2019-02-20", "id": 313710001}, "defensive_action_height": {"band": "mid", "value": 51.0, "obs": 66, "since": "2019-02-10", "id": 313710003}, "team_width": {"band": "balanced", "value": 25.07, "obs": 77, "since": "2018-09-30", "id": 313710005}, "pass_forward_ratio": {"band": "patient", "value": 0.63, "obs": 12, "since": "2024-01-21", "id": 313710007}, "possession_share_pct": {"band": "even", "value": 45.0, "obs": 73, "since": "2018-11-18", "id": 313710009}}, "flat": {"possession_share_pct": {"band": "even", "observations": 73, "valid_from": 737016, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 65, "valid_from": 737110, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 66, "valid_from": 737100, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 77, "valid_from": 736967, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 67, "valid_from": 736946, "valid_to": 738906}}, "games": 79}, "Bristol City WFC": {"norms": {"press_height": {"band": "mid", "value": 52.55, "obs": 72, "since": "2018-11-04", "id": 157410001}, "defensive_action_height": {"band": "mid", "value": 46.65, "obs": 65, "since": "2019-02-10", "id": 157410003}, "team_width": {"band": "balanced", "value": 24.63, "obs": 75, "since": "2018-10-14", "id": 157410005}, "pass_forward_ratio": {"band": "mixed", "value": 0.71, "obs": 70, "since": "2018-11-25", "id": 157410007}, "possession_share_pct": {"band": "even", "value": 39.3, "obs": 78, "since": "2018-09-09", "id": 157410008}}, "flat": {"possession_share_pct": {"band": "even", "observations": 78, "valid_from": 736946, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 72, "valid_from": 737002, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 65, "valid_from": 737100, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 75, "valid_from": 736981, "valid_to": 99999999}, "pass_forward_ratio": {"band": "mixed", "observations": 70, "valid_from": 737023, "valid_to": 99999999}}, "games": 78}, "Chelsea FCW": {"norms": {"press_height": {"band": "mid", "value": 64.77, "obs": 66, "since": "2019-01-13", "id": 319620002}, "defensive_action_height": {"band": "mid", "value": 59.81, "obs": 78, "since": "2018-09-09", "id": 319620003}, "team_width": {"band": "narrow", "value": 23.48, "obs": 17, "since": "2023-11-12", "id": 319620006}, "pass_forward_ratio": {"band": "mixed", "value": 0.61, "obs": 75, "since": "2018-09-30", "id": 319620008}, "possession_share_pct": {"band": "even", "value": 57.5, "obs": 77, "since": "2018-09-19", "id": 319620010}}, "flat": {"possession_share_pct": {"band": "even", "observations": 77, "valid_from": 736956, "valid_to": 99999999}, "press_height": {"band": "mid", "observations": 66, "valid_from": 737072, "valid_to": 99999999}, "defensive_action_height": {"band": "mid", "observations": 78, "valid_from": 736946, "valid_to": 99999999}, "team_width": {"band": "balanced", "observations": 41, "valid_from": 737317, "valid_to": 738836}, "pass_forward_ratio": {"band": "mixed", "observations": 75, "valid_from": 736967, "valid_to": 99999999}}, "games": 78}}}
+{
+  "team": "Argentina",
+  "labels": {
+    "possession_share_pct": "possession share",
+    "press_height": "pressing height",
+    "defensive_action_height": "defensive line height",
+    "team_width": "attacking width",
+    "pass_forward_ratio": "directness"
+  },
+  "mine": {
+    "norms": {
+      "possession_share_pct": {
+        "band": "even",
+        "value": 56.6,
+        "obs": 17,
+        "since": "2018-06-16",
+        "id": 356620009
+      },
+      "press_height": {
+        "band": "mid",
+        "value": 57.18,
+        "obs": 16,
+        "since": "2018-06-21",
+        "id": 356620001
+      },
+      "defensive_action_height": {
+        "band": "mid",
+        "value": 52.08,
+        "obs": 12,
+        "since": "2022-11-26",
+        "id": 356620003
+      },
+      "team_width": {
+        "band": "balanced",
+        "value": 23.09,
+        "obs": 13,
+        "since": "2022-11-22",
+        "id": 356620005
+      },
+      "pass_forward_ratio": {
+        "band": "mixed",
+        "value": 0.59,
+        "obs": 13,
+        "since": "2022-11-22",
+        "id": 356620007
+      }
+    },
+    "flat": {
+      "possession_share_pct": {
+        "band": "even",
+        "observations": 17,
+        "valid_from": 736861,
+        "valid_to": 99999999
+      },
+      "press_height": {
+        "band": "mid",
+        "observations": 16,
+        "valid_from": 736866,
+        "valid_to": 99999999
+      },
+      "defensive_action_height": {
+        "band": "mid",
+        "observations": 12,
+        "valid_from": 738485,
+        "valid_to": 99999999
+      },
+      "team_width": {
+        "band": "balanced",
+        "observations": 13,
+        "valid_from": 738481,
+        "valid_to": 99999999
+      },
+      "pass_forward_ratio": {
+        "band": "mixed",
+        "observations": 13,
+        "valid_from": 738481,
+        "valid_to": 99999999
+      }
+    }
+  },
+  "after": {
+    "label": "Argentina 3-3 France",
+    "date": "2022-12-18",
+    "competition": "FIFA World Cup",
+    "stage": "Final"
+  },
+  "fixture": {
+    "opponent": "Canada",
+    "date": "2024-06-21",
+    "competition": "Copa America",
+    "stage": "Group Stage",
+    "statsbomb_id": 3939969,
+    "label": "Argentina 2-0 Canada"
+  },
+  "opponents": {
+    "Canada": {
+      "norms": {
+        "possession_share_pct": {
+          "band": "even",
+          "value": 50.0,
+          "obs": 8,
+          "since": "2022-11-27",
+          "id": 948740006
+        },
+        "press_height": {
+          "band": "mid",
+          "value": 58.24,
+          "obs": 9,
+          "since": "2022-11-23",
+          "id": 948740000
+        },
+        "defensive_action_height": {
+          "band": "mid",
+          "value": 51.93,
+          "obs": 9,
+          "since": "2022-11-23",
+          "id": 948740001
+        },
+        "team_width": {
+          "band": "balanced",
+          "value": 23.78,
+          "obs": 8,
+          "since": "2022-11-27",
+          "id": 948740003
+        },
+        "pass_forward_ratio": {
+          "band": "patient",
+          "value": 0.64,
+          "obs": 9,
+          "since": "2022-11-23",
+          "id": 948740004
+        }
+      },
+      "flat": {
+        "possession_share_pct": {
+          "band": "even",
+          "observations": 8,
+          "valid_from": 738486,
+          "valid_to": 99999999
+        },
+        "press_height": {
+          "band": "mid",
+          "observations": 9,
+          "valid_from": 738482,
+          "valid_to": 99999999
+        },
+        "defensive_action_height": {
+          "band": "mid",
+          "observations": 9,
+          "valid_from": 738482,
+          "valid_to": 99999999
+        },
+        "team_width": {
+          "band": "balanced",
+          "observations": 8,
+          "valid_from": 738486,
+          "valid_to": 99999999
+        },
+        "pass_forward_ratio": {
+          "band": "patient",
+          "observations": 9,
+          "valid_from": 738482,
+          "valid_to": 99999999
+        }
+      },
+      "games": 9
+    }
+  }
+}
