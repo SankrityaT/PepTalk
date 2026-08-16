@@ -9,6 +9,7 @@ import { SourceChip } from "@/components/brief/atoms/source-chip";
 import { StreamText } from "@/components/brief/atoms/stream-text";
 import { Trace } from "@/components/brief/atoms/trace";
 import { ClipCard } from "@/components/brief/clip-card";
+import { Conceded } from "@/components/brief/conceded";
 import { Walkthrough } from "@/components/brief/walkthrough";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { TapeRoom } from "@/components/report/tape-room";
@@ -65,6 +66,7 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
   const [picked, setPicked] = useState<string | null>(null);
   const [asked, setAsked] = useState<string[]>([]);
   const [openClip, setOpenClip] = useState<number | null>(null);
+  const [showConceded, setShowConceded] = useState(false);
 
   const at = (s: Stage): boolean =>
     (["trace", "context", "findings", "ask", "open"] as Stage[]).indexOf(stage) >=
@@ -211,7 +213,23 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
       {/* This used to navigate to a separate report, which threw away the
           thread and made the coach find their place again. The walkthrough
           appends to the stream instead. */}
-      {(picked === "yes" || picked === "top") && <Walkthrough />}
+      {(picked === "yes" || picked === "top") && (
+        <Walkthrough onDone={() => setShowConceded(true)} />
+      )}
+
+      {/* The other half of the game. Everything above asks what the side
+          failed to do with the ball; this asks what happened in front of
+          them, which is the half a coach loses sleep over. */}
+      {showConceded && (
+        <section className="mt-2">
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <span className="font-mono text-[10px] tracking-[0.14em] text-muted-2 uppercase">
+              How the goals went in
+            </span>
+          </div>
+          <Conceded />
+        </section>
+      )}
 
       {picked === "later" && (
         <p className="text-[15px] leading-relaxed text-warm-2">
