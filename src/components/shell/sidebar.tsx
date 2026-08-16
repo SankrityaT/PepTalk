@@ -19,6 +19,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 export type Section =
   | "brief"
   | "watch"
+  | "next"
   | "roster"
   | "games"
   | "knows"
@@ -38,6 +39,8 @@ type Item = {
 const ITEMS: Item[] = [
   { key: "brief", label: "Brief", group: "Today", count: true },
   { key: "watch", label: "Watch the game", group: "Today" },
+  // The job a coach is actually paid for: the week before the next one.
+  { key: "next", label: "Next match", group: "Today" },
   { key: "roster", label: "Players", group: "Squad", plus: true, soon: true },
   { key: "games", label: "Your season", group: "Season" },
   { key: "knows", label: "What Pep knows", group: "Season" },
@@ -48,6 +51,12 @@ const GROUPS = ["Today", "Squad", "Season"];
 
 function Icon({ kind }: { kind: Section }) {
   const paths: Record<Section, React.ReactNode> = {
+    next: (
+      <g>
+        <path d="M4 12h14M13 6l6 6-6 6" />
+        <path d="M4 5v14" />
+      </g>
+    ),
     watch: (
       <g>
         <rect x="2" y="5" width="20" height="14" rx="2" />

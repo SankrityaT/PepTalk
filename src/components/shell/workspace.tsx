@@ -6,6 +6,7 @@ import { Brief } from "@/components/brief/brief";
 import { Conceded } from "@/components/brief/conceded";
 import { Walkthrough } from "@/components/brief/walkthrough";
 import { KnowledgeView } from "@/components/memory/knowledge-view";
+import { ScoutView } from "@/components/scout/scout-view";
 import { TapeRoom } from "@/components/report/tape-room";
 import { MatchCard } from "@/components/dash/match-card";
 import { Pipeline } from "@/components/dash/pipeline";
@@ -66,6 +67,7 @@ export function Workspace({
               />
             )}
             {section === "watch" && <Watch />}
+            {section === "next" && <ScoutView />}
             {section === "knows" && <KnowledgeView />}
             {section === "games" && <Games />}
             {section === "model" && <Model />}
