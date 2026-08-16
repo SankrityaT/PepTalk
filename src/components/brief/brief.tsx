@@ -181,72 +181,16 @@ export function Brief({ onOpenMoment }: { onOpenMoment: (m: Moment) => void }) {
           <StreamText
             startDelay={500}
             text={`You won it playing unlike yourselves. Your ${labelFor(lead.dimension)} was ${Math.abs(lead.delta ?? 0).toFixed(1)}${unitFor(lead.dimension)}${lead.delta && lead.delta > 0 ? " higher" : " lower"} than your norm, which had held across ${lead.era_matches} games.`}
-            onDone={() => setStage("findings")}
+            onDone={() => setStage("ask")}
           />
           {leadSource && <SourceChip source={leadSource} />}
         </motion.p>
       )}
 
-      {/* ── The findings, shown not described ─────────────────────────── */}
-      <AnimatePresence>
-        {at("findings") && THEMES.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: EASE }}
-            onAnimationComplete={() => setStage("ask")}
-            className="flex flex-col gap-2.5"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-2">
-              Three things worth training
-            </span>
-
-            {THEMES.map((t, i) => {
-              const clips = t.moment_ids
-                .map((id) => MOMENTS.find((m) => m.id === id))
-                .filter(Boolean) as Moment[];
-              const clip = clips[i] ?? clips[0];
-              return (
-                <motion.button
-                  key={t.title}
-                  initial={{ opacity: 0, x: -6 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.35, delay: 0.1 + i * 0.1, ease: EASE }}
-                  onClick={() => clip && onOpenMoment(clip)}
-                  className="group flex items-center gap-4 rounded-xl bg-surface p-3.5 text-left ring-1 ring-white/[0.06] transition-colors hover:bg-surface-2 hover:ring-white/[0.13]"
-                >
-                  {clip && (
-                    <span className="w-32 shrink-0 sm:w-40">
-                      <MomentFrame moment={clip} compact />
-                    </span>
-                  )}
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-medium text-chalk">
-                      {t.title}
-                    </span>
-                    <span className="mt-1 block font-mono text-[11px] text-muted">
-                      {clips.length} {clips.length === 1 ? "moment" : "moments"}
-                      {clip ? ` · ${clip.minute}'` : ""}
-                    </span>
-                  </span>
-                  <span className="shrink-0 font-mono text-[10px] text-muted-2 transition-colors group-hover:text-accent">
-                    show me &rarr;
-                  </span>
-                </motion.button>
-              );
-            })}
-
-            <p className="mt-1 text-[13px] leading-relaxed text-muted">
-              I checked every pass against what else was on
-              <SourceChip source={MODEL_SOURCE} />.{" "}
-              {PASSES_WITH_AN_OPTION.toLocaleString()} had a better option
-              somewhere, but only {MOMENTS_FOUND} were a ball that would have
-              made a chance. The rest is ordinary circulation, which is how you
-              move a defence, not a mistake.
-            </p>
-          </motion.section>
-        )}
-      </AnimatePresence>
+      {/* The three training themes used to sit here as pitch diagrams. They
+          are a later thing: a coach wants to see the game before being handed
+          a session plan, so the brief goes straight from what happened to
+          watching it. The themes live on after the walkthrough. */}
 
       {/* ── The one question ──────────────────────────────────────────── */}
       <AnimatePresence>

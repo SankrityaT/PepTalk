@@ -47,3 +47,4 @@ next-env.d.ts
 # Match footage. Not ours to redistribute — the tape is fetched locally and
 # stays out of the repo. See README for how to supply your own clip.
 /public/tape/
+/public/clips/

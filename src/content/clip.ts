@@ -2,29 +2,43 @@ import clip from "./snapshots/clip-moments.json";
 import type { FreezePlayer } from "./pep";
 
 /**
- * The moments that are actually in the footage.
+ * The moments, with the footage they actually happened in.
  *
- * This is the piece that had been missing. The eight headline moments come
- * from the whole match, and none of them fall inside the ninety second clip we
- * hold, so showing them "on the tape" would have meant drawing one passage of
- * play over a different one.
+ * This is the piece that was missing for a long time. The flagged moments are
+ * spread across a two hour match, and a ninety second clip from minute twenty
+ * contained none of them, so the walkthrough could only show a diagram.
  *
- * The fix was to read the broadcast clock off the overlay: the first frame
- * shows 20:25 and the frame at 88s shows 21:52, which is 87 seconds of match
- * for 87.5 seconds of video. The clip is one continuous real time passage with
- * no cuts, and the offset between video time and match time is 1224.5s.
+ * The fix was to read the broadcast clock out of the overlay and cut the real
+ * seconds out of a full match recording. One offset per period, because the
+ * half time break is not on the match clock:
  *
- * With that, every pass the engine flagged between 20:24 and 21:54 lands at a
- * known second of the video. Seven of them do. The player names come free from
- * the event stream, so no identity model is needed for these.
+ *     period 1   video = match + 96s
+ *     period 2   video = match + 599s
+ *
+ * Every cut was verified by reading its clock back off the first frame: 08:25,
+ * 31:25, 63:07, 72:21, with the scoreline progressing 0-0, 1-0, 2-0, 2-0. The
+ * pass lands 6 seconds into each clip, so there is a run in before it.
  */
+
+export type TrackedPlayer = { box: number[]; team: number };
+export type TrackedFrame = {
+  idx: number;
+  t: number;
+  grass: number;
+  players: TrackedPlayer[];
+};
 
 export type ClipMoment = {
   id: number;
-  video_t: number;
+  key: string;
+  /** Public path to the cut footage. */
+  clip: string;
+  /** Where in the clip the pass happens, in seconds. */
+  pass_at: number;
+  match_clock: string;
   minute: number;
   player: string;
-  name: string;
+  surname: string;
   team: string;
   line: string;
   numbers: string;
@@ -45,24 +59,47 @@ export type ClipMoment = {
   best_to: [number, number];
   missed: number;
   freeze: FreezePlayer[];
+  frames: TrackedFrame[];
+  detections: number;
 };
 
 const DATA = clip as unknown as {
   match_id: number;
-  video: string;
-  clock_offset_s: number;
-  clip_from: string;
-  clip_to: string;
+  source: string;
   moments: ClipMoment[];
 };
 
 export const CLIP_MOMENTS = DATA.moments;
-export const CLOCK_OFFSET = DATA.clock_offset_s;
-export const CLIP_FROM = DATA.clip_from;
-export const CLIP_TO = DATA.clip_to;
 
-/** Match clock at a given point in the video, as the broadcast showed it. */
-export function matchClock(videoT: number): string {
-  const s = Math.floor(videoT + CLOCK_OFFSET);
+/** Lighter kit is team 0 by construction. On this match: Argentina. */
+export const KIT = ["#7ec8f0", "var(--color-accent)"] as const;
+
+/**
+ * How far the nearest tracked frame may be from the video's current time
+ * before we refuse to draw. Without it the last good frame's boxes get painted
+ * over a cut and land on the crowd.
+ */
+export const MAX_STALENESS_S = 0.14;
+
+export function frameAt(m: ClipMoment, t: number): TrackedFrame | null {
+  const f = m.frames;
+  if (!f.length) return null;
+  let lo = 0;
+  let hi = f.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (f[mid].t < t) lo = mid + 1;
+    else hi = mid;
+  }
+  const a = f[Math.max(0, lo - 1)];
+  const b = f[lo];
+  const best = Math.abs(a.t - t) <= Math.abs(b.t - t) ? a : b;
+  return Math.abs(best.t - t) <= MAX_STALENESS_S ? best : null;
+}
+
+/** Clip time back to the match clock, for the badge over the video. */
+export function clockAt(m: ClipMoment, t: number): string {
+  const [mm, ss] = m.match_clock.split(":").map(Number);
+  const s = Math.max(0, Math.round(mm * 60 + ss + (t - m.pass_at)));
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
