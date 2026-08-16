@@ -20,6 +20,11 @@ dev = ["pytest>=8.0"]
 # the graph and API should not have to pull ~2GB of torch. Request it per run:
 #   uv run --extra cv python -m tacticbench.analyse_video clip.mp4
 cv = ["torch>=2.2", "torchvision>=0.17", "ultralytics>=8.3"]
+# Fetching footage. Separate from cv so a machine that only needs to cut clips
+# does not pull torch. `uv run` re-syncs from the lockfile on every invocation,
+# so installing yt-dlp beside the project silently loses it before the next
+# command; it has to be declared to survive.
+media = ["yt-dlp>=2024.1"]
 
 # uv syncs a group named `dev` automatically, so `uv run pytest` uses the
 # project environment. Declared only under optional-dependencies, pytest is

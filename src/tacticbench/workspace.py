@@ -155,13 +155,17 @@ BUILT_IN = Workspace(
     competition="FIFA World Cup",
     season="2022",
     video_id="RgqKdplLIk4",
-    # Read off the broadcast overlay: video 12:01 shows 10:25, video 1:02:01
-    # shows 52:02. The 503s between the two offsets is the half time break.
-    # Extra time has another break and was never measured, so 3 and 4 are
-    # absent and extra-time moments are skipped rather than misplaced.
-    period_offset={1: 96.0, 2: 599.0},
+    # Read off the broadcast overlay, one probe per period: video 12:01 shows
+    # 10:25, video 1:02:01 shows 52:02, video 2:20:01 shows 118:05. The gaps
+    # between offsets are the breaks, which is why one number cannot cover the
+    # whole match. Period 3 was never needed and is absent rather than guessed.
+    period_offset={1: 96.0, 2: 599.0, 4: 1316.0},
     tape_window=("00:22:00", "00:23:30"),
-    goal_windows={"80:59": {"window": ["01:30:44", "01:31:06"], "goal_at": 13.5}},
+    goal_windows={
+        "79:24": {"window": ["01:29:00", "01:29:32"], "goal_at": 23.0},
+        "80:59": {"window": ["01:30:44", "01:31:06"], "goal_at": 13.5},
+        "117:05": {"window": ["02:18:36", "02:19:10"], "goal_at": 25.0},
+    },
     kits=("Argentina", "France"),
 )
 
