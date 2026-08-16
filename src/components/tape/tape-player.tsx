@@ -109,9 +109,14 @@ export function TapePlayer({
   // moment. The first version captured the one from the preview render, where
   // it was undefined, so the session reached its first moment and stopped
   // there forever.
+  // Kept current in an effect rather than during render: the loop only ever
+  // reads it from a frame callback, long after commit, so there is nothing to
+  // gain from the earlier write and a rule against it either way.
   const announced = useRef(false);
   const reportStop = useRef(onReachedStop);
-  reportStop.current = onReachedStop;
+  useEffect(() => {
+    reportStop.current = onReachedStop;
+  });
   useEffect(() => {
     announced.current = false;
   }, [src]);

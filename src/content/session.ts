@@ -6,6 +6,7 @@ import conceded from "./snapshots/conceded.json";
 import knowledge from "./snapshots/knowledge.json";
 import scout from "./snapshots/scout.json";
 import type { Step } from "@/components/brief/atoms/trace";
+import type { Source } from "@/components/brief/atoms/prompt-bar";
 
 /**
  * The session, as an ordered list of beats.
@@ -252,4 +253,66 @@ export const SUGGESTIONS = [
   "Who should I work with this week?",
   "Show me the goals again",
   "Are we still pressing as high as we used to?",
+];
+
+/**
+ * What the composer can reach, counted off the same snapshots the session is
+ * built from. A menu that offers something the workspace does not hold is
+ * worse than no menu, so every row here is a length or a total rather than a
+ * sentence someone typed.
+ */
+export const SOURCES: Source[] = [
+  {
+    key: "attach",
+    name: "Add footage",
+    desc: "a match file from this machine",
+    glyph: "clip",
+    attach: true,
+  },
+  {
+    key: "tape",
+    name: "Match tape",
+    desc: `${BEATS.filter((b) => clipFor(b)).length} clips cut from this game`,
+    glyph: "tape",
+  },
+  {
+    key: "graph",
+    name: "The graph",
+    desc: `${KNOW.scale.facts.toLocaleString()} dated facts, ${KNOW.scale.teams} sides`,
+    glyph: "graph",
+  },
+  {
+    key: "season",
+    name: "Your season",
+    desc: `${TOTALS.in_graph} games on record`,
+    glyph: "season",
+  },
+  {
+    key: "opponent",
+    name: opponent,
+    desc: `${SCOUT.opponents[opponent].games} of theirs in the graph`,
+    glyph: "shield",
+  },
+];
+
+/**
+ * Commands, each one a jump to a beat that exists. `to` is resolved against
+ * BEATS at the call site, so a command can never point at a beat this
+ * workspace did not build.
+ */
+export const COMMANDS: { key: string; label: string; hint: string; to: string }[] = [
+  { key: "moments", label: "moments", hint: "a better ball was on", to: "intro-moments" },
+  ...(GOALS.length
+    ? [
+        {
+          key: "goals",
+          label: "goals",
+          hint: `the ${GOALS.length} conceded`,
+          to: `goal-${GOALS[0].key}`,
+        },
+      ]
+    : []),
+  { key: "season", label: "season", hint: `you against ${KNOW.scale.teams} sides`, to: "benchmark" },
+  { key: "next", label: "next", hint: `what ${opponent} do`, to: "opponent" },
+  { key: "again", label: "again", hint: "from the top", to: "greet" },
 ];
