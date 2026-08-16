@@ -103,7 +103,15 @@ export function TapePlayer({
 
   // Fired once per clip: the session listens for it and moves the thread on,
   // so the rhythm follows the passage rather than a stopwatch.
+  //
+  // Held in a ref because the animation loop below is created once per clip
+  // and would otherwise keep calling whichever callback existed at that
+  // moment. The first version captured the one from the preview render, where
+  // it was undefined, so the session reached its first moment and stopped
+  // there forever.
   const announced = useRef(false);
+  const reportStop = useRef(onReachedStop);
+  reportStop.current = onReachedStop;
   useEffect(() => {
     announced.current = false;
   }, [src]);
@@ -116,10 +124,9 @@ export function TapePlayer({
         if (!v.paused && stopAt !== undefined && v.currentTime >= stopAt) {
           v.pause();
           setPaused(true);
-          onPlayingChange?.(false);
           if (!announced.current) {
             announced.current = true;
-            onReachedStop?.();
+            reportStop.current?.();
           }
         }
       }
