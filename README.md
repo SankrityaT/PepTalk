@@ -227,8 +227,24 @@ uv run python -m tacticbench.demo query "Barcelona" \
 
 ```bash
 pnpm install
+uv pip install yt-dlp
+uv run python -m tacticbench.bootstrap   # cuts and tracks the footage
 pnpm dev            # landing page on /, the coach's dashboard on /dashboard
 ```
+
+**The repository ships no video.** Broadcast footage is not ours to
+redistribute, so `public/clips` and `public/tape` are gitignored and a fresh
+clone renders the dashboard with empty players. `bootstrap` rebuilds them from
+two public sources: a full match recording and StatsBomb open data. It takes a
+few minutes and needs no credentials.
+
+Alignment between video time and match time is read, not guessed. The
+broadcast carries a clock in its overlay, so reading it at two known points
+gives one offset per period, `+96s` for the first half and `+599s` for the
+second, the 503s between them being the half time break. Every cut is checked
+afterwards by reading its clock back off the first frame. Extra time has a
+second break before it, so that offset does not carry and extra-time moments
+are deliberately not cut: better no clip than the wrong passage.
 
 The dashboard opens as a brief rather than a set of tiles: Pep says what he
 went through, shows the clips, and asks whether to walk you through the
