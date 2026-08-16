@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Brief } from "@/components/brief/brief";
 import { Conceded } from "@/components/brief/conceded";
 import { Walkthrough } from "@/components/brief/walkthrough";
-import { MemoryView } from "@/components/memory/memory-view";
+import { KnowledgeView } from "@/components/memory/knowledge-view";
 import { TapeRoom } from "@/components/report/tape-room";
 import { MatchCard } from "@/components/dash/match-card";
 import { Pipeline } from "@/components/dash/pipeline";
@@ -62,14 +62,11 @@ export function Workspace({
             {section === "brief" && (
               <Brief
                 onOpenMoment={onOpenMoment}
-                onReview={() => setSection("review")}
-                onGoals={() => setSection("goals")}
+                onReview={() => setSection("watch")}
               />
             )}
-            {section === "review" && <Review />}
-            {section === "goals" && <Goals />}
-            {section === "memory" && <MemoryView />}
-            {section === "tape" && <Tape />}
+            {section === "watch" && <Watch />}
+            {section === "knows" && <KnowledgeView />}
             {section === "games" && <Games />}
             {section === "model" && <Model />}
             {section === "roster" && <Roster />}
@@ -80,48 +77,52 @@ export function Workspace({
   );
 }
 
-/* Its own screen. Buried at the bottom of the brief it needed a long scroll to
-   reach and gave no sign it was there. */
-function Review() {
+/**
+ * One place to watch the game.
+ *
+ * Review, Goals against and Tape were three separate nav rows that all meant
+ * "look at the footage", and a coach could not tell from the labels which was
+ * which. They are tabs now.
+ */
+function Watch() {
+  const [tab, setTab] = useState<"moments" | "goals" | "passage">("moments");
+  const tabs = [
+    { k: "moments", label: "Moments", hint: "balls that were on" },
+    { k: "goals", label: "Goals against", hint: "how they went in" },
+    { k: "passage", label: "Full passage", hint: "90 seconds, tracked" },
+  ] as const;
+
   return (
     <div className="mx-auto w-full max-w-6xl">
-      <h1 className="text-[24px] font-medium text-chalk">Review</h1>
+      <h1 className="text-[24px] font-medium text-chalk">Watch the game</h1>
       <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
-        The moments worth stopping the tape for, one at a time. Footage on the
-        left, what was on beside it.
+        Footage on the left, Pep beside it. He stops on the things worth
+        stopping on.
       </p>
-      <div className="mt-6">
-        <Walkthrough />
-      </div>
-    </div>
-  );
-}
 
-function Goals() {
-  return (
-    <div className="mx-auto w-full max-w-6xl">
-      <h1 className="text-[24px] font-medium text-chalk">Goals against</h1>
-      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
-        How each one went in, read off where every player stood when the ball
-        was struck.
-      </p>
-      <div className="mt-6">
-        <Conceded />
+      <div className="mt-5 flex flex-wrap gap-1.5 border-b border-white/[0.07] pb-3">
+        {tabs.map((t) => (
+          <button
+            key={t.k}
+            onClick={() => setTab(t.k)}
+            className={`rounded-lg px-3 py-2 text-left transition-colors ${
+              tab === t.k
+                ? "bg-white/[0.08] text-chalk"
+                : "text-warm-2 hover:bg-white/[0.04] hover:text-chalk"
+            }`}
+          >
+            <span className="block text-[13px] font-medium">{t.label}</span>
+            <span className="block font-mono text-[10px] text-muted-2">
+              {t.hint}
+            </span>
+          </button>
+        ))}
       </div>
-    </div>
-  );
-}
 
-function Tape() {
-  return (
-    <div className="mx-auto w-full max-w-5xl">
-      <h1 className="text-[24px] font-medium text-chalk">Tape</h1>
-      <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
-        Every box is a player the tracker found in that frame. Where it has no
-        frame, nothing is drawn rather than guessed.
-      </p>
       <div className="mt-6">
-        <TapeRoom />
+        {tab === "moments" && <Walkthrough />}
+        {tab === "goals" && <Conceded />}
+        {tab === "passage" && <TapeRoom />}
       </div>
     </div>
   );

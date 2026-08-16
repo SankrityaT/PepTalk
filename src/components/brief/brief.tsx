@@ -63,11 +63,9 @@ const MODEL_CONNECTED = false;
 export function Brief({
   onOpenMoment,
   onReview,
-  onGoals,
 }: {
   onOpenMoment: (m: Moment) => void;
   onReview?: () => void;
-  onGoals?: () => void;
 }) {
   const [stage, setStage] = useState<Stage>("trace");
   const [picked, setPicked] = useState<string | null>(null);
@@ -227,33 +225,8 @@ export function Brief({
         </Turn>
       )}
 
-      {/* A link, not four hundred pixels of scroll. */}
-      {at("ask") && onGoals && (
-        <Turn showWho={false}>
-          <button
-            onClick={onGoals}
-            className="flex w-full items-center justify-between gap-3 rounded-xl bg-surface p-3.5 text-left ring-1 ring-white/[0.06] transition-colors hover:bg-surface-2 hover:ring-white/[0.14]"
-          >
-            <span>
-              <span className="block text-[14px] font-medium text-chalk">
-                You conceded three, all to the same man
-              </span>
-              <span className="mt-0.5 block font-mono text-[11px] text-muted">
-                two penalties and one from open play
-              </span>
-            </span>
-            <span className="shrink-0 font-mono text-[10px] text-muted-2">
-              goals against &rarr;
-            </span>
-          </button>
-        </Turn>
-      )}
-
-      {picked === "later" && (
-        <p className="text-[15px] leading-relaxed text-warm-2">
-          <StreamText text="Fine. They are on the Tape tab whenever you want them, and you can ask me about any of it below." />
-        </p>
-      )}
+      {/* The goals-against card used to sit here beside the choice above,
+          two buttons offering the same trip. It is a tab on Watch now. */}
 
       {/* ── Anything the coach asked ──────────────────────────────────── */}
       {asked.map((q) => (
