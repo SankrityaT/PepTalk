@@ -189,9 +189,19 @@ export function Session() {
   const chalkTeam =
     clip?.beat.kind === "moment" && clip.beat.moment.side === "defending" ? 0 : 1;
 
-  // The board follows the current beat only, so it clears on a goal rather
-  // than showing a pass diagram beside footage of something else.
-  const board = current.kind === "moment" ? current.moment : null;
+  // The board holds the same way the tape does. Clearing it on a beat that
+  // has no diagram left the column half empty, and an empty panel beside a
+  // playing video is the shape this rebuild set out to remove.
+  const board = (() => {
+    for (let i = at; i >= 0; i--) {
+      const b = BEATS[i];
+      if (b.kind === "moment") return b.moment;
+      // A goal is footage, not a pass diagram; stop looking rather than pair
+      // it with an unrelated board.
+      if (b.kind === "goal") return null;
+    }
+    return null;
+  })();
 
   useEffect(() => {
     tail.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
