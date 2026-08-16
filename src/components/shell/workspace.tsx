@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { MatchCard } from "@/components/dash/match-card";
 import { Sparkline } from "@/components/dash/sparkline";
 import { XtPitch } from "@/components/dash/xt-pitch";
+import { Roster } from "@/components/roster/roster";
 import { Session } from "@/components/session/session";
 import { Section, Sidebar } from "@/components/shell/sidebar";
 import { FEATURED, MATCHES, TEAM, TOTALS, mean, series } from "@/content/dashboard";
@@ -25,6 +26,10 @@ const EASE = [0.4, 0, 0.2, 1] as const;
 
 export function Workspace({ onAddGame }: { onAddGame?: () => void }) {
   const [section, setSection] = useState<Section>("session");
+  // One switch for the whole workspace. It was inside the session, which meant
+  // turning it off left the player cards still quoting norms that came out of
+  // the graph the coach had just disconnected.
+  const [memory, setMemory] = useState(true);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -57,9 +62,11 @@ export function Workspace({ onAddGame }: { onAddGame?: () => void }) {
             transition={{ duration: 0.25, ease: EASE }}
             className={full ? "h-full" : ""}
           >
-            {section === "session" && <Session />}
+            {section === "session" && (
+              <Session memory={memory} onMemory={setMemory} />
+            )}
             {section === "games" && <Games />}
-            {section === "roster" && <Roster />}
+            {section === "roster" && <Roster memory={memory} />}
           </motion.div>
         </AnimatePresence>
       </main>
@@ -111,22 +118,6 @@ function Games() {
       <div className="mt-8 rounded-xl bg-surface p-5 ring-1 ring-white/[0.06]">
         <XtPitch />
       </div>
-    </div>
-  );
-}
-
-function Roster() {
-  return (
-    <div className="mx-auto w-full max-w-2xl pt-4">
-      <h1 className="text-[24px] font-medium text-chalk">Players</h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-warm-2">
-        Player cards, their clips, and what to work on with each of them.
-      </p>
-      <p className="mt-4 rounded-xl bg-surface px-4 py-3.5 text-[13px] leading-relaxed text-muted ring-1 ring-white/[0.06]">
-        Not built yet. It needs stable player identity across footage, which
-        means persistent track ids rather than the per-frame detection running
-        now, so it is deliberately empty instead of showing invented players.
-      </p>
     </div>
   );
 }
