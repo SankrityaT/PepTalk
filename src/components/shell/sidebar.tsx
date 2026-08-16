@@ -34,7 +34,7 @@ type Item = {
 // screen is easy to add and a screen of prose is easier still.
 const ITEMS: Item[] = [
   { key: "session", label: "Session", group: "Today", count: true },
-  { key: "roster", label: "Players", group: "Squad", plus: true, soon: true },
+  { key: "roster", label: "Players", group: "Squad", plus: true },
   { key: "games", label: "Your season", group: "Season" },
 ];
 

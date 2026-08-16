@@ -258,9 +258,15 @@ function Answer({ question, memory }: { question: string; memory: boolean }) {
   );
 }
 
-export function Session() {
+export function Session({
+  memory,
+  onMemory,
+}: {
+  memory: boolean;
+  onMemory: (next: boolean) => void;
+}) {
   const [at, setAt] = useState(0);
-  const [memory, setMemory] = useState(true);
+  const setMemory = onMemory;
   const [asked, setAsked] = useState<string[]>([]);
   const [attached, setAttached] = useState<string[]>([]);
   const [playing, setPlaying] = useState(true);
@@ -385,7 +391,7 @@ export function Session() {
 
           {/* The argument for the whole system, as a switch. */}
           <button
-            onClick={() => setMemory((m) => !m)}
+            onClick={() => setMemory(!memory)}
             className={`flex items-center gap-2 rounded-lg px-2.5 py-1.5 ring-1 transition-colors ${
               memory
                 ? "bg-accent/10 text-accent ring-accent/30"
