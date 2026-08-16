@@ -244,7 +244,8 @@ def build(match_id: int, top: int, out_path: Path, model: str) -> dict:
             "source": "tacticbench pass_options + xt (3,961 matches)",
             "themes": themes,
             "completion_model": analysis["completion_model"],
-            "moments_found": analysis["passes_analysed"],
+            "moments_found": analysis["moments_found"],
+            "passes_with_an_option": analysis["passes_with_an_option"],
             "moments": lines,
         }
     out_path.parent.mkdir(parents=True, exist_ok=True)

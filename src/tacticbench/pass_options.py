@@ -67,6 +67,35 @@ def load_360(match_id: int) -> dict[str, dict]:
     return {r["event_uuid"]: r for r in rows}
 
 
+#: What makes a moment worth a coach's time.
+#:
+#: Without these two gates the engine flags 803 passes in a single match, and
+#: the median one has a threat gap of 0.0085 — under one percent of a goal.
+#: Telling a coach that a sideways ball in midfield "should have been played
+#: forward" at that magnitude is not analysis, it is noise dressed as insight,
+#: and it is wrong about football besides: circulating the ball is how a side
+#: moves an opponent and makes space. Only a ball that would have created a
+#: real chance is worth stopping the video for.
+#:
+#: BEST_XT: the option that existed must itself have been dangerous, roughly a
+#: ball into the box rather than a better square pass.
+#: MISSED_XT: the gap between what was played and what was on must be worth
+#: saying out loud.
+#:
+#: Together these take 803 down to 8 in the World Cup final, which is the right
+#: order of magnitude: a coach reviews a handful of moments, not a spreadsheet.
+MATERIAL_BEST_XT = 0.10
+MATERIAL_MISSED_XT = 0.05
+
+
+def is_material(row: dict) -> bool:
+    """Would a coach stop the tape for this?"""
+    return (
+        row["best"]["xt_gain"] >= MATERIAL_BEST_XT
+        and row["missed"] >= MATERIAL_MISSED_XT
+    )
+
+
 def defenders_in_lane(
     start: tuple[float, float], end: tuple[float, float], opponents: list[list[float]]
 ) -> int:
@@ -217,11 +246,17 @@ def analyse(match_id: int, top: int = 8) -> dict:
         )
 
     rows.sort(key=lambda r: r["missed"], reverse=True)
+    material = [r for r in rows if is_material(r)]
     return {
         "match_id": match_id,
         "completion_model": {k: v for k, v in fit.items() if k != "_model"},
-        "passes_analysed": len(rows),
-        "top_missed": rows[:top],
+        # Every pass where *some* better option existed. Almost all of these are
+        # noise and none of them should ever be shown to a coach on their own.
+        "passes_with_an_option": len(rows),
+        "moments_found": len(material),
+        "top_missed": material[:top],
+        # Kept so callers that want the unfiltered set can still reach it.
+        "all_options": rows,
     }
 
 
@@ -231,7 +266,7 @@ if __name__ == "__main__":
     mid = int(sys.argv[1]) if len(sys.argv) > 1 else 3869685
     out = analyse(mid)
     print(json.dumps(out["completion_model"], indent=1))
-    print(f"\npasses where a better option existed: {out['passes_analysed']}\n")
+    print(f"\nmoments worth a coach's time: {out['moments_found']} of {out['passes_with_an_option']} with any option\n")
     for r in out["top_missed"]:
         p, b = r["played"], r["best"]
         print(

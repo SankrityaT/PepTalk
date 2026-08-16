@@ -478,8 +478,12 @@ class Graph:
     # what was believed at the time.
 
     def start_session(self, team_id: int, session_id: int, started_ord: int) -> None:
+        # MERGE, not CREATE. Nodes upsert by id here but *relationships do
+        # not*: a second CREATE of the same path adds a second edge, and the
+        # session then reads back its turns two and three times over. Found by
+        # running the verifier three times and getting six turns.
         self.run(
-            "CREATE (t:Team {id: $tid})-[:HAS_SESSION]->"
+            "MERGE (t:Team {id: $tid})-[:HAS_SESSION]->"
             "(s:Session {id: $sid, team_id: $tid, started_ord: $ord, last_ord: $ord})",
             tid=team_id, sid=SESSION_ID_BASE + session_id, ord=started_ord,
         )
@@ -505,7 +509,7 @@ class Graph:
         sid = SESSION_ID_BASE + session_id
         tid = TURN_ID_BASE + turn_id
         self.run(
-            "CREATE (s:Session {id: $sid})-[:HAS_TURN]->"
+            "MERGE (s:Session {id: $sid})-[:HAS_TURN]->"
             "(t:Turn {id: $tid, session_id: $sid, seq: $seq, role: $role, "
             "text: $text, ts_ord: $ord})",
             sid=sid, tid=tid, seq=seq, role=role, text=text, ord=ts_ord,
@@ -514,12 +518,12 @@ class Graph:
             # Explicit ordering rather than trusting scan order to come back
             # sorted, which it is under no obligation to do.
             self.run(
-                "CREATE (a:Turn {id: $prev})-[:NEXT]->(b:Turn {id: $cur})",
+                "MERGE (a:Turn {id: $prev})-[:NEXT]->(b:Turn {id: $cur})",
                 prev=TURN_ID_BASE + prev_turn_id, cur=tid,
             )
         for node_id in cites:
             self.run(
-                "CREATE (t:Turn {id: $tid})-[:CITES]->(f:Fact {id: $fid})",
+                "MERGE (t:Turn {id: $tid})-[:CITES]->(f:Fact {id: $fid})",
                 tid=tid, fid=node_id,
             )
         self.run(
