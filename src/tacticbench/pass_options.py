@@ -198,6 +198,21 @@ def analyse(match_id: int, top: int = 8) -> dict:
                 "played": played.__dict__,
                 "best": best.__dict__,
                 "missed": round(best.expected - played.expected, 5),
+                # Everyone on the pitch at the instant the ball was struck.
+                # This is what makes the moment showable: without it the UI can
+                # draw two passes floating on an empty pitch, which proves
+                # nothing, because the whole argument is about who was where.
+                "freeze": [
+                    {
+                        "x": round(float(p["location"][0]), 1),
+                        "y": round(float(p["location"][1]), 1),
+                        "mate": bool(p.get("teammate")),
+                        "actor": bool(p.get("actor")),
+                        "keeper": bool(p.get("keeper")),
+                    }
+                    for p in ff["freeze_frame"]
+                    if p.get("location")
+                ],
             }
         )
 

@@ -217,6 +217,9 @@ def write_lines(moments: list[dict], model: str = DEFAULT_MODEL) -> list[dict]:
                 "from": m.get("from", [0, 0]),
                 "played_to": [round(m["played"]["x"], 1), round(m["played"]["y"], 1)],
                 "best_to": [round(m["best"]["x"], 1), round(m["best"]["y"], 1)],
+                # Carried through so the interface can draw the moment rather
+                # than describe it.
+                "freeze": m.get("freeze", []),
                 "missed": round(m["missed"], 4),
             }
         )
@@ -258,8 +261,17 @@ their last game.
 Rules:
 - THREE themes, no more. A coach can hold three things; a list of eight is a
   list of nothing.
-- Each theme gets a short title (3-6 words, imperative, what to practise) and
-  one sentence of why, tied to what happened in the game.
+- BE BRUTALLY SHORT. This is read on a phone between sessions, not studied.
+  A coach who has to read a paragraph reads nothing.
+- `title`: 3-5 words, imperative, what to practise.
+- `saw`: what went wrong, MAXIMUM 10 WORDS. A fragment, not a sentence.
+  Good: "Ball went backwards with the box open."
+  Bad: "Six times you turned back or played square in the final third when
+  the ball forward was on."
+- `drill`: the actual exercise to run on Tuesday, MAXIMUM 12 WORDS. Name a
+  shape and a constraint so a coach can set it up without thinking.
+  Good: "4v2 in the corner. Two touches max, must finish first time."
+  Bad: "Work on timing runs and being more decisive in the final third."
 - Second person. No analytics vocabulary, no decimals, no player names — the
   interface prints those separately.
 - Order them by what would win the most points, not by what is easiest.
@@ -268,8 +280,8 @@ Rules:
 Return JSON only. NOTE: single braces — this prompt is not passed through
 str.format(), so doubled braces would reach you literally.
 
-{"themes": [{"title": "<3-6 words>", "why": "<one sentence>",
-             "moment_ids": [<ids this draws on>]}]}
+{"themes": [{"title": "<3-5 words>", "saw": "<max 10 words>",
+             "drill": "<max 12 words>", "moment_ids": [<ids this draws on>]}]}
 
 Moments:
 """
