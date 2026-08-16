@@ -47,6 +47,12 @@ export type Moment = {
    * evidence for it.
    */
   freeze?: FreezePlayer[];
+  /**
+   * Whose moment this is, from the coach's bench. Half the flagged moments in
+   * a match belong to the other side, and reading those out as "you had this
+   * on" is nonsense: they are the chances that were there and did not arrive.
+   */
+  side?: "attacking" | "defending";
 };
 
 export type FreezePlayer = {

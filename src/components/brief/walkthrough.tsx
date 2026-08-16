@@ -47,6 +47,20 @@ function Tag({ m }: { m: ClipMoment }) {
   );
 }
 
+/** Whose moment it is. A coach reads these two completely differently. */
+function Side({ m }: { m: ClipMoment }) {
+  const on = m.side === "defending";
+  return (
+    <span
+      className={`rounded px-1.5 py-0.5 font-mono text-[9px] tracking-[0.1em] uppercase ${
+        on ? "bg-white/[0.09] text-chalk-3" : "bg-accent/15 text-accent"
+      }`}
+    >
+      {on ? "you defended" : "you attacked"}
+    </span>
+  );
+}
+
 export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
   const moments = CLIP_MOMENTS;
   const video = useRef<HTMLVideoElement>(null);
@@ -136,6 +150,7 @@ export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
               <span className="text-[14px] font-medium text-chalk">
                 {current.surname}
               </span>
+              <Side m={current} />
               <Tag m={current} />
             </span>
             <span className="font-mono text-[10px] tracking-[0.1em] text-muted-2 uppercase">
@@ -271,6 +286,7 @@ export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
                   <span className="text-[13px] font-medium text-chalk">
                     {m.surname}
                   </span>
+                  <Side m={m} />
                 </span>
                 <button
                   onClick={() => setIndex(i)}
@@ -324,7 +340,7 @@ export function Walkthrough({ onDone }: { onDone?: (seen: number) => void }) {
                 className="text-[14px] leading-relaxed text-warm-2"
               >
                 <StreamText
-                  text="That is the footage I have. Every one of these was a ball into the box that would have made a chance, not a tidier pass in midfield."
+                  text={`That is the footage I have. ${moments.filter((m) => m.side === "attacking").length} you missed, ${moments.filter((m) => m.side === "defending").length} you survived. All of them a ball into the box that would have made a chance, not a tidier pass in midfield.`}
                   onDone={() => onDone?.(moments.length)}
                 />
               </motion.p>

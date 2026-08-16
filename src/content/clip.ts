@@ -59,6 +59,7 @@ export type ClipMoment = {
   best_to: [number, number];
   missed: number;
   freeze: FreezePlayer[];
+  side: "attacking" | "defending";
   frames: TrackedFrame[];
   detections: number;
 };
