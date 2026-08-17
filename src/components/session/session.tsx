@@ -15,7 +15,7 @@ import { Evidence } from "@/components/session/evidence";
 import { TapePlayer } from "@/components/tape/tape-player";
 import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
-import { MEASURES, SQUAD } from "@/content/roster";
+import { MEASURES, SQUAD, photoFor } from "@/content/roster";
 import { MOMENTS } from "@/content/pep";
 import knowledge from "@/content/snapshots/active/knowledge.json";
 
@@ -583,6 +583,7 @@ export function Session({
               ...SQUAD.map((p) => ({
                 key: `player-${p.key}`,
                 label: p.short,
+                avatar: photoFor(p) ? `/players/${photoFor(p)!.path}` : undefined,
                 hint: `${p.position.split(" ").map((w) => w[0]).join("")} · ${
                   p.across?.games ?? 1
                 } games`,
