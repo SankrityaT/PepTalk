@@ -39,6 +39,11 @@ CLIPS = ROOT / ".cache" / "clips"
 
 #: Read from the active workspace rather than baked in, so a second team is a
 #: config file rather than a patch across eight modules.
+#:
+#: These remain module-level for the CLI, which analyses whatever workspace is
+#: selected. Every function below takes the workspace as an argument and
+#: defaults to this one, because an upload runs a workspace that did not exist
+#: when this module was imported.
 WS = workspace.load()
 PERIOD_OFFSET = WS.period_offset
 URL = WS.url
@@ -59,7 +64,9 @@ class Window:
     end: float
 
 
-def video_time(period: int, minute: int, second: int) -> float | None:
+def video_time(
+    period: int, minute: int, second: int, offsets: dict[int, float] | None = None
+) -> float | None:
     """Where in the recording a match-clock moment sits.
 
     Returns None for extra time. There is a second break before it, so the
@@ -67,7 +74,7 @@ def video_time(period: int, minute: int, second: int) -> float | None:
     window minutes away from the play it claims to show. Better to fetch
     nothing than the wrong passage.
     """
-    off = PERIOD_OFFSET.get(period)
+    off = (PERIOD_OFFSET if offsets is None else offsets).get(period)
     if off is None:
         return None
     return minute * 60 + second + off
@@ -78,7 +85,7 @@ def hhmmss(t: float) -> str:
     return f"{t // 3600:02d}:{(t % 3600) // 60:02d}:{t % 60:02d}"
 
 
-def plan(moments: list[dict]) -> list[Window]:
+def plan(moments: list[dict], offsets: dict[int, float] | None = None) -> list[Window]:
     """One window per moment, merging any that overlap.
 
     Two of the flagged passes are two seconds apart, and downloading that
@@ -93,7 +100,7 @@ def plan(moments: list[dict]) -> list[Window]:
         minute, second = m["minute"], m.get("second") or 0
         # Whichever periods the workspace measured; the rest are skipped.
         period = 1 if minute < 45 else 2 if minute < 90 else 3
-        v = video_time(period, minute, second)
+        v = video_time(period, minute, second, offsets)
         if v is None:
             continue
         w = Window(
@@ -116,22 +123,67 @@ def plan(moments: list[dict]) -> list[Window]:
 ATTEMPTS = 3
 
 
-def fetch(w: Window, force: bool = False) -> Path | None:
-    """One window, or None if it could not be fetched.
+def cut_window(
+    source: str, start: float, end: float, dest: Path, force: bool = False
+) -> Path | None:
+    """Seconds `start`-`end` of `source`, written to `dest`, or None.
 
-    Returns rather than raises: one flaky window should not cost the other
-    seven, and a missing clip is handled downstream by falling back to the
-    freeze frame for that moment.
+    Two sources, one contract. A local path is cut with ffmpeg; anything else
+    is treated as a URL and pulled with yt-dlp. An uploaded file takes the
+    first branch, which is the faster and more reliable of the two: the bytes
+    are already here, so there is no stream to seek into and nothing to retry.
+
+    Returns rather than raises. One flaky window should not cost the other
+    seven, and a missing clip is handled downstream by falling back to that
+    moment's freeze frame.
     """
-    dest = CLIPS / f"wc_{w.key}.mp4"
     if dest.exists() and not force:
         return dest
-    CLIPS.mkdir(parents=True, exist_ok=True)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    # A window can fall partly or wholly outside the recording: a moment early
+    # in the match minus the six second run-in goes negative, and an offset
+    # that does not match the footage puts it nowhere at all. Clamping only the
+    # start produced `-to value smaller than -ss` and an ffmpeg abort, so both
+    # ends are clamped and an empty window is refused outright.
+    start = max(0.0, start)
+    end = max(0.0, end)
+    if end <= start:
+        print(f"    window [{start:.1f}, {end:.1f}] is empty, skipping")
+        return None
+
+    if _is_local(source):
+        src = Path(source)
+        if not src.exists():
+            print(f"    no such file: {src}")
+            return None
+
+        # Asking for seconds a file does not contain yields a zero-byte clip
+        # that plays as a broken element rather than failing. Checked here so
+        # the moment falls back to its freeze frame instead.
+        dur = _duration(src)
+        if dur is not None and start >= dur:
+            print(f"    window starts at {start:.0f}s, past the end ({dur:.0f}s)")
+            return None
+        # -ss before -i seeks by keyframe index rather than decoding up to the
+        # cut, which matters when the file is two hours long and we want four
+        # seconds from the middle of it.
+        cmd = [
+            "ffmpeg", "-nostdin", "-y", "-loglevel", "error",
+            "-ss", f"{max(0.0, start):.2f}", "-to", f"{max(0.0, end):.2f}",
+            "-i", str(src),
+            "-c:v", "libx264", "-preset", "veryfast", "-crf", "23",
+            "-an", str(dest),
+        ]
+        if subprocess.run(cmd).returncode == 0 and dest.exists():
+            return dest
+        dest.unlink(missing_ok=True)
+        return None
 
     for attempt in range(1, ATTEMPTS + 1):
         cmd = [
             "yt-dlp",
-            "--download-sections", f"*{hhmmss(w.start)}-{hhmmss(w.end)}",
+            "--download-sections", f"*{hhmmss(start)}-{hhmmss(end)}",
             "-f", "bv*[height<=720][ext=mp4]/bv*[height<=720]",
             "-q", "--no-warnings", "-o", str(dest),
         ]
@@ -139,14 +191,43 @@ def fetch(w: Window, force: bool = False) -> Path | None:
         # and accepts a slightly loose start instead of no clip at all.
         if attempt == 1:
             cmd.insert(3, "--force-keyframes-at-cuts")
-        cmd.append(URL)
+        cmd.append(source)
 
         if subprocess.run(cmd).returncode == 0 and dest.exists():
             return dest
-        for stale in CLIPS.glob(f"wc_{w.key}.mp4*"):
+        for stale in dest.parent.glob(f"{dest.stem}.mp4*"):
             stale.unlink(missing_ok=True)
         print(f"    retry {attempt}/{ATTEMPTS}", flush=True)
     return None
+
+
+def _is_local(source: str) -> bool:
+    """A path on disk, rather than something to download."""
+    return bool(source) and "://" not in source
+
+
+def _duration(path: Path) -> float | None:
+    """Seconds of footage, or None if ffprobe cannot say."""
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True, timeout=30,
+        )
+        return float(out.stdout.strip())
+    except (ValueError, OSError, subprocess.SubprocessError):
+        return None
+
+
+def fetch(w: Window, force: bool = False, source: str | None = None) -> Path | None:
+    """One window of the active workspace's footage."""
+    return cut_window(
+        URL if source is None else source,
+        w.start,
+        w.end,
+        CLIPS / f"wc_{w.key}.mp4",
+        force,
+    )
 
 
 def main() -> None:

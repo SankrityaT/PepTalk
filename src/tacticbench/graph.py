@@ -214,9 +214,44 @@ class Graph:
             )
         return len(series)
 
+    def clear_team_facts(self, team_id: int) -> int:
+        """Drop a team's facts, so re-ingesting replaces rather than appends.
+
+        Adding a game re-segments the team's whole series — eras are built from
+        quantiles over every observation, so one new match can move a boundary —
+        and every write here is `CREATE`. Without this, a second ingest lays a
+        fresh fact chain alongside the old one and `fact_at` starts matching two
+        facts for the same date. That is worse than a duplicate: the temporal
+        queries are the product, and they would quietly return whichever the
+        engine reached first.
+
+        Fact ids are deterministic (`FACT_ID_BASE + team_id * 10_000`), so a
+        re-ingest would otherwise also reuse ids against stale properties.
+
+        Written in HydraDB's Cypher subset: no `IN`, no `CONTAINS`, no
+        multi-stage `WITH`, one statement per request. `DETACH DELETE` takes the
+        relationships with it, which is what removes the old `SUPERSEDED_BY`
+        chain and the `OBSERVED_IN` citations.
+        """
+        rows = self.run(
+            "MATCH (f:Fact) WHERE f.team_id = $tid RETURN f.id AS id",
+            tid=team_id,
+        )
+        for r in rows:
+            self.run("MATCH (f:Fact) WHERE f.id = $fid DETACH DELETE f", fid=r["id"])
+        return len(rows)
+
     def ingest_team(
-        self, team: str, team_id: int, series: list[MatchMetrics], facts: dict[str, list[Fact]]
+        self,
+        team: str,
+        team_id: int,
+        series: list[MatchMetrics],
+        facts: dict[str, list[Fact]],
+        replace: bool = True,
     ) -> dict:
+        # Replace by default: calling this twice for a team should leave the
+        # graph as if it had been called once.
+        cleared = self.clear_team_facts(team_id) if replace else 0
         matches = self.ingest_matches(team, team_id, series)
 
         fact_id = FACT_ID_BASE + team_id * 10_000
@@ -268,7 +303,33 @@ class Graph:
             "facts": written_facts,
             "observations": written_obs,
             "supersedes": written_links,
+            "cleared": cleared,
         }
+
+    def enrich_match(self, statsbomb_id: int, meta: dict, ht: tuple[int, int] = (0, 0)) -> None:
+        """Scoreline and halftime flags for one match.
+
+        The bulk pass (`ingest_all.enrich_scores`) does this for the whole
+        dataset. A newly added game needs the same properties or it is invisible
+        to `/api/browse`, which filters on `m.ht_deficit >= $deficit_min` — a
+        match without the property matches nothing, so it would land in the
+        graph and never appear in the picker.
+        """
+        ht_h, ht_a = ht
+        self.run(
+            "MATCH (mt:Match) WHERE mt.id = $mid "
+            "SET mt.ft_home = $fh, mt.ft_away = $fa, mt.ht_home = $hh, "
+            "mt.ht_away = $ha, mt.ht_deficit = $deficit, mt.recovered = $rec, "
+            "mt.stage = $stage, mt.season = $season",
+            mid=MATCH_ID_BASE + statsbomb_id,
+            fh=int(meta.get("home_score") or 0),
+            fa=int(meta.get("away_score") or 0),
+            hh=int(ht_h), ha=int(ht_a),
+            deficit=int(abs(ht_h - ht_a)),
+            rec=False,
+            stage=(meta.get("competition_stage") or {}).get("name") or "",
+            season=(meta.get("season") or {}).get("season_name") or "",
+        )
 
     # ---------------- retrieval ----------------
 
@@ -602,5 +663,27 @@ def save_series(team: str, series: list[MatchMetrics]) -> Path:
 
 
 def load_series(team: str) -> list[MatchMetrics]:
+    """This team's cached match history, or nothing if we have none.
+
+    Two sources, because there are two ways history gets here. `demo ingest`
+    writes one file per team; the bulk pass (`ingest_all series`) writes every
+    team into `all_series.json` and no per-team files at all. Barcelona's 531
+    matches live only in the second, so reading the first alone reports a team
+    with a decade of history as having none — and a caller that re-segments
+    from that would replace real facts with nothing.
+
+    Empty rather than raising when neither has it: adding a game for a side
+    nobody has ingested is the normal case, not an error. The caller appends
+    the new match and segments what it has, and `facts_for_team` abstains
+    below the evidence floor.
+    """
     p = RESULTS / f"series_{team.replace(' ', '_').lower()}.json"
-    return [MatchMetrics(**row) for row in json.loads(p.read_text())]
+    if p.exists():
+        return [MatchMetrics(**row) for row in json.loads(p.read_text())]
+
+    combined = RESULTS / "all_series.json"
+    if combined.exists():
+        rows = json.loads(combined.read_text()).get(team)
+        if rows:
+            return [MatchMetrics(**r) for r in rows]
+    return []

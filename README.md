@@ -107,6 +107,42 @@ Documented because they shaped the design and are not all obvious from the docs:
 | `WITH` is pass-through only | No multi-stage query pipelines; that logic lives in application code. |
 | Anonymous nodes cannot carry labels | `MATCH (:Fact)-[r]->(:Fact)` is rejected; nodes must be named. |
 
+### The one gap we hit: the footage has nowhere to live
+
+Adding a game is the feature that found this. A coach uploads a recording, the
+engine flags the moments, and each one is cut and tracked — which leaves us
+holding video. On this machine that is 157MB for two games, and a season of a
+real club is tens of gigabytes.
+
+HydraDB holds the *claims* about that footage exactly as it should. A
+`Highlight` carries its kind, its minute, its label and a `clip_url`, and it
+hangs off the `Match` it belongs to. What it cannot hold is the bytes the URL
+points at. So today the graph is authoritative about what happened and a
+directory on disk is authoritative about the video, and nothing keeps the two
+honest with each other: delete a clip and the node still points at it, move the
+checkout and every path breaks.
+
+**What would fix it.** An S3-compatible object store — MinIO is the obvious
+one — with the graph holding a content-addressed key instead of a filesystem
+path. Upload the clip, put its digest on the `Highlight`, and the pointer stops
+being a guess about where a file happens to sit. That is roughly a day of work
+and we know how to do it.
+
+**We did not do it, deliberately.** This is a HydraDB project, and bolting a
+second datastore onto it to solve a storage problem would make the interesting
+part — the temporal graph — share the stage with plumbing. The whole argument
+here is that `SUPERSEDED_BY` expresses something no other store can, and we
+would rather demonstrate that against one database than hedge across two.
+
+**And we think HydraDB should own this.** A memory graph for anything richer
+than text will keep running into the same wall: the facts are small and
+relational, the evidence behind them is large and binary, and splitting them
+across two systems costs you referential integrity at exactly the moment you
+want to trust a citation. A blob field, or a first-class content-addressed
+attachment that a node can point at and the database can garbage-collect, would
+close it. We would be glad to help build that — the use case is sitting in this
+repo, with the file sizes measured and the failure mode written down.
+
 ---
 
 ## Not hardcoded — and here is how to check
@@ -203,7 +239,7 @@ docker run -d --name hydradb --user "$(id -u):$(id -g)" \
 
 # 2. Python
 uv venv && uv pip install -e ".[dev]"
-uv run pytest                      # 98 tests
+uv run pytest                      # 217 tests
 
 # 3. Data -> graph  (downloads ~12GB of StatsBomb events, cached locally)
 uv run python -u -m tacticbench.scan 1          # scan all matches
@@ -230,6 +266,48 @@ pnpm install
 uv pip install yt-dlp
 uv run python -m tacticbench.bootstrap   # cuts and tracks the footage
 pnpm dev            # landing page on /, the coach's dashboard on /dashboard
+```
+
+### Adding a game
+
+A coach drops in a recording, names the fixture, lines the clock up, and gets a
+report. That needs the analysis service running alongside the interface:
+
+```bash
+uv run uvicorn tacticbench.api:app --port 8000   # in one terminal
+pnpm dev                                          # in another
+```
+
+Then **Add a game** on `/dashboard`. Four screens: the video, which fixture it
+is, two clock readings to align it, and the run. Every step in the progress
+list is the pipeline's own, reported as it happens.
+
+To check the whole path without clicking through it:
+
+```bash
+./scripts/check-add-a-game.sh   # 19 checks, ~3 min, needs HydraDB up
+```
+
+It runs a real MLS fixture end to end, confirms a match whose 360 feed does not
+join is refused rather than returning an empty report, re-adds the same game to
+prove facts are replaced rather than duplicated, and checks the Barcelona result
+still holds.
+
+**The video is not the detector, and the interface says so.** Moments come from
+StatsBomb 360 freeze frames — where all twenty-two players stood when the ball
+was struck — because that is what turns "he was open" into something showable.
+The footage is cut afterwards, at the seconds the engine flagged. So the
+fixture has to be one StatsBomb covers with 360; the picker offers only those,
+and a match without freeze frames is refused up front rather than producing an
+empty report. Detecting moments from pixels needs the pitch-to-image
+calibration that `calibrate.py` does not yet converge on.
+
+Everything a run produces lands in `workspaces/<key>/`, so adding a game never
+touches the committed snapshots a fresh clone renders from. The same work is
+available headless:
+
+```bash
+PEPTALK_WORKSPACE=<key> uv run python -m tacticbench.bootstrap
 ```
 
 **Pointing this at another team** is a JSON file, not a patch:

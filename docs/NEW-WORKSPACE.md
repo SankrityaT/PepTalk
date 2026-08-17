@@ -144,7 +144,7 @@ rather than in the demo.
 Then confirm nothing regressed:
 
 ```bash
-uv run pytest -q                            # 156
+uv run pytest -q                            # 217
 uv run python -m tacticbench.verify         # exits non-zero on failure
 ```
 

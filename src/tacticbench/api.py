@@ -28,6 +28,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Adding a game: upload, fixture picker, alignment, and the job that runs the
+# pipeline. Kept in its own module because none of it touches the graph
+# directly — it drives `bootstrap`, which does.
+from .games import router as _games_router  # noqa: E402
+
+app.include_router(_games_router)
+
 TEAMS = [
     "Barcelona",
     "Paris Saint-Germain",

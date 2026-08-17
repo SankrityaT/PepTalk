@@ -43,41 +43,93 @@ def hhmmss_to_s(t: str) -> int:
     return h * 3600 + m * 60 + s
 
 
-def grab(video_id: str, at: str, out: Path) -> Path | None:
-    """A single frame's scoreboard, at a video timestamp."""
-    out.parent.mkdir(parents=True, exist_ok=True)
-    clip = out.with_suffix(".mp4")
-    end = f"{hhmmss_to_s(at) + 6}"
-    end_hms = f"{int(end) // 3600:02d}:{(int(end) % 3600) // 60:02d}:{int(end) % 60:02d}"
+def grab(source: str, at: str, out: Path, crop: bool = True) -> Path | None:
+    """A single frame from `source` at a video timestamp.
 
-    for attempt in range(3):
-        cmd = [
-            "yt-dlp",
-            "--download-sections", f"*{at}-{end_hms}",
-            "-f", "bv*[height<=720][ext=mp4]/bv*[height<=720]",
-            "-q", "--no-warnings", "-o", str(clip),
-        ]
-        if attempt == 0:
-            cmd.insert(3, "--force-keyframes-at-cuts")
-        cmd.append(f"https://www.youtube.com/watch?v={video_id}")
-        if subprocess.run(cmd).returncode == 0 and clip.exists():
-            break
-        for stale in clip.parent.glob(f"{clip.stem}.mp4*"):
-            stale.unlink(missing_ok=True)
-    else:
+    `source` is a local file path or a URL; a bare YouTube id is accepted too,
+    for the CLI that has always taken one. Cropped to the scoreboard by
+    default, because that is what a person is being asked to read. The upload
+    flow asks for the whole frame instead: a coach who cannot find the clock in
+    a cropped strip has nothing to orient by.
+    """
+    from .fetch_clips import _is_local, cut_window
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    start = hhmmss_to_s(at)
+
+    if _is_local(source):
+        # Already on disk, so there is nothing to fetch: seek and take a frame.
+        cmd = ["ffmpeg", "-nostdin", "-v", "error", "-ss", str(start),
+               "-i", source, "-vframes", "1"]
+        if crop:
+            cmd += ["-vf", CROP]
+        cmd += [str(out), "-y"]
+        if subprocess.run(cmd).returncode != 0 or not out.exists():
+            return None
+        return out
+
+    url = source if "://" in source else f"https://www.youtube.com/watch?v={source}"
+    clip = out.with_suffix(".mp4")
+    if cut_window(url, start, start + 6, clip, force=True) is None:
         return None
 
-    subprocess.run(
-        ["ffmpeg", "-v", "error", "-ss", "1", "-i", str(clip),
-         "-vframes", "1", "-vf", CROP, str(out), "-y"],
-        check=True,
-    )
+    cmd = ["ffmpeg", "-nostdin", "-v", "error", "-ss", "1", "-i", str(clip),
+           "-vframes", "1"]
+    if crop:
+        cmd += ["-vf", CROP]
+    cmd += [str(out), "-y"]
+    subprocess.run(cmd, check=True)
     return out
+
+
+#: How long a half time break runs, in seconds. The two offsets differ by
+#: exactly this, so a pair outside the range means one clock was misread — the
+#: only check available on a number nobody can derive.
+BREAK_MIN_S = 8 * 60
+BREAK_MAX_S = 15 * 60
+
+
+def offset_from(video_at: str, clock_mmss: str) -> float:
+    """The offset implied by one reading: video position minus match clock.
+
+    Both are `MM:SS` or `HH:MM:SS`. This is the whole of the arithmetic the
+    guided alignment step performs, kept here so it is tested rather than
+    reimplemented in TypeScript.
+    """
+    return float(hhmmss_to_s(video_at) - hhmmss_to_s(clock_mmss))
+
+
+def check_offsets(first: float, second: float) -> str | None:
+    """Why a pair of offsets looks wrong, or None if it looks right.
+
+    A misread digit is worth sixty seconds of silent misalignment, and the
+    resulting clip looks plausible — it is simply the wrong passage, with
+    nothing on screen to reveal it. The gap between the two offsets is the half
+    time break, so it is the one quantity that can be sanity-checked.
+    """
+    gap = second - first
+    if gap < 0:
+        return (
+            "The second-half offset is smaller than the first. The two readings "
+            "are probably swapped, or one was taken in the wrong half."
+        )
+    if gap < BREAK_MIN_S:
+        return (
+            f"Those readings put half time at {gap / 60:.1f} minutes, which is "
+            "too short for a break. Check the clock in the second-half frame."
+        )
+    if gap > BREAK_MAX_S:
+        return (
+            f"Those readings put half time at {gap / 60:.1f} minutes, which is "
+            "too long for a break. Check the clock in one of the frames."
+        )
+    return None
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(prog="tacticbench.find_offsets")
-    ap.add_argument("--video", required=True, help="YouTube id of the full match")
+    ap.add_argument("--video", required=True,
+                    help="YouTube id, URL, or a path to a local recording")
     ap.add_argument("--at", action="append", required=True,
                     help="video timestamp to sample, HH:MM:SS. Repeatable.")
     args = ap.parse_args()
@@ -85,7 +137,10 @@ def main() -> None:
     print("Cutting scoreboard frames. Open each and read the match clock.\n")
     frames = []
     for at in args.at:
-        dest = OUT / f"{args.video}_{at.replace(':', '')}.png"
+        # A path makes a poor filename, so name the frame after the source's
+        # last component rather than the whole thing.
+        stem = Path(args.video).stem or "video"
+        dest = OUT / f"{stem}_{at.replace(':', '')}.png"
         got = grab(args.video, at, dest)
         if got:
             frames.append((at, got))

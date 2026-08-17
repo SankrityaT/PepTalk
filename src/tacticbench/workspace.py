@@ -11,7 +11,8 @@ owns and the code reads.
 **What a new workspace needs.** Three things, and only the third is real work:
 
 1. `team` and `match_id`, both from StatsBomb open data.
-2. `video_id`, a recording of that match.
+2. `video_id` or `video_path`, a recording of that match — a YouTube id, or a
+   file already on disk. An upload produces the second.
 3. `period_offset`, the seconds between video time and match time, one per
    period. This is the only piece nobody can derive for you.
 
@@ -72,6 +73,12 @@ class Workspace:
     #: A recording of the match. Anything yt-dlp accepts.
     video_id: str = ""
 
+    #: A recording of the match already on disk, as an absolute path. This is
+    #: what an upload produces: a coach has the file, not a YouTube id. Set one
+    #: or the other, never both — `source` decides which, and prefers this one
+    #: because a local file is cheaper and cannot rot.
+    video_path: str = ""
+
     #: Video seconds minus match seconds, per period. Read off the broadcast
     #: clock; see the module docstring. Periods with no entry are skipped
     #: rather than guessed.
@@ -101,8 +108,31 @@ class Workspace:
         return f"https://www.youtube.com/watch?v={self.video_id}"
 
     @property
+    def source(self) -> str:
+        """Where the footage comes from: a local path, or a URL.
+
+        Callers that cut frames or clips branch on this rather than reaching for
+        `video_id` directly, so an uploaded file and a YouTube id travel the
+        same path. A local file wins when both are set: it is already on disk.
+        """
+        return self.video_path or (self.url if self.video_id else "")
+
+    @property
+    def is_local(self) -> bool:
+        return bool(self.video_path)
+
+    @property
     def dir(self) -> Path:
         return WORKSPACES / self.key
+
+    @property
+    def snapshots(self) -> Path:
+        """Where this workspace's generated snapshots land.
+
+        Per workspace rather than the committed `src/content/snapshots/`, so
+        adding a game never overwrites the one a fresh clone renders from.
+        """
+        return self.dir / "snapshots"
 
 
 def load(key: str | None = None) -> Workspace:
@@ -172,7 +202,7 @@ def main() -> None:
     print(f"  team        {ws.team}")
     print(f"  match       {ws.label}  (statsbomb {ws.match_id})")
     print(f"  competition {ws.competition} {ws.season}")
-    print(f"  video       {ws.url or '(none)'}")
+    print(f"  video       {ws.source or '(none)'}")
     print(f"  offsets     {ws.period_offset or '(none set)'}")
     missing = [p for p in (1, 2) if p not in ws.period_offset]
     if missing:

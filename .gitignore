@@ -63,3 +63,11 @@ hydradb-data/
 sn-data/
 .playwright-mcp/
 *.png
+
+# Games added through the interface. Generated output and, where footage was
+# uploaded, clips cut from a recording that is not ours to redistribute. The
+# built-in workspace is committed; everything a coach adds is not.
+workspaces/*/
+!workspaces/wc2022/
+workspaces/*/snapshots/
+workspaces/*/clips/

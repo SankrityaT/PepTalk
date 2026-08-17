@@ -85,17 +85,14 @@ SURNAME_JOIN_MAX = 4
 def short_name(full: str) -> str:
     """The name a coach would say out loud.
 
-    Taking the last token alone butchers compound surnames: De Paul becomes
-    "Paul", Kolo Muani becomes "Muani", Mac Allister becomes "Allister". A
-    heuristic on token length gets every name in this match right and fails
-    safely toward showing more of the name rather than less.
+    One implementation, in `snapshots`. This used to be a second heuristic on
+    token length, which got the World Cup squad right and then rendered Messi
+    as "Cuccittini" and Busquets as "i Burgos" the moment a league with
+    Spanish double surnames arrived.
     """
-    parts = full.strip().split()
-    if len(parts) < 2:
-        return full.strip()
-    if len(parts) >= 3 and len(parts[-2]) <= SURNAME_JOIN_MAX:
-        return f"{parts[-2]} {parts[-1]}"
-    return parts[-1]
+    from .snapshots import surname
+
+    return surname(full)
 
 
 def zone(x: float, y: float) -> str:
@@ -133,6 +130,11 @@ def describe(moment: dict) -> dict:
     ratio = (b["xt_gain"] / p["xt_gain"]) if p["xt_gain"] > 0.001 else None
     return {
         "minute": moment["minute"],
+        # Carried through, because the clip window is cut from it. Dropping it
+        # rounds every moment to the top of its minute, which puts the cut up
+        # to 59 seconds from the pass it claims to show — the exact failure
+        # the offsets exist to avoid.
+        "second": moment.get("second") or 0,
         "player": moment["player"],
         "name": short_name(moment["player"] or ""),
         "team": moment["team"],
@@ -249,6 +251,56 @@ def write_lines(moments: list[dict], model: str = DEFAULT_MODEL) -> list[dict]:
                 "best_to": [round(m["best"]["x"], 1), round(m["best"]["y"], 1)],
                 # Carried through so the interface can draw the moment rather
                 # than describe it.
+                "freeze": m.get("freeze", []),
+                "missed": round(m["missed"], 4),
+            }
+        )
+    return out
+
+
+def computed_lines(moments: list[dict]) -> list[dict]:
+    """The same rows, worded from the arithmetic rather than by the model.
+
+    `write_lines` needs ANTHROPIC_API_KEY. Without it the moments are still
+    real — every number here is computed locally — so rather than hand the
+    interface rows with no sentence in them, the sentence is assembled from
+    the figures. Flatter than Pep's voice, and it says so in the report.
+
+    Deliberately plain and never scolding, for the same reason the model is
+    told not to be: a coach who feels judged stops uploading.
+    """
+    out = []
+    for i, m in enumerate(moments):
+        f = describe(m)
+        f["id"] = i
+        times = f.get("times_better")
+        worth = (
+            f"worth {times:.0f} times more" if times and times >= 1.5 else "worth more"
+        )
+        # Volunteering the difficulty is what makes the easy cases believable.
+        # "Straightforward" is the strongest case, not a caveat, so it must not
+        # be introduced with "though" — that reads as an excuse for the player.
+        if f.get("no_riskier"):
+            caveat = " and no more likely to be cut out"
+        elif f["difficulty"] == "straightforward":
+            caveat = ", and it was there to be played"
+        else:
+            caveat = f" though it was a {f['difficulty']} ball"
+        out.append(
+            {
+                **f,
+                "line": (
+                    f"You had the ball {f['best_zone']} on, {worth} than the "
+                    f"one you played{caveat}."
+                ),
+                "numbers": (
+                    f"threat {f['played_value']:+.3f} → {f['best_value']:+.3f} · "
+                    f"{int(f['best_completion'] * 100)}% likely to arrive · "
+                    f"{f['best_defenders']} in the lane · {f['best_distance']} yds"
+                ),
+                "from": m.get("from", [0, 0]),
+                "played_to": [round(m["played"]["x"], 1), round(m["played"]["y"], 1)],
+                "best_to": [round(m["best"]["x"], 1), round(m["best"]["y"], 1)],
                 "freeze": m.get("freeze", []),
                 "missed": round(m["missed"], 4),
             }

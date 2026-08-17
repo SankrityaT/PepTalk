@@ -1,3 +1,4 @@
+//created by kinjal
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,6 +12,7 @@ import { XtPitch } from "@/components/dash/xt-pitch";
 import { Section, Sidebar } from "@/components/shell/sidebar";
 import { FEATURED, MATCHES, TEAM, TOTALS, mean, series } from "@/content/dashboard";
 import { Moment } from "@/content/pep";
+import { type AddedGame, added as listAdded } from "@/lib/games";
 
 /**
  * The workspace.
@@ -26,9 +28,12 @@ const EASE = [0.4, 0, 0.2, 1] as const;
 export function Workspace({
   onOpenMoment,
   onAddGame,
+  onOpenGame,
 }: {
   onOpenMoment: (m: Moment) => void;
   onAddGame?: () => void;
+  /** Open an added game's report, by workspace key. */
+  onOpenGame?: (key: string) => void;
 }) {
   const [section, setSection] = useState<Section>("brief");
 
@@ -58,7 +63,9 @@ export function Workspace({
           >
             {section === "brief" && <Brief onOpenMoment={onOpenMoment} />}
             {section === "tape" && <Tape />}
-            {section === "games" && <Games />}
+            {section === "games" && (
+              <Games onOpenGame={onOpenGame} onAddGame={onAddGame} />
+            )}
             {section === "model" && <Model />}
             {section === "roster" && <Roster />}
           </motion.div>
@@ -83,10 +90,30 @@ function Tape() {
   );
 }
 
-function Games() {
+function Games({
+  onOpenGame,
+  onAddGame,
+}: {
+  onOpenGame?: (key: string) => void;
+  onAddGame?: () => void;
+}) {
   const pressMean = mean(series("press"));
   const poss = series("poss");
   const xg = series("xg");
+  const [added, setAdded] = useState<AddedGame[]>([]);
+
+  // Games this machine has run through the pipeline. The service is optional,
+  // so a failure here means "none yet" rather than an error: the rest of the
+  // page is committed data and renders regardless.
+  useEffect(() => {
+    let live = true;
+    listAdded()
+      .then((r) => live && setAdded(r.games))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, []);
 
   return (
     <div className="mx-auto w-full max-w-5xl">
@@ -95,6 +122,54 @@ function Games() {
         The orange mark is where you pressed; the band is how wide you played.
         Only games whose footage has been through the pipeline open a report.
       </p>
+
+      {/* ── Games this coach added ──────────────────────────────────── */}
+      {added.length > 0 && (
+        <div className="mt-7">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="text-[15px] font-medium text-warm-2">
+              Added by you
+            </h2>
+            {onAddGame && (
+              <button
+                onClick={onAddGame}
+                className="text-[13px] text-accent transition-colors hover:brightness-125"
+              >
+                Add another
+              </button>
+            )}
+          </div>
+          <ul className="mt-3.5 overflow-hidden rounded-lg bg-surface ring-1 ring-white/[0.06]">
+            {added.map((g) => (
+              <li key={g.key}>
+                <button
+                  onClick={() => onOpenGame?.(g.key)}
+                  className="flex w-full items-baseline justify-between gap-4 border-b border-white/[0.05] px-5 py-4 text-left transition-colors last:border-b-0 hover:bg-surface-2"
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate text-[15px] text-warm">
+                      {g.label}
+                    </span>
+                    <span className="mt-0.5 block text-[12px] text-muted-2">
+                      {g.competition} {g.season} &middot; from {g.team}&rsquo;s
+                      bench
+                      {g.has_footage ? "" : " · no footage"}
+                    </span>
+                  </span>
+                  <span className="shrink-0 text-right">
+                    <span className="block font-mono text-[12px] tabular-nums text-chalk">
+                      {g.moments_found}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] text-muted-2">
+                      moments
+                    </span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Tile label="in the graph" value={String(TOTALS.in_graph)} sub="games on record" />

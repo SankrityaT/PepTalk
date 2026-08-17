@@ -1,0 +1,596 @@
+"""Tests for adding a game: alignment, footage sources, and re-ingest safety.
+
+Pure unit, like the rest of the suite: nothing here touches Docker, StatsBomb,
+ffmpeg or the Anthropic API. The subprocess calls are asserted on the command
+that would have been run rather than by running it, because what matters is
+that a local file takes the ffmpeg branch and a URL takes the yt-dlp one.
+"""
+
+import json
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+from tacticbench import fetch_clips, snapshots
+from tacticbench.find_offsets import BREAK_MAX_S, BREAK_MIN_S, check_offsets, offset_from
+from tacticbench.workspace import Workspace
+
+
+def ws(**kw) -> Workspace:
+    base = dict(key="t", team="Argentina", label="Argentina 3-3 France", match_id=1)
+    base.update(kw)
+    return Workspace(**base)
+
+
+class TestOffsetArithmetic:
+    """The one number nobody can derive, so the arithmetic is worth pinning."""
+
+    def test_worked_example_from_the_docs(self):
+        # video 00:12:00 (721s) showed 10:25 (625s) -> 96s, near enough.
+        assert offset_from("00:12:00", "10:25") == 95.0
+        assert offset_from("01:02:01", "52:02") == 599.0
+
+    def test_accepts_mmss_and_hhmmss(self):
+        assert offset_from("12:00", "10:25") == offset_from("00:12:00", "10:25")
+
+    def test_offset_is_video_minus_clock(self):
+        assert offset_from("00:10:30", "10:00") == 30.0
+
+
+class TestOffsetSanityCheck:
+    """A misread digit costs sixty seconds of silent misalignment."""
+
+    def test_a_real_pair_passes(self):
+        assert check_offsets(96.0, 599.0) is None
+
+    def test_swapped_readings_are_caught(self):
+        assert "swapped" in check_offsets(599.0, 96.0)
+
+    def test_break_too_short_is_caught(self):
+        msg = check_offsets(96.0, 96.0 + BREAK_MIN_S - 1)
+        assert msg and "too short" in msg
+
+    def test_break_too_long_is_caught(self):
+        msg = check_offsets(96.0, 96.0 + BREAK_MAX_S + 1)
+        assert msg and "too long" in msg
+
+    def test_the_bounds_themselves_pass(self):
+        assert check_offsets(0.0, float(BREAK_MIN_S)) is None
+        assert check_offsets(0.0, float(BREAK_MAX_S)) is None
+
+
+class TestVideoSource:
+    """An uploaded file and a YouTube id must travel the same path."""
+
+    def test_local_path_is_local(self):
+        assert fetch_clips._is_local("/tmp/match.mp4")
+
+    def test_url_is_not_local(self):
+        assert not fetch_clips._is_local("https://www.youtube.com/watch?v=x")
+
+    def test_empty_is_not_local(self):
+        assert not fetch_clips._is_local("")
+
+    def test_workspace_prefers_the_local_file(self):
+        w = ws(video_id="abc", video_path="/tmp/m.mp4")
+        assert w.source == "/tmp/m.mp4"
+        assert w.is_local
+
+    def test_workspace_falls_back_to_the_url(self):
+        w = ws(video_id="abc")
+        assert w.source.endswith("watch?v=abc")
+        assert not w.is_local
+
+    def test_no_footage_at_all(self):
+        assert ws().source == ""
+
+
+class TestCutWindow:
+    def test_local_file_uses_ffmpeg(self, tmp_path, monkeypatch):
+        src = tmp_path / "match.mp4"
+        src.write_bytes(b"x")
+        dest = tmp_path / "out.mp4"
+        # Long enough to contain the window; the real probe needs a real file.
+        monkeypatch.setattr(fetch_clips, "_duration", lambda p: 600.0)
+
+        with patch("subprocess.run") as run:
+            run.return_value.returncode = 0
+            dest.write_bytes(b"y")  # pretend ffmpeg produced it
+            fetch_clips.cut_window(str(src), 10.0, 20.0, dest, force=True)
+
+        cmd = run.call_args[0][0]
+        assert cmd[0] == "ffmpeg"
+        assert "-ss" in cmd and "10.00" in cmd
+        assert "-to" in cmd and "20.00" in cmd
+
+    def test_window_past_the_end_is_skipped(self, tmp_path, monkeypatch):
+        """A ten second file cannot contain minute 45; better nothing than a
+        zero-byte clip that renders as a broken player."""
+        src = tmp_path / "short.mp4"
+        src.write_bytes(b"x")
+        monkeypatch.setattr(fetch_clips, "_duration", lambda p: 10.0)
+        assert fetch_clips.cut_window(
+            str(src), 2700.0, 2710.0, tmp_path / "o.mp4", force=True
+        ) is None
+
+    def test_negative_window_is_refused(self, tmp_path, monkeypatch):
+        """A moment before the recording starts clamps to an empty window,
+        which made ffmpeg abort with `-to value smaller than -ss`."""
+        src = tmp_path / "m.mp4"
+        src.write_bytes(b"x")
+        monkeypatch.setattr(fetch_clips, "_duration", lambda p: 600.0)
+        assert fetch_clips.cut_window(
+            str(src), -20.0, -5.0, tmp_path / "o.mp4", force=True
+        ) is None
+
+    def test_url_uses_yt_dlp(self, tmp_path):
+        dest = tmp_path / "out.mp4"
+
+        with patch("subprocess.run") as run:
+            run.return_value.returncode = 0
+            dest.write_bytes(b"y")
+            fetch_clips.cut_window(
+                "https://www.youtube.com/watch?v=abc", 10.0, 20.0, dest, force=True
+            )
+
+        cmd = run.call_args[0][0]
+        assert cmd[0] == "yt-dlp"
+        assert "--download-sections" in cmd
+
+    def test_missing_local_file_returns_none(self, tmp_path):
+        got = fetch_clips.cut_window(
+            str(tmp_path / "nope.mp4"), 0.0, 5.0, tmp_path / "o.mp4", force=True
+        )
+        assert got is None
+
+    def test_existing_clip_is_reused(self, tmp_path):
+        dest = tmp_path / "out.mp4"
+        dest.write_bytes(b"already here")
+        with patch("subprocess.run") as run:
+            got = fetch_clips.cut_window("/tmp/x.mp4", 0.0, 5.0, dest)
+        assert got == dest
+        run.assert_not_called()
+
+
+class TestPlanUsesWorkspaceOffsets:
+    """Windows are planned against the workspace's own alignment."""
+
+    def test_offsets_are_applied(self):
+        moments = [{"minute": 10, "second": 0}]
+        [w] = fetch_clips.plan(moments, {1: 96.0})
+        assert w.video_s == 10 * 60 + 96.0
+
+    def test_period_without_an_offset_is_skipped(self):
+        # Extra time has a second break, so period 2's offset does not carry.
+        # Better no window than one minutes from the play it claims to show.
+        moments = [{"minute": 100, "second": 0}]
+        assert fetch_clips.plan(moments, {1: 96.0, 2: 599.0}) == []
+
+    def test_overlapping_windows_merge(self):
+        moments = [{"minute": 10, "second": 0}, {"minute": 10, "second": 2}]
+        assert len(fetch_clips.plan(moments, {1: 96.0})) == 1
+
+    def test_separate_moments_stay_separate(self):
+        moments = [{"minute": 10, "second": 0}, {"minute": 40, "second": 0}]
+        assert len(fetch_clips.plan(moments, {1: 96.0})) == 2
+
+
+class TestReelMode:
+    """A highlights reel is footage of the match, just not alignable to it.
+
+    Aligning it by the match clock yields nothing — every window falls past
+    the end of a seven minute file — so moments get excerpts instead, and the
+    excerpt is labelled rather than passed off as the pass itself.
+    """
+
+    def _moments(self):
+        return [
+            {"minute": 9, "second": 49, "player": "A B"},
+            {"minute": 20, "second": 30, "player": "C D"},
+            {"minute": 77, "second": 19, "player": "E F"},
+        ]
+
+    def test_every_moment_gets_a_window(self, monkeypatch, tmp_path):
+        from tacticbench import bootstrap
+
+        cut = []
+        monkeypatch.setattr(
+            bootstrap.fetch_clips,
+            "cut_window",
+            lambda src, s, e, dest, force=False: (cut.append((s, e)), dest)[1],
+        )
+        out = bootstrap.cut_reel(
+            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
+        )
+        assert len(out) == 3
+        assert all(c["excerpt"] for c in out)
+
+    def test_windows_do_not_overlap_and_stay_inside_the_file(
+        self, monkeypatch, tmp_path
+    ):
+        from tacticbench import bootstrap
+
+        monkeypatch.setattr(
+            bootstrap.fetch_clips,
+            "cut_window",
+            lambda src, s, e, dest, force=False: dest,
+        )
+        out = bootstrap.cut_reel(
+            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
+        )
+        for c in out:
+            assert 0.0 <= c["start"] < c["end"] <= 300.0
+        for a, b in zip(out, out[1:]):
+            assert a["end"] <= b["start"] + 0.01
+
+    def test_moments_stay_in_match_order(self, monkeypatch, tmp_path):
+        """The reel runs forwards, so the excerpts should too."""
+        from tacticbench import bootstrap
+
+        monkeypatch.setattr(
+            bootstrap.fetch_clips,
+            "cut_window",
+            lambda src, s, e, dest, force=False: dest,
+        )
+        out = bootstrap.cut_reel(
+            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
+        )
+        assert [c["match_s"] for c in out] == sorted(c["match_s"] for c in out)
+
+    def test_no_moments_means_no_clips(self, tmp_path):
+        from tacticbench import bootstrap
+
+        assert bootstrap.cut_reel(ws(key="r"), [], 300.0) == []
+
+    def test_a_full_broadcast_is_not_treated_as_a_reel(self):
+        """Two hours of footage aligns by the clock, as it always did."""
+        from tacticbench.bootstrap import REEL_MAX_S
+
+        assert REEL_MAX_S < 2 * 60 * 60
+        assert 7 * 60 < REEL_MAX_S
+
+
+class TestMomentSeconds:
+    """Seconds must survive into the written moment.
+
+    The clip window is computed from minute AND second. Dropping the second
+    rounds every moment to the top of its minute, so the cut lands up to 59
+    seconds from the pass it claims to show — silently, with plausible-looking
+    footage on screen. Exactly what the offsets exist to prevent.
+    """
+
+    def test_describe_keeps_the_second(self):
+        from tacticbench.pep import describe
+
+        moment = {
+            "minute": 8,
+            "second": 25,
+            "player": "Rodrigo De Paul",
+            "team": "Argentina",
+            "played": {"x": 100.0, "y": 60.0, "xt_gain": 0.02, "completion": 0.8,
+                       "defenders_in_lane": 1, "distance": 20.0},
+            "best": {"x": 108.0, "y": 46.0, "xt_gain": 0.15, "completion": 0.83,
+                     "defenders_in_lane": 1, "distance": 24.0},
+            "missed": 0.104,
+        }
+        assert describe(moment)["second"] == 25
+
+    def test_a_missing_second_is_zero_not_absent(self):
+        from tacticbench.pep import describe
+
+        moment = {
+            "minute": 8,
+            "player": "X Y",
+            "team": "A",
+            "played": {"x": 100.0, "y": 60.0, "xt_gain": 0.02, "completion": 0.8,
+                       "defenders_in_lane": 1, "distance": 20.0},
+            "best": {"x": 108.0, "y": 46.0, "xt_gain": 0.15, "completion": 0.83,
+                     "defenders_in_lane": 1, "distance": 24.0},
+            "missed": 0.104,
+        }
+        assert describe(moment)["second"] == 0
+
+
+class TestSnapshots:
+    def test_moment_without_footage_is_kept(self):
+        """A failed download must not lose the moment; the freeze frame stands."""
+        pep = {"moments": [{"id": 0, "minute": 10, "second": 0, "player": "Lionel Messi"}]}
+        out = snapshots.clip_moments(ws(period_offset={1: 96.0}), pep, [])
+        assert len(out["moments"]) == 1
+        assert "clip" not in out["moments"][0]
+
+    def test_moment_is_joined_to_its_clip(self):
+        pep = {"moments": [{"id": 0, "minute": 10, "second": 0, "player": "Lionel Messi"}]}
+        clips = [
+            {
+                "key": "010_00",
+                "start": 690.0,
+                "end": 700.0,
+                "file": "/tmp/clips/t_010_00.mp4",
+                "offset_in_clip": 6.0,
+            }
+        ]
+        out = snapshots.clip_moments(ws(period_offset={1: 96.0}), pep, clips)
+        m = out["moments"][0]
+        # Namespaced by workspace, so an added game cannot overwrite the
+        # committed example's footage.
+        assert m["clip"] == "/clips/t/t_010_00.mp4"
+        # video time is 10*60 + 96 = 696, six seconds into a window from 690.
+        assert m["pass_at"] == 6.0
+
+    def test_merged_window_still_finds_the_later_moment(self):
+        """Two passes seconds apart share one clip, at different offsets."""
+        pep = {
+            "moments": [
+                {"id": 0, "minute": 10, "second": 0, "player": "A B"},
+                {"id": 1, "minute": 10, "second": 4, "player": "C D"},
+            ]
+        }
+        clips = [
+            {"key": "010_00", "start": 690.0, "end": 710.0,
+             "file": "/tmp/c.mp4", "offset_in_clip": 6.0}
+        ]
+        out = snapshots.clip_moments(ws(period_offset={1: 96.0}), pep, clips)
+        assert out["moments"][0]["pass_at"] == 6.0
+        assert out["moments"][1]["pass_at"] == 10.0
+
+    @pytest.mark.parametrize(
+        "full,expected",
+        [
+            # Particles bind forward: "Paul" and "Muani" are the loudest
+            # mistakes this page can make.
+            ("Rodrigo De Paul", "De Paul"),
+            ("Randal Kolo Muani", "Kolo Muani"),
+            ("Virgil van Dijk", "van Dijk"),
+            ("Ángel Di María", "Di María"),
+            # Spanish and Portuguese double surnames: the LAST word is the
+            # mother's name and not what anyone calls the player.
+            ("Lionel Andrés Messi Cuccittini", "Messi"),
+            ("Jordi Alba Ramos", "Alba"),
+            ("Randall Enrique Leal Arley", "Leal"),
+            # A Catalan connective marks the name before it.
+            ("Sergio Busquets i Burgos", "Busquets"),
+            # Ordinary two-part names are untouched.
+            ("Robert Taylor", "Taylor"),
+            ("Emiliano Martínez", "Martínez"),
+            ("DeAndre Yedlin", "Yedlin"),
+            # Degenerate input must not raise.
+            ("", ""),
+            ("Pelé", "Pelé"),
+        ],
+    )
+    def test_surname_is_what_a_coach_says(self, full, expected):
+        assert snapshots.surname(full) == expected
+
+    def test_dashboard_reports_the_coachs_side(self):
+        metrics = {"Argentina": {"possession_share_pct": 53.8, "xg": 2.758, "shots": 20}}
+        meta = {
+            "home_team": {"home_team_name": "Argentina"},
+            "away_team": {"away_team_name": "France"},
+            "home_score": 3, "away_score": 3,
+        }
+        out = snapshots.dashboard(ws(), metrics, meta, "Argentina 3-3 France", "2022-12-18")
+        assert out["team"] == "Argentina"
+        assert out["matches"][0]["poss"] == 53.8
+        assert out["matches"][0]["home"] is True
+
+    def test_every_snapshot_names_its_producer(self):
+        """The convention the committed snapshots set: say what made you."""
+        metrics = {"Argentina": {}}
+        meta = {
+            "home_team": {"home_team_name": "Argentina"},
+            "away_team": {"away_team_name": "France"},
+            "home_score": 3, "away_score": 3,
+        }
+        assert snapshots.dashboard(ws(), metrics, meta, "l", "2022-12-18")["source"]
+        assert snapshots.clip_moments(ws(), {"moments": []}, [])["source"]
+
+
+class TestFreezeFrameGuard:
+    """The failure that looks like a quiet game and is really a broken join.
+
+    Some competitions publish a 360 file whose event_uuids match nothing in the
+    match feed. Every lookup misses, every pass is skipped, and the run
+    finishes cleanly with zero moments — which reads as "nothing happened"
+    rather than "this data is unusable". Caught before the work, not after.
+    """
+
+    def _events(self, n: int, ids: list[str]) -> list[dict]:
+        return [{"type": {"name": "Pass"}, "id": i} for i in ids] + [
+            {"type": {"name": "Carry"}, "id": f"c{k}"} for k in range(n)
+        ]
+
+    def test_mismatched_uuids_are_refused(self, monkeypatch):
+        from tacticbench import bootstrap
+
+        monkeypatch.setattr(bootstrap, "has_360", lambda mid: True)
+        monkeypatch.setattr(
+            "tacticbench.pass_options.load_360",
+            lambda mid: {f"frame{i}": {} for i in range(50)},
+        )
+        events = self._events(5, [f"pass{i}" for i in range(20)])
+
+        with pytest.raises(bootstrap.BootstrapError) as exc:
+            bootstrap.check_360(1, events)
+        assert "does not line up" in str(exc.value)
+        assert "0 of 20" in str(exc.value)
+
+    def test_healthy_coverage_passes(self, monkeypatch):
+        from tacticbench import bootstrap
+
+        ids = [f"pass{i}" for i in range(20)]
+        monkeypatch.setattr(bootstrap, "has_360", lambda mid: True)
+        # 16 of 20, near the ~79% a real match carries.
+        monkeypatch.setattr(
+            "tacticbench.pass_options.load_360", lambda mid: {i: {} for i in ids[:16]}
+        )
+        out = bootstrap.check_360(1, self._events(5, ids))
+        assert out["coverage"] == 0.8
+        assert out["passes"] == 20
+
+    def test_missing_360_is_refused_first(self, monkeypatch):
+        from tacticbench import bootstrap
+
+        monkeypatch.setattr(bootstrap, "has_360", lambda mid: False)
+        with pytest.raises(bootstrap.BootstrapError) as exc:
+            bootstrap.check_360(1, self._events(5, ["a"]))
+        assert "no 360 data" in str(exc.value)
+
+
+class TestLoadSeries:
+    """Where a team's history is read from, which decides what gets replaced.
+
+    `ingest_team` clears a team's facts before rewriting them, so a series
+    that reads as empty when it is not would delete real history and put
+    nothing back. Barcelona's 531 matches live only in `all_series.json`.
+    """
+
+    def test_a_team_with_no_history_starts_empty(self, tmp_path, monkeypatch):
+        """Adding a game for an unseen side is normal, not an error."""
+        from tacticbench import graph
+
+        monkeypatch.setattr(graph, "RESULTS", tmp_path)
+        assert graph.load_series("Nobody FC") == []
+
+    def test_per_team_file_is_read(self, tmp_path, monkeypatch):
+        from tacticbench import graph
+
+        monkeypatch.setattr(graph, "RESULTS", tmp_path)
+        (tmp_path / "series_real_madrid.json").write_text(
+            json.dumps(
+                [
+                    {
+                        "match_id": 1,
+                        "date": "2011-01-01",
+                        "competition": "La Liga",
+                        "label": "A 1-0 B",
+                        "metrics": {},
+                    }
+                ]
+            )
+        )
+        assert len(graph.load_series("Real Madrid")) == 1
+
+    def test_falls_back_to_the_combined_file(self, tmp_path, monkeypatch):
+        """The bulk pass writes only all_series.json, and no per-team files."""
+        from tacticbench import graph
+
+        monkeypatch.setattr(graph, "RESULTS", tmp_path)
+        (tmp_path / "all_series.json").write_text(
+            json.dumps(
+                {
+                    "Barcelona": [
+                        {
+                            "match_id": i,
+                            "date": f"2011-01-{i:02d}",
+                            "competition": "La Liga",
+                            "label": "A 1-0 B",
+                            "metrics": {},
+                        }
+                        for i in range(1, 4)
+                    ]
+                }
+            )
+        )
+        assert len(graph.load_series("Barcelona")) == 3
+        assert graph.load_series("Nobody FC") == []
+
+
+class TestWorkspacePaths:
+    def test_snapshots_live_under_the_workspace(self):
+        """Never in src/content/snapshots, which a fresh clone renders from."""
+        assert ws(key="mls23").snapshots.name == "snapshots"
+        assert ws(key="mls23").snapshots.parent.name == "mls23"
+
+
+class TestClearTeamFactsCypher:
+    """The Cypher must stay inside HydraDB's subset.
+
+    Same approach as test_conversation.py: assert on the query strings, since
+    the constraints are what break rather than the logic.
+    """
+
+    def _queries(self, fn) -> list[str]:
+        seen: list[str] = []
+
+        class FakeGraph:
+            def run(self, query, **params):
+                seen.append(query)
+                return []
+
+        from tacticbench.graph import Graph
+
+        fn(Graph.clear_team_facts, FakeGraph())
+        return seen
+
+    def test_no_unsupported_clauses(self):
+        queries = self._queries(lambda f, g: f(g, 42))
+        assert queries, "expected at least the lookup query"
+        for q in queries:
+            assert " IN " not in q, "HydraDB rejects IN"
+            assert "IS NULL" not in q, "HydraDB rejects IS NULL"
+            assert "CONTAINS" not in q, "HydraDB rejects CONTAINS"
+            assert "WITH " not in q, "WITH is pass-through only"
+            assert ";" not in q, "one statement per request"
+
+    def test_nodes_are_named_not_anonymous(self):
+        # `MATCH (:Fact)` is rejected; nodes must carry a name.
+        for q in self._queries(lambda f, g: f(g, 42)):
+            assert "(:Fact" not in q
+
+    def test_it_deletes_relationships_too(self):
+        """DETACH takes the SUPERSEDED_BY chain and citations with it."""
+        seen: list[str] = []
+
+        class FakeGraph:
+            def run(self, query, **params):
+                seen.append(query)
+                return [{"id": 1}] if "RETURN" in query else []
+
+        from tacticbench.graph import Graph
+
+        Graph.clear_team_facts(FakeGraph(), 42)
+        assert any("DETACH DELETE" in q for q in seen)
+
+
+class TestIngestReplacesByDefault:
+    def test_facts_are_cleared_before_writing(self):
+        """Re-adding a game must replace its facts, not lay a second chain."""
+        from tacticbench.graph import Graph
+
+        calls = {"cleared": 0}
+
+        class FakeGraph:
+            def clear_team_facts(self, team_id):
+                calls["cleared"] += 1
+                return 3
+
+            def ingest_matches(self, team, team_id, series):
+                return len(series)
+
+            def run(self, query, **params):
+                return []
+
+        out = Graph.ingest_team(FakeGraph(), "Argentina", 1, [], {})
+        assert calls["cleared"] == 1
+        assert out["cleared"] == 3
+
+    def test_replace_can_be_turned_off(self):
+        from tacticbench.graph import Graph
+
+        calls = {"cleared": 0}
+
+        class FakeGraph:
+            def clear_team_facts(self, team_id):
+                calls["cleared"] += 1
+                return 0
+
+            def ingest_matches(self, team, team_id, series):
+                return 0
+
+            def run(self, query, **params):
+                return []
+
+        Graph.ingest_team(FakeGraph(), "Argentina", 1, [], {}, replace=False)
+        assert calls["cleared"] == 0

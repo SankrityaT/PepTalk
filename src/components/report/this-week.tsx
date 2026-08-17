@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { MomentFrame } from "@/components/report/moment-frame";
-import { MOMENTS, Moment, THEMES } from "@/content/pep";
+import { useGame } from "@/content/game";
+import { Moment } from "@/content/pep";
 
 /**
  * This week. The top of the report, and the reason it exists.
@@ -67,6 +68,7 @@ function action(why: string | undefined): string | null {
 
 export function ThisWeek({ onSelect }: { onSelect: (m: Moment) => void }) {
   const [why, setWhy] = useState<string | null>(null);
+  const { moments: MOMENTS, themes: THEMES } = useGame();
   if (!THEMES.length) return null;
 
   /** Moments already used as a card's lead image, so no frame repeats. */

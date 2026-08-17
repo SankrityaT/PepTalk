@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { MOMENTS, MOMENTS_FOUND, Moment, surname } from "@/content/pep";
+import { useGame } from "@/content/game";
+import { Moment, surname } from "@/content/pep";
 
 /**
  * Pep's read, as a feed.
@@ -43,6 +44,9 @@ export function PepFeed({
   onSelect: (m: Moment) => void;
 }) {
   const [open, setOpen] = useState<number | null>(null);
+  // Whichever game is showing. Outside a provider this is the committed
+  // example, which is what the landing page and a fresh clone render.
+  const { moments: MOMENTS, momentsFound: MOMENTS_FOUND } = useGame();
 
   return (
     <div className="flex h-full flex-col">
