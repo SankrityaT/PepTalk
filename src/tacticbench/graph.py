@@ -67,6 +67,18 @@ CITATIONS_PER_FACT = 12
 CV_MATCH_ID_BASE = 20_000_000
 
 # Conversation lives in the same graph as the football, in its own id ranges.
+PLAYER_ID_BASE = 600_000_000
+PLAYER_FACT_ID_BASE = 700_000_000
+
+#: Room per player for `ERAS_PER_DIMENSION` facts across ten dimensions. Fact
+#: ids are a pure function of (player, dimension, era index) so that a re-run
+#: writes over the same nodes. Allocating them sequentially instead made the
+#: ingest non-idempotent in a way that looked fine: re-running with different
+#: era counts shifted every id, MERGE created a second set beside the first,
+#: and Messi came back with two overlapping turnover histories.
+FACTS_PER_PLAYER = 100
+ERAS_PER_DIMENSION = 10
+
 SESSION_ID_BASE = 400_000_000
 TURN_ID_BASE = 500_000_000
 
@@ -270,7 +282,160 @@ class Graph:
             "supersedes": written_links,
         }
 
+    def ingest_players(
+        self,
+        team: str,
+        team_id: int,
+        squad: dict[str, dict],
+        facts: dict[str, dict[str, list]],
+    ) -> dict:
+        """Players and their dated facts, on the same machinery as the teams.
+
+        A Fact carries `player_id` rather than `team_id`, which is what keeps
+        the two populations apart in a store with no labels to filter on: a
+        squad-wide query would otherwise pull the club's own norms in beside
+        the footballers'.
+        """
+        written_players = written_facts = written_obs = written_links = 0
+        dropped = 0
+
+        for name, p in squad.items():
+            if name not in facts:
+                continue  # too few appearances to have a norm; nothing to write
+            pid = PLAYER_ID_BASE + int(p["player_id"])
+
+            # Clear this player's facts first. Deterministic ids alone are not
+            # enough: a re-run that resolves five eras into three would leave
+            # the last two behind, still valid-looking and still on the chain.
+            self.run(
+                "MATCH (p:Player {id: $pid})-[:HAS_FACT]->(f:Fact) DETACH DELETE f",
+                pid=pid,
+            )
+
+            # Node creation rides on an edge here as everywhere else.
+            self.run(
+                "MERGE (t:Team {id: $tid})-[:FIELDED]->"
+                "(p:Player {id: $pid, statsbomb_id: $sb, name: $name, "
+                "nickname: $nick, team_id: $tid, position: $pos, jersey: $jersey, "
+                "appearances: $apps, minutes: $mins})",
+                tid=team_id, pid=pid, sb=int(p["player_id"]), name=name,
+                nick=p.get("nickname") or name, pos=p.get("position") or "",
+                jersey=int(p.get("jersey") or 0), apps=int(p["appearances"]),
+                mins=round(float(p["minutes"]), 1),
+            )
+            written_players += 1
+
+            base = PLAYER_FACT_ID_BASE + int(p["player_id"]) * FACTS_PER_PLAYER
+            for dim_index, (dim, flist) in enumerate(sorted(facts[name].items())):
+                previous_id: int | None = None
+                for era, f in enumerate(flist):
+                    if era >= ERAS_PER_DIMENSION:
+                        # Never yet reached; counted rather than silently cut.
+                        dropped += len(flist) - era
+                        break
+                    fid = base + dim_index * ERAS_PER_DIMENSION + era
+                    self.run(
+                        "MERGE (p:Player {id: $pid})-[:HAS_FACT]->"
+                        "(f:Fact {id: $fid, player_id: $pid, team_id: $tid, "
+                        "dimension: $dim, band: $band, valid_from: $vf, valid_to: $vt, "
+                        "observations: $obs, median_value: $med})",
+                        pid=pid, tid=team_id, fid=fid, dim=dim, band=f.band,
+                        vf=f.valid_from, vt=f.valid_to, obs=f.observations,
+                        med=f.median_value if f.median_value is not None else 0.0,
+                    )
+                    written_facts += 1
+
+                    for mid in f.match_ids[:CITATIONS_PER_FACT]:
+                        self.run(
+                            "MERGE (f:Fact {id: $fid})-[:OBSERVED_IN]->(m:Match {id: $mid})",
+                            fid=fid, mid=MATCH_ID_BASE + mid,
+                        )
+                        written_obs += 1
+
+                    if previous_id is not None:
+                        self.run(
+                            "MERGE (a:Fact {id: $prev})-[:SUPERSEDED_BY]->(b:Fact {id: $cur})",
+                            prev=previous_id, cur=fid,
+                        )
+                        written_links += 1
+                    previous_id = fid
+
+        return {
+            "players": written_players,
+            "facts": written_facts,
+            "observations": written_obs,
+            "supersedes": written_links,
+            "dropped_eras": dropped,
+        }
+
     # ---------------- retrieval ----------------
+
+    def players_for_team(self, team_id: int) -> list[dict]:
+        """The squad the graph holds facts for, most-played first."""
+        rows = self.run(
+            "MATCH (t:Team {id: $tid})-[:FIELDED]->(p:Player) "
+            "RETURN p.id AS id, p.statsbomb_id AS statsbomb_id, p.name AS name, "
+            "p.nickname AS nickname, p.position AS position, p.jersey AS jersey, "
+            "p.appearances AS appearances, p.minutes AS minutes "
+            "ORDER BY p.minutes DESC",
+            tid=team_id,
+        )
+        return [dict(r) for r in rows]
+
+    def player_fact_at(self, player_id: int, dimension: str, at: int) -> dict | None:
+        """What was true of this player, on this date."""
+        rows = self.run(
+            "MATCH (p:Player {id: $pid})-[:HAS_FACT]->(f:Fact) "
+            "WHERE f.dimension = $dim AND f.valid_from <= $at AND f.valid_to > $at "
+            "RETURN f.id AS id, f.band AS band, f.valid_from AS valid_from, "
+            "f.valid_to AS valid_to, f.observations AS observations, "
+            "f.median_value AS median_value",
+            pid=player_id, dim=dimension, at=at,
+        )
+        return dict(rows[0]) if rows else None
+
+    def player_timeline(self, player_id: int, dimension: str) -> list[dict]:
+        """Every era of this dimension for this player, oldest first."""
+        rows = self.run(
+            "MATCH (p:Player {id: $pid})-[:HAS_FACT]->(f:Fact) "
+            "WHERE f.dimension = $dim "
+            "RETURN f.id AS id, f.band AS band, f.valid_from AS valid_from, "
+            "f.valid_to AS valid_to, f.observations AS observations, "
+            "f.median_value AS median_value ORDER BY f.valid_from",
+            pid=player_id, dim=dimension,
+        )
+        return [dict(r) for r in rows]
+
+    def player_ranking(self, team_id: int, dimension: str, at: int, limit: int = 5) -> list[dict]:
+        """The squad on one measure, as it stood on this date.
+
+        For the question a coach actually asks, which is "who do I work with",
+        not "tell me about Messi". Without this the retrieval finds no name in
+        the question, returns no player facts, and the model correctly but
+        uselessly answers that it has nothing on individuals.
+        """
+        rows = self.run(
+            "MATCH (p:Player {team_id: $tid})-[:HAS_FACT]->(f:Fact) "
+            "WHERE f.dimension = $dim AND f.valid_from <= $at AND f.valid_to > $at "
+            "RETURN p.nickname AS player, p.position AS position, p.id AS player_id, "
+            "f.id AS id, f.band AS band, f.median_value AS median_value, "
+            "f.observations AS observations, f.valid_from AS valid_from "
+            "ORDER BY f.median_value DESC",
+            tid=team_id, dim=dimension, at=at,
+        )
+        return [dict(r) for r in rows][:limit]
+
+    def player_flat_lookup(self, player_id: int, dimension: str) -> dict | None:
+        """The same question asked without dates, for the memory-off comparison."""
+        rows = self.run(
+            "MATCH (p:Player {id: $pid})-[:HAS_FACT]->(f:Fact) "
+            "WHERE f.dimension = $dim "
+            "RETURN f.band AS band, f.observations AS observations, "
+            "f.valid_from AS valid_from, f.valid_to AS valid_to "
+            "ORDER BY observations DESC LIMIT 1",
+            pid=player_id, dim=dimension,
+        )
+        return dict(rows[0]) if rows else None
 
     def fact_at(self, team_id: int, dimension: str, at: int) -> dict | None:
         """What was true for this team, on this date. The point-in-time query."""

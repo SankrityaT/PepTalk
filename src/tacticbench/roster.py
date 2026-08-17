@@ -231,6 +231,28 @@ def measure_match(match_id: int, team: str, xt_model: dict) -> dict[str, dict]:
     return out
 
 
+def rates_for(r: dict) -> dict:
+    """Counts to per-90 rates. Shared with the fact builder, deliberately.
+
+    A norm and a match reading have to be computed the same way or the arrow
+    between them is measuring the difference between two formulas.
+    """
+    n = max(r["minutes"], 1.0) / 90.0
+    return {
+        "xt_created": round(r["xt_created"] / n, 3),
+        "xt_left": round(r["xt_left"] / n, 3),
+        "final_third_entries": round(r["final_third_entries"] / n, 2),
+        "touches": round(r["touches"] / n, 1),
+        "defensive_actions": round(r["defensive_actions"] / n, 2),
+        "progressive_ratio": round(r["progressive"] / r["passes_completed"], 3)
+        if r.get("passes_completed")
+        else 0.0,
+        "turnover_rate": round(100 * r["turnovers"] / r["touches"], 2)
+        if r.get("touches")
+        else 0.0,
+    }
+
+
 def add_xt_left(rows: dict[str, dict], match_id: int, team: str) -> None:
     """Threat the player had available on a better ball and did not play.
 
@@ -241,7 +263,13 @@ def add_xt_left(rows: dict[str, dict], match_id: int, team: str) -> None:
     try:
         found = analyse(match_id)
     except Exception:
+        # StatsBomb 360 starts at Euro 2020, so a 2018 World Cup match has no
+        # freeze frames and no reading here. Leaving xt_left at 0 would tell
+        # the fact builder the player wasted nothing that day, which is a
+        # fabricated observation rather than a missing one.
         return
+    for name in rows:
+        rows[name]["has_options"] = True
     for r in found.get("all_options", []):
         if r.get("team") != team:
             continue
@@ -305,22 +333,8 @@ def build(key: str | None = None, matches: list[int] | None = None) -> dict:
             t["jersey"] = r["jersey"] or t.get("jersey")
 
     def rates(r: dict) -> dict:
-        n = max(r["minutes"], 1.0) / 90.0
-        return {
-            "xt_created": round(r["xt_created"] / n, 3),
-            "xt_left": round(r["xt_left"] / n, 3),
-            "final_third_entries": round(r["final_third_entries"] / n, 2),
-            "touches": round(r["touches"] / n, 1),
-            "defensive_actions": round(r["defensive_actions"] / n, 2),
-            "progressive_ratio": round(
-                r["progressive"] / r["passes_completed"], 3
-            )
-            if r.get("passes_completed")
-            else 0.0,
-            "turnover_rate": round(100 * r["turnovers"] / r["touches"], 2)
-            if r.get("touches")
-            else 0.0,
-        }
+        return rates_for(r)
+
 
     here = per_match[ws.match_id]
     players = []
