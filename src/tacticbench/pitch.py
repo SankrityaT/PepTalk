@@ -104,6 +104,13 @@ MIN_SPREAD = 0.15
 #: one sits near chance.
 MIN_PAINT = 0.35
 
+#: The projected pitch must cover this share of the frame before its lines are
+#: scored, and be sampled at least this many times. Both exist because a
+#: degenerate fit that collapses the pitch onto a single painted line otherwise
+#: scores a perfect 100% off 89 samples.
+MIN_COVERAGE = 0.20
+MIN_SAMPLES = 250
+
 
 def _vertices_cm() -> list[tuple[float, float]]:
     """The 32 landmarks, in the order the model emits them."""
@@ -279,31 +286,59 @@ def paint_mask(img):
 def paint_score(H: "np.ndarray", mask, grass, w: int, h: int) -> float:
     """How much of the projected pitch lands on actual paint.
 
-    The check that settles orientation. Every label-based score is blind to the
-    pitch being symmetric: a shifted assignment maps one end onto the other and
-    fits perfectly. Paint is not symmetric with respect to the camera, so
-    asking "do the drawn lines sit on the painted lines" cannot be satisfied by
-    the wrong end.
+    Two failures shaped this.
 
-    Sampled along each segment, counting only samples that land on grass, so a
-    projection that throws most of the pitch off frame cannot win by defaulting.
+    Scoring only the samples that landed on grass rewarded throwing the pitch
+    off frame: a candidate with three quarters of its lines in the crowd kept
+    the few that fell on grass, hit some, and scored 83% while drawing the
+    goalposts into the stands.
+
+    Requiring most of the pitch to be visible instead rejected everything,
+    because a close broadcast shot of one penalty area legitimately shows a
+    fifth of the pitch. Demanding otherwise fails every correct fit.
+
+    So a sample inside the frame counts either way: on grass it is a chance to
+    hit paint, and off grass it is a miss. A pitch line drawn through a crowd is
+    evidence against the fit rather than something to skip over.
     """
-    hits = tested = 0
+    # A projection has to actually show a pitch before its lines are judged.
+    # Without this, a fit that folds the whole pitch onto one painted line
+    # scores 89 samples, 89 hits, a perfect 100%, and is nonsense.
+    if coverage(H, w, h) < MIN_COVERAGE:
+        return 0.0
+
+    hits = judged = 0
     for a, b in outline():
         pa, pb = _project(H, [a, b])
         if not (np.isfinite(pa).all() and np.isfinite(pb).all()):
-            continue
+            return 0.0
         n = max(2, int(np.hypot(*(pb - pa)) / 6))
         for t in np.linspace(0, 1, n):
             x, y = pa + (pb - pa) * t
             xi, yi = int(round(x)), int(round(y))
-            if not (0 <= xi < w and 0 <= yi < h) or not grass[yi, xi]:
-                continue
-            tested += 1
-            if mask[yi, xi]:
+            if not (0 <= xi < w and 0 <= yi < h):
+                continue  # off screen says nothing either way
+            judged += 1
+            if grass[yi, xi] and mask[yi, xi]:
                 hits += 1
-    # Too few samples on grass means the pitch was projected somewhere else.
-    return hits / tested if tested >= 40 else 0.0
+    # Too little of the pitch on screen to judge at all.
+    return hits / judged if judged >= MIN_SAMPLES else 0.0
+
+
+def coverage(H: "np.ndarray", w: int, h: int) -> float:
+    """Share of the frame the projected pitch covers, from 0 to 1."""
+    import cv2
+
+    corners = _project(H, [(0, 0), (PITCH_X, 0), (PITCH_X, PITCH_Y), (0, PITCH_Y)])
+    if not np.isfinite(corners).all():
+        return 0.0
+    # Clip to the frame before measuring: a pitch mostly off screen covers
+    # only what is on it.
+    frame = np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=np.float32)
+    inter, _ = cv2.intersectConvexConvex(
+        corners.astype(np.float32), frame, handleNested=True
+    )
+    return float(inter) / (w * h)
 
 
 def _project(H, pts) -> "np.ndarray":
@@ -456,6 +491,85 @@ def draw_check(image_path: Path, cal: Calibration, out: Path) -> None:
         if np.isfinite(proj[i]).all() and np.isfinite(proj[i + 1]).all():
             cv2.line(img, tuple(proj[i].astype(int)), tuple(proj[i + 1].astype(int)), (0, 200, 255), 2)
     cv2.imwrite(str(out), img)
+
+
+def lines_in(img) -> list[dict]:
+    """The long painted lines in a frame, merged and refit.
+
+    Hough returns many short segments per line, so they are grouped by angle
+    and perpendicular offset and refit as one. Only the longest survive: the
+    goal line, the box, the touchlines.
+    """
+    import cv2
+
+    mask, _ = paint_mask(img)
+    thin = cv2.erode(mask, np.ones((5, 5), np.uint8))
+    found = cv2.HoughLinesP(thin, 1, np.pi / 720, threshold=60, minLineLength=100, maxLineGap=45)
+    if found is None:
+        return []
+    segs = np.asarray(found).reshape(-1, 4)
+
+    groups: list[dict] = []
+    for x1, y1, x2, y2 in segs:
+        a = np.arctan2(y2 - y1, x2 - x1) % np.pi
+        n = np.array([np.sin(a), -np.cos(a)])
+        d = float(n @ np.array([x1, y1]))
+        for g in groups:
+            if abs(((g["a"] - a + np.pi / 2) % np.pi) - np.pi / 2) < 0.04 and abs(g["d"] - d) < 22:
+                g["pts"] += [(x1, y1), (x2, y2)]
+                break
+        else:
+            groups.append({"a": a, "d": d, "pts": [(x1, y1), (x2, y2)]})
+
+    out = []
+    for g in groups:
+        pts = np.array(g["pts"], np.float32)
+        if len(pts) < 4:
+            continue
+        vx, vy, x0, y0 = cv2.fitLine(pts, cv2.DIST_L2, 0, 0.01, 0.01).ravel()
+        out.append({"v": (float(vx), float(vy)), "p0": (float(x0), float(y0)),
+                    "span": float(np.ptp(pts[:, 0]) + np.ptp(pts[:, 1]))})
+    out.sort(key=lambda L: -L["span"])
+    return out[:6]
+
+
+#: Pitch lines a broadcast shot of one penalty area can contain, as constant
+#: x and constant y in StatsBomb coordinates.
+X_LINES = {"goal": 120.0, "box_front": (12000 - 2015) / 12000 * 120,
+           "six_front": (12000 - 550) / 12000 * 120}
+Y_LINES = {"touch_far": 0.0, "touch_near": 80.0,
+           "box_far": 1450 / 7000 * 80, "box_near": 5550 / 7000 * 80,
+           "six_far": 2584 / 7000 * 80, "six_near": 4416 / 7000 * 80}
+
+
+def refine(H, SRC, mask, grass, w, h):
+    """Nudge the four anchor points to maximise paint alignment.
+
+    A four point fit inherits every bit of error in the line fits it was built
+    from. Local coordinate descent on where those points land recovers most of
+    it: on the frame this was built against, 63% to 74%.
+    """
+    import cv2
+
+    dst = cv2.perspectiveTransform(SRC.reshape(-1, 1, 2), H).reshape(-1, 2).astype(np.float64)
+
+    def score(d):
+        M = cv2.getPerspectiveTransform(SRC, d.astype(np.float32))
+        return paint_score(M, mask, grass, w, h) if np.isfinite(M).all() else -1.0
+
+    best = score(dst)
+    for step in (16, 8, 4, 2, 1):
+        moved = True
+        while moved:
+            moved = False
+            for i in range(4):
+                for dx, dy in ((step, 0), (-step, 0), (0, step), (0, -step)):
+                    trial = dst.copy()
+                    trial[i] += (dx, dy)
+                    s = score(trial)
+                    if s > best + 1e-6:
+                        best, dst, moved = s, trial, True
+    return cv2.getPerspectiveTransform(SRC, dst.astype(np.float32)), best
 
 
 def main() -> None:
