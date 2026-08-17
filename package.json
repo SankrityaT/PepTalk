@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "snapshots": "node scripts/use-workspace.mjs",
+    "predev": "node scripts/use-workspace.mjs",
+    "prebuild": "node scripts/use-workspace.mjs"
   },
   "dependencies": {
     "geist": "^1.7.2",

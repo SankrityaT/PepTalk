@@ -1,4 +1,4 @@
-import dash from "./snapshots/dashboard.json";
+import dash from "./snapshots/active/dashboard.json";
 
 /**
  * The dashboard's data, snapshotted from HydraDB.

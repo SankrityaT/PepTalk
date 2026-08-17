@@ -16,7 +16,7 @@ import { TapePlayer } from "@/components/tape/tape-player";
 import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
 import { MOMENTS } from "@/content/pep";
-import knowledge from "@/content/snapshots/knowledge.json";
+import knowledge from "@/content/snapshots/active/knowledge.json";
 
 const KNOW = knowledge as unknown as {
   scale: { teams: number; matches: number; facts: number };

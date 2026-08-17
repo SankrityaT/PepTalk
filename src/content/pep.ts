@@ -1,4 +1,4 @@
-import snapshot from "./snapshots/pep-wc2022.json";
+import snapshot from "./snapshots/active/pep-wc2022.json";
 
 /**
  * Pep's read on a match.
