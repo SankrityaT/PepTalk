@@ -120,6 +120,12 @@ def build_squad() -> None:
             "missed": row["missed"],
             "frames": t["frames"],
             "detections": t.get("detections", 0),
+            # Where the broadcast is actually on the pitch. A window is cut six
+            # seconds before the pass and the director is sometimes still on a
+            # close-up for the first few of them: Messi's opens on two shirts
+            # filling the frame. The moment itself is always covered, so this
+            # only moves the poster frame off the replay and onto the football.
+            "pitch_from": round(min((f["t"] for f in t["frames"]), default=0.0), 1),
             # Same rule the roster files players under, so the two join.
             "surname": surname,
         })

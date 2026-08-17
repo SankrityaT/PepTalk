@@ -64,13 +64,20 @@ class Window:
     player: str = ""
 
 
-def period_of(minute: int) -> int:
+def period_of(minute: int, period: int | None = None) -> int:
     """Which period a match minute falls in.
 
-    Four, not three. The first version treated everything past 90 as one
-    period, which put Di Maria's 115:51 on the period 3 offset and, where that
-    was unset, dropped it entirely.
+    Prefer the period the event carries. Inferring it from the clock is wrong
+    wherever stoppage time overlaps the next half: Tagliafico's 45:45 pass
+    against Saudi Arabia is in period 1, which ran to minute 51, and reading it
+    as period 2 would cut the clip ten minutes from the play.
+
+    The fallback is four periods, not three. An earlier version treated
+    everything past 90 as period 3, which put Di Maria's 115:51 on an unset
+    offset and dropped it entirely.
     """
+    if period:
+        return int(period)
     return 1 if minute < 45 else 2 if minute < 90 else 3 if minute < 105 else 4
 
 
@@ -107,7 +114,7 @@ def plan(moments: list[dict], match_id: int | None = None) -> list[Window]:
     for m in ordered:
         minute, second = m["minute"], m.get("second") or 0
         # Whichever periods the workspace measured; the rest are skipped.
-        period = period_of(minute)
+        period = period_of(minute, m.get("period"))
         v = video_time(period, minute, second, match_id)
         if v is None:
             continue
@@ -192,7 +199,7 @@ def squad_windows() -> list[Window]:
         for r in found["all_options"]:
             if r.get("team") != WS.team or not r.get("player") or not is_material(r):
                 continue
-            if period_of(r["minute"]) not in WS.offsets_for_match(mid):
+            if period_of(r["minute"], r.get("period")) not in WS.offsets_for_match(mid):
                 continue  # no measured offset for that period, so unshowable
             got = best.get(r["player"])
             if got is None or r["missed"] > got[0]:

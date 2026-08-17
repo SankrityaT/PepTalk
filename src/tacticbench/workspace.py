@@ -218,6 +218,12 @@ BUILT_IN = Workspace(
             "video_id": "QIpZ1pad73w",
             "period_offset": {1: 155.0, 2: 630.0, 4: 1523.0},
         },
+        # Saudi Arabia, also published in full. Video 20:01 shows 17:24 and
+        # 1:20:01 shows 70:17.
+        3857300: {
+            "video_id": "taD7yT6Bmi0",
+            "period_offset": {1: 157.0, 2: 584.0},
+        },
     },
     tape_window=("00:22:00", "00:23:30"),
     goal_windows={
