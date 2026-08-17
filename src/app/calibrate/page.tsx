@@ -142,8 +142,14 @@ export default function Calibrate() {
           <button onClick={() => move(1)} className="ml-auto rounded-lg bg-white/[0.06] px-3 py-1.5 font-mono text-[11px] hover:bg-white/[0.12]">next</button>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-          <div className="relative">
+        <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+          {/* self-start, and the image is block, so this box is exactly the
+              picture. Markers are positioned as a percentage of it, and a grid
+              cell stretches to the height of the taller column beside it: the
+              landmark list is longer than the frame, so every marker rendered
+              well below where it was clicked while its style attribute was
+              perfectly correct. */}
+          <div className="relative self-start">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={img}
@@ -152,7 +158,7 @@ export default function Calibrate() {
               onClick={place}
               onMouseMove={track}
               onMouseLeave={() => setHover(null)}
-              className="w-full cursor-crosshair rounded-xl ring-1 ring-white/10"
+              className="block w-full cursor-crosshair rounded-xl ring-1 ring-white/10"
             />
 
             {/* A magnifier under the cursor. Clicking a penalty spot on a 1280
