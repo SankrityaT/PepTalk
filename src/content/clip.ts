@@ -35,6 +35,8 @@ export type ClipMoment = {
   clip: string;
   /** Where in the clip the pass happens, in seconds. */
   pass_at: number;
+  /** Where the broadcast is actually on the pitch, in clip seconds. */
+  pitch_from?: number;
   match_clock: string;
   minute: number;
   player: string;

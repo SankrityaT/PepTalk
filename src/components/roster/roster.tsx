@@ -196,6 +196,7 @@ function Detail({
                   src={tape.clip}
                   frames={tape.frames}
                   stopAt={tape.pass_at}
+                  startAt={tape.pitch_from ?? 0}
                   stopLabel={`${p.short}, ${tape.match_clock}`}
                   chalkTeam={1}
                   autoPlay={false}
