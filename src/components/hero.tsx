@@ -4,7 +4,6 @@ import { motion, useMotionValueEvent, useTransform } from "motion/react";
 import { useState } from "react";
 import { ChalkPitch } from "./chalk-pitch";
 import { EraAnnotations } from "./era-annotations";
-import { MemoryReadout } from "./memory-readout";
 import { SiteNav } from "./site-nav";
 import { TimeTravelPitch, useTimeTravelProgress } from "./time-travel-pitch";
 import { HERO_COPY, TACTICAL_STATES } from "@/content/hero";
@@ -135,12 +134,29 @@ export function Hero() {
                 </motion.p>
               </div>
 
-              {/* ── The readout, revealed on scroll ──────────────────── */}
+              {/* ── The product, revealed on scroll ──────────────────── */}
               <motion.div
                 style={{ opacity: readoutOpacity, y: readoutY }}
-                className="mt-2 flex lg:col-span-5 lg:mt-0 lg:justify-end"
+                className="mt-4 flex lg:col-span-5 lg:mt-0 lg:justify-end"
               >
-                <MemoryReadout progress={progress} />
+                {/* What used to sit here was a retrieved fact rendered as a
+                    schema browser: as_of, valid_from, superseded_by. That was
+                    the right thing to show when there was no product to show,
+                    and it is the wrong thing now. This is the session running,
+                    recorded from the build the button below opens. */}
+                <span className="relative block w-full overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.08] lg:max-w-[46rem]">
+                  <video
+                    className="block w-full"
+                    src="/shots/session.mp4"
+                    poster="/shots/session.webp"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                  />
+                  <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/[0.04]" />
+                </span>
               </motion.div>
             </div>
           </div>
