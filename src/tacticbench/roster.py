@@ -39,6 +39,7 @@ from pathlib import Path
 import httpx
 
 from . import data, workspace
+from .workspace import snapshot_dir
 from . import xt as xt_mod
 from .pass_options import analyse
 from .pep import short_name
@@ -493,7 +494,7 @@ def main() -> None:
     else:
         ids = None
     snap = build(args.workspace, ids)
-    out = args.out or ROOT / "src" / "content" / "snapshots" / "roster.json"
+    out = args.out or snapshot_dir(args.workspace) / "roster.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snap, indent=2) + "\n")
 

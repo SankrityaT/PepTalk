@@ -93,7 +93,8 @@ def main() -> None:
         "source": "broadcast clock read off the overlay; one offset per period",
         "moments": moments,
     }
-    dest = Path("/tmp/peptalk-ui/src/content/snapshots/clip-moments.json")
+    # Namespaced by workspace: two teams used to write this same file.
+    dest = workspace.snapshot_dir() / "clip-moments.json"
     dest.write_text(json.dumps(payload))
     print(f"\n{len(moments)} moments with footage -> {dest}")
 

@@ -189,3 +189,18 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def snapshot_dir(key: str | None = None) -> Path:
+    """Where this workspace's snapshots belong.
+
+    Namespaced by key because they used not to be. Every workspace wrote the
+    same twelve filenames, so a second one overwrote the first, and since the
+    files are committed, every merge between two people collided on all twelve.
+    The interface copies the selected directory to `snapshots/active`, which is
+    generated and gitignored, so nothing shared is ever written by two hands.
+    """
+    ws = load(key)
+    out = ROOT / "src" / "content" / "snapshots" / ws.key
+    out.mkdir(parents=True, exist_ok=True)
+    return out

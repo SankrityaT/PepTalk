@@ -158,10 +158,13 @@ def fetch_one(client: httpx.Client, name: str, out_dir: Path, key: str) -> dict 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--roster", type=Path, default=ROOT / "src" / "content" / "snapshots" / "roster.json")
+    ap.add_argument("--roster", type=Path, default=None)
     ap.add_argument("--out", type=Path, default=ROOT / "public" / "players")
     args = ap.parse_args()
 
+    from . import workspace
+
+    args.roster = args.roster or workspace.snapshot_dir() / "roster.json"
     roster = json.loads(args.roster.read_text())
     players = roster["players"]
 

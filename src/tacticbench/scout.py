@@ -35,7 +35,7 @@ from .graph import Graph, team_id_for
 from .temporal import OPEN_ENDED
 
 ROOT = Path(__file__).resolve().parents[2]
-SNAPSHOT = ROOT / "src" / "content" / "snapshots" / "scout.json"
+SNAPSHOT = None  # resolved per workspace at call time
 
 
 def human(o: int) -> str:
@@ -168,10 +168,11 @@ def build(key: str | None = None) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--workspace", default=None)
-    ap.add_argument("--out", type=Path, default=SNAPSHOT)
+    ap.add_argument("--out", type=Path, default=None)
     args = ap.parse_args()
 
     snap = build(args.workspace)
+    args.out = args.out or workspace.snapshot_dir(args.workspace) / "scout.json"
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(snap, indent=2) + "\n")
 
