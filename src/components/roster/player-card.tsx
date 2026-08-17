@@ -8,6 +8,7 @@ import {
   Rates,
   drift,
   momentsFor,
+  normFor,
   passesFor,
   photoFor,
 } from "@/content/roster";
@@ -76,7 +77,7 @@ function Row({
 }) {
   const here = p.match[m.key as keyof Rates];
   const d = memory ? drift(p, m) : null;
-  const norm = memory ? p.across?.[m.key] : undefined;
+  const norm = memory ? normFor(p, m) : null;
 
   // Lower is better for threat left and turnovers, so a fall is the good
   // direction. Getting this backwards congratulates a player for wasting more.
@@ -97,7 +98,11 @@ function Row({
             className={`font-mono text-[10px] tabular-nums ${
               good ? "text-accent" : "text-muted"
             }`}
-            title={`usually ${norm?.toFixed(m.decimals)} across ${p.across?.games} games`}
+            title={
+              norm
+                ? `usually ${norm.value.toFixed(m.decimals)} (${norm.band}), holding since ${norm.since} across ${norm.obs} games`
+                : undefined
+            }
           >
             {d > 0 ? "▲" : "▼"}
             {Math.round(Math.abs(d) * 100)}%
@@ -146,8 +151,8 @@ export function PlayerCard({
           </span>
           <span className="mt-1.5 block font-mono text-[10px] text-muted-2">
             {Math.round(p.match.minutes)} min
-            {memory && p.across && p.across.games > 1 && (
-              <> · {p.across.games} games held</>
+            {memory && p.norm && (
+              <> · {Object.values(p.norm)[0]?.obs ?? 0} games held</>
             )}
           </span>
         </div>
@@ -167,8 +172,8 @@ export function PlayerCard({
         )}
         {flagged.length > 0 && <span>{flagged.length} flagged</span>}
         <span className="ml-auto truncate">
-          {memory && p.across && p.across.games > 1
-            ? "arrows are against his own norm"
+          {memory && p.norm
+            ? "arrows are against his own dated norm"
             : photo
               ? `photo ${photo.author}`
               : "no free photo"}
