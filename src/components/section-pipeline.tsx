@@ -77,9 +77,9 @@ const STAGES: Stage[] = [
     title: "Whether this is normal for him",
     body: "One pass is an anecdote. HydraDB holds what he and 352 other sides have done, and every fact carries the dates it was true and an edge to whatever replaced it. That is the difference between a store that can answer about 2011 and one that averages 2011 with 2021 and describes neither.",
     readout: [
-      { k: "facts", v: "1,973 · each with a validity interval" },
-      { k: "supersessions", v: "631 edges to the claim that replaced it" },
-      { k: "citations", v: "17,520 back to the matches observed" },
+      { k: "facts", v: "2,096 · each with a validity interval" },
+      { k: "supersessions", v: "651 edges to the claim that replaced it" },
+      { k: "citations", v: "17,533 back to the matches observed" },
     ],
   },
   {
