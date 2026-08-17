@@ -1,45 +1,55 @@
 {
- "key": "wc2022",
- "team": "Argentina",
- "label": "Argentina 3-3 France",
- "match_id": 3869685,
- "competition": "FIFA World Cup",
- "season": "2022",
- "video_id": "RgqKdplLIk4",
- "period_offset": {
-  "1": 96.0,
-  "2": 599.0,
-  "4": 1316.0
- },
- "tape_window": [
-  "00:22:00",
-  "00:23:30"
- ],
- "goal_windows": {
-  "79:24": {
-   "window": [
-    "01:29:00",
-    "01:29:32"
-   ],
-   "goal_at": 23.0
+  "key": "wc2022",
+  "team": "Argentina",
+  "label": "Argentina 3-3 France",
+  "match_id": 3869685,
+  "competition": "FIFA World Cup",
+  "season": "2022",
+  "video_id": "RgqKdplLIk4",
+  "period_offset": {
+    "1": 96.0,
+    "2": 599.0,
+    "4": 1316.0
   },
-  "80:59": {
-   "window": [
-    "01:30:44",
-    "01:31:06"
-   ],
-   "goal_at": 13.5
+  "tape_window": [
+    "00:22:00",
+    "00:23:30"
+  ],
+  "goal_windows": {
+    "79:24": {
+      "window": [
+        "01:29:00",
+        "01:29:32"
+      ],
+      "goal_at": 23.0
+    },
+    "80:59": {
+      "window": [
+        "01:30:44",
+        "01:31:06"
+      ],
+      "goal_at": 13.5
+    },
+    "117:05": {
+      "window": [
+        "02:18:36",
+        "02:19:10"
+      ],
+      "goal_at": 25.0
+    }
   },
-  "117:05": {
-   "window": [
-    "02:18:36",
-    "02:19:10"
-   ],
-   "goal_at": 25.0
+  "kits": [
+    "Argentina",
+    "France"
+  ],
+  "sources": {
+    "3869321": {
+      "video_id": "QIpZ1pad73w",
+      "period_offset": {
+        "1": 155.0,
+        "2": 630.0,
+        "4": 1523.0
+      }
+    }
   }
- },
- "kits": [
-  "Argentina",
-  "France"
- ]
 }
