@@ -37,7 +37,7 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -167,7 +167,15 @@ def load(key: str | None = None) -> Workspace:
         raw["tape_window"] = tuple(raw["tape_window"])
     if raw.get("kits"):
         raw["kits"] = tuple(raw["kits"])
-    return Workspace(**raw)
+    # Ignore fields this version does not know about, rather than dying. Two
+    # people on two branches will have workspace files from two versions of
+    # this dataclass, and a hard failure there reads as "the app is broken"
+    # when it means "your colleague added a field".
+    known = {f.name for f in fields(Workspace)}
+    unknown = sorted(set(raw) - known)
+    if unknown:
+        print(f"workspace {key}: ignoring unknown field(s) {', '.join(unknown)}")
+    return Workspace(**{k: v for k, v in raw.items() if k in known})
 
 
 def available() -> list[str]:
