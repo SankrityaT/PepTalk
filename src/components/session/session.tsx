@@ -10,28 +10,13 @@ import { Turn } from "@/components/brief/atoms/turn";
 import { ChalkFilters } from "@/components/chalk-filters";
 import { PepTalkMark } from "@/components/logo-marks";
 import { MomentFrame } from "@/components/report/moment-frame";
+import { Answer } from "@/components/session/answer";
 import { Evidence } from "@/components/session/evidence";
 import { TapePlayer } from "@/components/tape/tape-player";
 import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
 import { MOMENTS } from "@/content/pep";
 import knowledge from "@/content/snapshots/knowledge.json";
-
-/** What this match measured on its own, with no graph involved. */
-const THIS_MATCH: Record<string, number | undefined> = {
-  "possession share": 53.8,
-  "pressing height": 51.67,
-  "attacking width": 23.44,
-  directness: 0.631,
-};
-
-const UNITS: Record<string, string> = {
-  "possession share": "%",
-  "pressing height": "m",
-  "defensive line height": "m",
-  "attacking width": "m",
-  directness: "",
-};
 
 const KNOW = knowledge as unknown as {
   scale: { teams: number; matches: number; facts: number };
@@ -65,8 +50,28 @@ const KNOW = knowledge as unknown as {
 
 const EASE = [0.4, 0, 0.2, 1] as const;
 
-/** Set at build time; the prompt bar says so rather than faking an answer. */
-const MODEL_CONNECTED = false;
+/**
+ * Whether the graph service is up, asked rather than assumed.
+ *
+ * This used to be a build-time constant set to false. Questions are answered
+ * for real now, so the composer has to know before anyone types one, and a
+ * deployment with no backend has to say so rather than quietly taking
+ * questions it cannot answer.
+ */
+function useGraphUp(): boolean | null {
+  const [up, setUp] = useState<boolean | null>(null);
+  useEffect(() => {
+    let live = true;
+    fetch("/api/health")
+      .then((r) => r.json())
+      .then((b) => live && setUp(Boolean(b.ok)))
+      .catch(() => live && setUp(false));
+    return () => {
+      live = false;
+    };
+  }, []);
+  return up;
+}
 
 function BeatBody({
   beat,
@@ -198,65 +203,21 @@ function BeatBody({
 }
 
 /**
- * What a question gets answered with.
+ * What this game measured, with no graph involved.
  *
- * The switch does not turn Pep off. Everything measured from the match in
- * front of him still works without a graph: the tracking, the models, what
- * happened on the day. An earlier version had him answer "I cannot tell you"
- * to everything, which was both useless and untrue.
- *
- * What the graph adds is the second layer, and it is the layer a coach cannot
- * get from watching their own game again: whether this is normal for them,
- * when it changed, and where it sits among everyone else. So the answer is
- * built in two parts, and only the second one disappears.
+ * Sent with every question so the answer is grounded in the numbers the coach
+ * is looking at, and so it survives the memory switch: none of this needed a
+ * graph, so none of it should disappear when the graph does.
  */
-function Answer({ question, memory }: { question: string; memory: boolean }) {
-  const q = question.toLowerCase();
-  const dim =
-    KNOW.dimensions.find((d) => q.includes(d.label.split(" ")[0])) ??
-    (q.includes("press") ? KNOW.dimensions.find((d) => d.label.includes("pressing")) : null) ??
-    null;
-
-  const here = dim ? THIS_MATCH[dim.label] : null;
-
-  const observed = dim
-    ? here !== undefined && here !== null
-      ? `In this game your ${dim.label} was ${here}${UNITS[dim.label] ?? ""}.`
-      : `I measured your ${dim.label} in this game.`
-    : `From this game I have ${MOMENTS.length} moments where a better ball was on and 3 goals against, all tracked off the footage.`;
-
-  const recalled = dim
-    ? `That is ${Math.abs(dim.value - (here ?? dim.value)).toFixed(1)}${UNITS[dim.label] ?? ""} ${
-        (here ?? dim.value) < dim.value ? "below" : "above"
-      } your norm of ${dim.value}, which held across ${dim.obs} games, and puts you ${dim.percentile}th of ${dim.peers} sides.`
-    : `Against ${KNOW.scale.matches.toLocaleString()} matches and ${KNOW.scale.teams} sides in the graph, the thing that stands out is how patiently you play.`;
-
-  return (
-    <div className="rounded-xl bg-surface px-3.5 py-3 ring-1 ring-white/[0.06]">
-      <p className="text-[14px] leading-relaxed text-warm">
-        <StreamText text={observed} />
-      </p>
-
-      {memory ? (
-        <p className="mt-2 text-[14px] leading-relaxed text-warm">
-          <StreamText text={recalled} startDelay={500} />
-        </p>
-      ) : (
-        <p className="mt-2 text-[13px] leading-relaxed text-muted">
-          That is as far as this game takes me. Whether it is normal for you,
-          when it changed, or how it compares to anyone else all need the
-          memory.
-        </p>
-      )}
-
-      <p className="mt-2.5 font-mono text-[10px] text-muted-2">
-        {memory
-          ? `read off this match · ${KNOW.scale.facts.toLocaleString()} dated facts across ${KNOW.scale.teams} sides`
-          : "read off this match · 0 dated facts"}
-      </p>
-    </div>
-  );
-}
+const THIS_MATCH: Record<string, string | number> = {
+  "the game": "Argentina 3-3 France, World Cup final",
+  "possession share in this game": 53.8,
+  "pressing height in this game": 51.67,
+  "attacking width in this game": 23.44,
+  "directness in this game": 0.631,
+  "moments where a better ball was on": MOMENTS.length,
+  "goals conceded": 3,
+};
 
 export function Session({
   memory,
@@ -266,6 +227,7 @@ export function Session({
   onMemory: (next: boolean) => void;
 }) {
   const [at, setAt] = useState(0);
+  const graphUp = useGraphUp();
   const setMemory = onMemory;
   const [asked, setAsked] = useState<string[]>([]);
   const [attached, setAttached] = useState<string[]>([]);
@@ -531,7 +493,12 @@ export function Session({
                   {q}
                 </p>
                 <Turn showWho={false}>
-                  <Answer question={q} memory={memory} />
+                  <Answer
+                    key={`${q}::${memory}`}
+                    question={q}
+                    memory={memory}
+                    match={THIS_MATCH}
+                  />
                 </Turn>
               </div>
             ))}
@@ -565,7 +532,7 @@ export function Session({
           </div>
 
           <PromptBar
-            connected={MODEL_CONNECTED}
+            connected={graphUp !== false}
             suggestions={asked.length ? [] : SUGGESTIONS}
             onSend={(q) => {
               // A command is a jump, not a question. Anything Pep would have
