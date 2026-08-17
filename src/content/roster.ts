@@ -27,6 +27,9 @@ export type Rates = {
   turnover_rate: number;
 };
 
+/** What the graph says is true of him now, and since when. */
+export type Norm = { value: number; band: string; obs: number; since: string | null };
+
 export type Player = {
   key: string;
   name: string;
@@ -42,6 +45,17 @@ export type Player = {
     shots: number;
     options_seen: number;
   };
+  /**
+   * The dated norm per dimension, straight from HydraDB.
+   *
+   * This is the number the answers cite, so the card has to show the same one.
+   * It used to show `across` instead, which is a mean of per-match rates over
+   * one campaign, while an answer beside it cited the median of the era that is
+   * currently running. Both correct, different questions, and the same player's
+   * final third norm read 8.22 in one place and 6.8 in the other.
+   */
+  norm: Record<string, Norm> | null;
+  /** The raw campaign rate. Kept, and never labelled a norm. */
   across: (Rates & { games: number; minutes: number }) | null;
 };
 
@@ -159,11 +173,14 @@ export function passesFor(p: Player) {
  * is no norm to compare against and an arrow drawn anyway would be a
  * fabrication rather than a simplification.
  */
+export function normFor(p: Player, m: Measure): Norm | null {
+  return p.norm?.[m.key] ?? null;
+}
+
 export function drift(p: Player, m: Measure): number | null {
-  if (!p.across || p.across.games < 2) return null;
-  const norm = p.across[m.key];
-  if (!norm || Math.abs(norm) < m.floor) return null;
-  return (p.match[m.key] - norm) / Math.abs(norm);
+  const norm = normFor(p, m);
+  if (!norm || !norm.value || Math.abs(norm.value) < m.floor) return null;
+  return (p.match[m.key] - norm.value) / Math.abs(norm.value);
 }
 
 /** Who to work with this week: most threat left on the table, per 90. */

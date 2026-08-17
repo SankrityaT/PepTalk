@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { PlayerCard } from "@/components/roster/player-card";
+import { Answer } from "@/components/session/answer";
 import { MomentFrame } from "@/components/report/moment-frame";
+import { TapePlayer } from "@/components/tape/tape-player";
 import {
   GAMES_MEASURED,
   MEASURES,
@@ -13,6 +15,7 @@ import {
   WORK_ON,
   drift,
   momentsFor,
+  normFor,
   passesFor,
   photoFor,
 } from "@/content/roster";
@@ -110,6 +113,23 @@ function Detail({
   const clips = momentsFor(p);
   const flagged = passesFor(p);
   const worst = [...flagged].sort((a, b) => b.missed - a.missed)[0];
+  const [clip, setClip] = useState(0);
+  const tape = clips[clip];
+
+  // What this player measured, handed to retrieval so the answer beside his
+  // footage is grounded in the same numbers on the card rather than in whatever
+  // the model happens to know about him.
+  const measured: Record<string, string | number> = {
+    player: p.nickname ?? p.name,
+    position: p.position,
+    "minutes in this game": Math.round(p.match.minutes),
+    "threat created per 90 in this game": p.match.xt_created,
+    "threat left on the table per 90 in this game": p.match.xt_left,
+    "final third entries per 90 in this game": p.match.final_third_entries,
+    "turnovers per 100 touches in this game": p.match.turnover_rate,
+    "passes completed in this game": `${p.match.passes_completed} of ${p.match.passes}`,
+    "moments on tape": clips.length,
+  };
 
   return (
     <motion.div
@@ -126,7 +146,7 @@ function Detail({
         exit={{ y: 16, opacity: 0 }}
         transition={{ duration: 0.26, ease: EASE }}
         onClick={(e) => e.stopPropagation()}
-        className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-surface p-5 ring-1 ring-white/10 sm:rounded-2xl"
+        className="max-h-[88vh] w-full max-w-5xl overflow-y-auto rounded-t-2xl bg-surface p-5 ring-1 ring-white/10 sm:rounded-2xl"
       >
         <div className="flex items-start gap-4">
           {photo && (
@@ -163,7 +183,68 @@ function Detail({
           </button>
         </div>
 
-        <div className="mt-4 overflow-hidden rounded-lg bg-surface-2 ring-1 ring-white/[0.06]">
+        {/* His footage on the left, Pep on the right: the same shape as the
+            session, because it is the same job. A player with no clips shows
+            the freeze frame of his costliest ball instead, which is real and
+            derived rather than a placeholder. */}
+        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+          <div className="flex flex-col gap-2">
+            {tape ? (
+              <>
+                <TapePlayer
+                  key={tape.key}
+                  src={tape.clip}
+                  frames={tape.frames}
+                  stopAt={tape.pass_at}
+                  stopLabel={`${p.short}, ${tape.match_clock}`}
+                  chalkTeam={1}
+                  autoPlay={false}
+                />
+                {clips.length > 1 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {clips.map((c, i) => (
+                      <button
+                        key={c.key}
+                        onClick={() => setClip(i)}
+                        className={`rounded px-2 py-1 font-mono text-[10px] transition-colors ${
+                          i === clip
+                            ? "bg-accent/15 text-accent"
+                            : "bg-white/[0.05] text-muted hover:text-chalk"
+                        }`}
+                      >
+                        {c.match_clock}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <p className="text-[13px] leading-relaxed text-warm">{tape.line}</p>
+              </>
+            ) : worst ? (
+              <>
+                <MomentFrame moment={worst} className="w-full" />
+                <p className="text-[13px] leading-relaxed text-warm">{worst.line}</p>
+                <p className="font-mono text-[10px] leading-relaxed text-muted-2">
+                  No footage cut for him yet, so this is the freeze frame at the
+                  instant he played it. Every dot is a real player.
+                </p>
+              </>
+            ) : (
+              <p className="rounded-lg bg-surface-2 px-3 py-2.5 text-[12px] leading-relaxed text-muted ring-1 ring-white/[0.06]">
+                No moment of his was flagged in this game, so there is nothing to
+                show you rather than something to fill the space.
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Answer
+              key={`${p.key}::${memory}`}
+              question={`What should I work on with ${p.nickname ?? p.name} this week?`}
+              memory={memory}
+              match={measured}
+            />
+
+        <div className="overflow-hidden rounded-lg bg-surface-2 ring-1 ring-white/[0.06]">
           <div className="grid grid-cols-[1fr_auto_auto] gap-3 border-b border-white/[0.06] px-3 py-2 font-mono text-[10px] tracking-[0.1em] text-muted-2 uppercase">
             <span />
             <span className="w-16 text-right">this game</span>
@@ -190,8 +271,17 @@ function Detail({
                 >
                   {p.match[m.key].toFixed(m.decimals)}
                 </span>
-                <span className="w-16 text-right font-mono text-[12px] tabular-nums text-muted">
-                  {memory && p.across ? p.across[m.key].toFixed(m.decimals) : "—"}
+                <span
+                  className="w-16 text-right font-mono text-[12px] tabular-nums text-muted"
+                  title={
+                    memory && normFor(p, m)
+                      ? `holding since ${normFor(p, m)!.since} across ${normFor(p, m)!.obs} games`
+                      : undefined
+                  }
+                >
+                  {memory && normFor(p, m)
+                    ? normFor(p, m)!.value.toFixed(m.decimals)
+                    : "—"}
                 </span>
               </div>
             );
@@ -206,28 +296,8 @@ function Detail({
           </p>
         )}
 
-        {worst && (
-          <div className="mt-4">
-            <span className="font-mono text-[10px] tracking-[0.12em] text-muted-2 uppercase">
-              his costliest ball
-            </span>
-            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-              <MomentFrame moment={worst} compact className="w-full sm:w-1/2" />
-              <div className="min-w-0 flex-1">
-                <p className="text-[13px] leading-relaxed text-warm">{worst.line}</p>
-                <p className="mt-2 font-mono text-[10px] leading-relaxed text-muted-2">
-                  {worst.numbers}
-                </p>
-              </div>
-            </div>
           </div>
-        )}
-
-        {clips.length > 0 && (
-          <p className="mt-4 font-mono text-[11px] text-muted">
-            {clips.length} of his moments have footage in the session.
-          </p>
-        )}
+        </div>
 
         {photo && (
           <p className="mt-4 border-t border-white/[0.05] pt-3 font-mono text-[10px] text-muted-2">
