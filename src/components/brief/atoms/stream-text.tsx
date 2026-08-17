@@ -31,7 +31,7 @@ export function StreamText({
   startDelay?: number;
   onDone?: () => void;
 }) {
-  const words = text.split(" ");
+  const words = tokenise(text);
 
   // Reset during render rather than in an effect. React's documented way to
   // adjust state when a prop changes: an effect would paint the old stream
@@ -64,11 +64,41 @@ export function StreamText({
         <span
           key={i}
           style={{ animation: "word-in 260ms var(--ease-ui) both" }}
+          className={w.bold ? "font-medium text-chalk" : undefined}
         >
-          {w}
+          {w.text}
           {i < words.length - 1 ? " " : ""}
         </span>
       ))}
     </span>
   );
+}
+
+/**
+ * Split into words, each carrying whether it is emphasised.
+ *
+ * The model is asked to bold the two or three things that matter, so a coach
+ * skimming an answer lands on the name and the figure. A markdown renderer is
+ * the wrong tool here: this reveals a word at a time, and a parser wants a
+ * whole document.
+ *
+ * Emphasis is resolved before the split rather than per word, because it spans
+ * them: "**0.8 threat on the table per 90**" opens on the first word and
+ * closes on the seventh. Marking each word with the state of the emphasis at
+ * that point survives being cut off mid-phrase, which is exactly what streaming
+ * does to it.
+ */
+export type Word = { text: string; bold: boolean };
+
+function tokenise(text: string): Word[] {
+  const out: Word[] = [];
+  let bold = false;
+  for (const chunk of text.split("**")) {
+    for (const word of chunk.split(" ")) {
+      // Splitting on a marker at a word boundary leaves empty strings behind.
+      if (word) out.push({ text: word, bold });
+    }
+    bold = !bold;
+  }
+  return out;
 }

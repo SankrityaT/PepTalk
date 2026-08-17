@@ -165,12 +165,20 @@ export function SectionClaim() {
               </Line>
             </blockquote>
 
-            <motion.p
+            <motion.div
               style={{ opacity: footnoteOpacity }}
-              className="mt-8 max-w-lg text-[13px] leading-relaxed text-canvas/75 sm:text-[15px]"
+              className="mt-8 max-w-lg space-y-3"
             >
-              {CLAIM_COPY.footnote}
-            </motion.p>
+              <p className="text-[13px] leading-relaxed text-canvas/70 sm:text-[15px]">
+                {CLAIM_COPY.footnote}
+              </p>
+              {/* The punchline is a claim until this line pays it off, so it
+                  gets the weight rather than sitting in the same grey as the
+                  failure it answers. */}
+              <p className="border-l-2 border-canvas/30 pl-4 text-[13px] leading-relaxed font-medium text-canvas sm:text-[15px]">
+                {CLAIM_COPY.answer}
+              </p>
+            </motion.div>
           </div>
 
           {/* ── The boards ───────────────────────────────────────── */}

@@ -162,13 +162,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── Scrub indicator ───────────────────────────────────────── */}
-        <div className="pointer-events-none absolute right-5 bottom-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-2 sm:right-10">
-          <span className="hidden sm:inline">Scroll to travel</span>
-          <span className="hidden h-px w-8 bg-rule-strong sm:inline-block" />
-          <YearScrubber progress={progress} />
-          <span className="text-muted">{TACTICAL_STATES[eraIndex].era}</span>
-        </div>
       </div>
     </section>
   );

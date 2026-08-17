@@ -26,8 +26,18 @@ export function SmoothScroll() {
     };
     frame = requestAnimationFrame(raf);
 
+    // Lenis measures the page once and keeps that number. This page finishes
+    // growing after images and a video have loaded, so the scroll limit was
+    // whatever the height had been at boot and the last section could not be
+    // reached at all. Re-measure whenever the document changes size.
+    const remeasure = new ResizeObserver(() => lenis.resize());
+    remeasure.observe(document.documentElement);
+    remeasure.observe(document.body);
+    window.addEventListener("load", () => lenis.resize());
+
     return () => {
       cancelAnimationFrame(frame);
+      remeasure.disconnect();
       lenis.destroy();
     };
   }, []);

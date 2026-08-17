@@ -77,6 +77,12 @@ function Frame({
         width={width}
         height={height}
         priority={priority}
+        // next/image re-encodes at quality 75 by default, which is a lossy
+        // pass over a screenshot that was already captured at two times device
+        // pixels and written as webp at 92. That second compression is what
+        // made every one of these look soft. These files are already the size
+        // they are served at, so they are served byte for byte.
+        unoptimized
         className="block w-full"
       />
       {/* The bottom of a screenshot is the least interesting part of it, and
@@ -192,7 +198,7 @@ export function SectionProduct() {
  */
 export function SectionMemory() {
   return (
-    <section className="relative bg-canvas px-5 py-28 sm:px-8 lg:py-40">
+    <section className="relative bg-canvas px-5 pt-28 pb-10 sm:px-8 lg:pt-40 lg:pb-16">
       <div className="mx-auto w-full max-w-6xl">
         <Reveal>
           <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
@@ -250,6 +256,7 @@ export function SectionMemory() {
                     alt={`The same question answered with ${c.label}`}
                     width={1076}
                     height={834}
+                    unoptimized
                     className="block w-full"
                   />
                   <span className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-surface via-surface/70 to-transparent" />
