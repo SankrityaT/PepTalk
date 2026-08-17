@@ -1,9 +1,11 @@
-# Pep Talk — an assistant coach that remembers
+# Pep Talk
+
+**An assistant coach that remembers.**
 
 **Hack Hydra 2026 · Track 03, Memory + Context Retrieval**
 
 A coach sits down with their match tape. Pep has already watched it, found the
-moments worth stopping on, and can answer questions about any of them — grounded
+moments worth stopping on, and can answer questions about any of them, grounded
 in what this side and these players have actually done across every game it
 holds.
 
@@ -39,7 +41,7 @@ Nobody told it about Guardiola.
 
 | Source | What it gives us | Note |
 |---|---|---|
-| **StatsBomb open data** | 3,961 matches of events — every pass, carry and shot with x/y coordinates | free, public |
+| **StatsBomb open data** | 3,961 matches of events: every pass, carry and shot with x/y coordinates | free, public |
 | StatsBomb 360 | freeze frames: where all 22 players stood at an event | Euro 2020 onward only |
 | StatsBomb lineups | player ids, shirt numbers, positions | |
 | **Broadcast footage** | the 2022 World Cup final, cut into 7 clips | gitignored, never redistributed |
@@ -73,10 +75,10 @@ usually a model recalling what it knows about famous players.
 
 Claude is given a **numbered list of retrieved facts and nothing else**. Then:
 
-- **Facts** — every number, date, norm, comparison and trend must come from that
+- **Facts.** Every number, date, norm, comparison and trend must come from that
   list and carry the id it came from. Quote figures exactly; no rounding, no
   arithmetic. Nothing it knows about these players from anywhere else exists.
-- **Judgement** — what the facts mean, why it might be happening, and what to do
+- **Judgement.** What the facts mean, why it might be happening, and what to do
   about it on the training pitch is *its job*. It is an assistant coach, not a
   database. Football reasoning about space, pressure and shape is welcome.
 
@@ -124,7 +126,7 @@ Three queries carry the product:
 | `flat_lookup(id, dim)` | What would a store **without dates** have said? |
 
 That last one is the memory switch. Turning memory off runs `flat_lookup`
-instead — the single most-evidenced claim, no validity window — which is what a
+instead: the single most-evidenced claim, with no validity window, which is what a
 vector index would surface. Argentina and Barcelona come back identical on all
 five dimensions.
 
@@ -132,10 +134,10 @@ five dimensions.
 
 HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
 
-- `CREATE` accepts **relationship paths only** — every node is born as one end
-  of an edge.
+- `CREATE` accepts **relationship paths only**, so every node is born as one
+  end of an edge.
 - `UNWIND` batches **cannot carry labels**, so writes are one statement per row.
-- `IS NULL` is rejected — an open interval uses an `OPEN_ENDED` sentinel and
+- `IS NULL` is rejected, so an open interval uses an `OPEN_ENDED` sentinel and
   every temporal predicate is `<=` / `>`.
 - One statement per request; no multi-stage `WITH` pipelines.
 - **Nodes upsert by id but relationships do not.** Found by running an ingest
@@ -155,7 +157,7 @@ every pass  →  what was played vs every option that was open
 ```
 
 The gate matters more than the engine. Without it the median flagged pass has a
-threat gap of 0.0085 — under one percent of a goal. Telling a coach that a
+threat gap of 0.0085, under one percent of a goal. Telling a coach that a
 sideways ball "should have been played forward" at that magnitude is noise
 dressed as insight, and it is wrong about football besides: circulating the ball
 is how you move an opponent. **A moment must be a ball that would have made a
@@ -183,7 +185,7 @@ frame  →  YOLO11m finds players  →  k-means on kit colour splits the teams
 ```
 
 **What we cannot do: say which box is which player.** That needs a pitch-to-image
-homography, which does not converge for us (21–44% of players explained against
+homography, which does not converge for us (21% to 44% of players explained against
 a 45% bar). So no name is ever drawn on a box.
 
 Which means the honest description of this system is:
@@ -204,7 +206,7 @@ question
 
 Memory off skips the fact queries entirely. Everything measured off the match in
 front of it still reaches the model, because none of that needed a graph. What
-disappears is the norms, the dates and the peers — and it says so in its own
+disappears is the norms, the dates and the peers, and it says so in its own
 words:
 
 > I can tell you the pressing height sat at 51.67 **[4]**, but I have no
@@ -284,7 +286,7 @@ Workspace(
 ```
 
 Select it with `PEPTALK_WORKSPACE=your-team`. Every menu, count and label in the
-interface is derived from the data that workspace holds — "7 clips cut from this
+interface is derived from the data that workspace holds: "7 clips cut from this
 game", "531 of theirs in the graph", the squad list, the commands. A second
 workspace gets its own by having different data, not by editing components.
 

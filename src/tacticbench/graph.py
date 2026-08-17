@@ -853,5 +853,5 @@ def load_series(team: str, missing_ok: bool = False) -> list[MatchMetrics]:
         return []
     raise FileNotFoundError(
         f"no match history for {team!r}: looked in {p.name} and all_series.json. "
-        f"Run `uv run demo ingest` for one team, or `uv run ingest-all series` for the set."
+        f"Run `uv run python -m tacticbench.ingest_all series` to build it."
     )
