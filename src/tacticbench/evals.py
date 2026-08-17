@@ -128,7 +128,10 @@ def grounded(result: dict) -> Check:
     subtraction is correct.
     """
     haystack = " ".join(f["text"] for f in result["retrieved"])
-    prose = re.sub(r"\[\d+\]", "", result["answer"])
+    # Emphasis comes off before the numbers are read: "**0.8**" is the same
+    # claim as "0.8", and leaving the asterisks on would fail a grounded answer
+    # for being formatted.
+    prose = re.sub(r"\*\*", "", re.sub(r"\[\d+\]", "", result["answer"]))
     missing = [n for n in numbers_in(prose) if n not in haystack]
     return Check(
         "grounded",
