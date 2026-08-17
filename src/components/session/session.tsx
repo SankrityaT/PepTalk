@@ -575,25 +575,38 @@ export function Session({
               setPlaying(false);
             }}
             sources={SOURCES}
-            mentions={[
-              // The squad first: a coach asking about a player wants any of
-              // them, not only the four who happen to be in this session's
-              // clips. Two of those four are France players anyway, and the
-              // graph holds nothing about them.
-              ...SQUAD.map((p) => ({
+            mentions={(() => {
+              // The squad first, because those are the names with facts and
+              // faces behind them.
+              const rows = SQUAD.map((p) => ({
                 key: `player-${p.key}`,
                 label: p.short,
                 avatar: photoFor(p) ? `/players/${photoFor(p)!.path}` : undefined,
-                hint: `${p.position.split(" ").map((w) => w[0]).join("")} · ${
-                  p.across?.games ?? 1
-                } games`,
-              })),
-              ...CLIP_MOMENTS.map((m) => ({
-                key: m.key,
-                label: m.surname,
-                hint: m.match_clock,
-              })),
-            ]}
+                hint: `${p.position
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")} · ${p.across?.games ?? 1} games`,
+              }));
+
+              // Then anyone who is only in the tape. Selecting a mention
+              // inserts the name, so a clip row for a player already listed
+              // above inserts exactly the same text and reads as a duplicate
+              // of him: De Paul appeared twice and neither row did anything
+              // the other did not. What is worth keeping is the opposition,
+              // who are in these clips and in no squad.
+              const named = new Set(rows.map((r) => r.label));
+              for (const m of CLIP_MOMENTS) {
+                if (named.has(m.surname)) continue;
+                named.add(m.surname);
+                rows.push({
+                  key: m.key,
+                  label: m.surname,
+                  avatar: undefined,
+                  hint: `${m.team} · ${m.match_clock}`,
+                });
+              }
+              return rows;
+            })()}
             commands={COMMANDS}
             memory={memory}
             onMemory={setMemory}
