@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import data from "@/content/snapshots/wc-tracking.json";
+import data from "@/content/snapshots/active/wc-tracking.json";
 import { handArc, handArrow, handLine, seededRandom } from "@/lib/hand-drawn";
 import {
   Mark,

@@ -1,4 +1,4 @@
-import roster from "./snapshots/roster.json";
+import roster from "./snapshots/active/roster.json";
 import photos from "../../public/players/index.json";
 import { CLIP_MOMENTS } from "./clip";
 import { MOMENTS } from "./pep";

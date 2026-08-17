@@ -2,9 +2,9 @@ import { CLIP_MOMENTS, ClipMoment } from "./clip";
 import { STEPS, TRACE_FOOTER } from "./brief";
 import { MOMENTS_FOUND, PASSES_WITH_AN_OPTION } from "./pep";
 import { TOTALS } from "./dashboard";
-import conceded from "./snapshots/conceded.json";
-import knowledge from "./snapshots/knowledge.json";
-import scout from "./snapshots/scout.json";
+import conceded from "./snapshots/active/conceded.json";
+import knowledge from "./snapshots/active/knowledge.json";
+import scout from "./snapshots/active/scout.json";
 import type { Step } from "@/components/brief/atoms/trace";
 import type { Source } from "@/components/brief/atoms/prompt-bar";
 

@@ -1,4 +1,4 @@
-import clip from "./snapshots/clip-moments.json";
+import clip from "./snapshots/active/clip-moments.json";
 import type { FreezePlayer } from "./pep";
 
 /**

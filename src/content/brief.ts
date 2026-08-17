@@ -1,5 +1,5 @@
-import brief from "./snapshots/brief.json";
-import tracking from "./snapshots/wc-tracking.json";
+import brief from "./snapshots/active/brief.json";
+import tracking from "./snapshots/active/wc-tracking.json";
 import { COMPLETION_MODEL, MOMENTS_FOUND, PASSES_WITH_AN_OPTION } from "./pep";
 import { TOTALS, XT_ACTIONS, XT_TRAINED_ON } from "./dashboard";
 import type { Source } from "@/components/brief/atoms/source-chip";

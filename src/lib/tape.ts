@@ -1,4 +1,4 @@
-import tracking from "@/content/snapshots/wc-tracking.json";
+import tracking from "@/content/snapshots/active/wc-tracking.json";
 
 /**
  * The tracking, shared.
