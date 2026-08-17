@@ -542,6 +542,38 @@ Y_LINES = {"touch_far": 0.0, "touch_near": 80.0,
            "six_far": 2584 / 7000 * 80, "six_near": 4416 / 7000 * 80}
 
 
+def players_agree(H, freeze, boxes, w: int, h: int, tol_frac: float = 0.022) -> float:
+    """How well the players the graph knows about land on the players we see.
+
+    This is the one signal that can settle orientation, and it is worth writing
+    down why. A pitch is symmetric end to end and side to side, so no measure
+    of lines-on-lines can tell which end is in view, and a homography
+    represents a reflection happily. The twenty-two people standing on it at a
+    given instant are not symmetric. Their arrangement is unique to that
+    second, so a projection that puts the wrong end on screen scatters them.
+
+    Symmetric on purpose: every tracked box wants a projected player standing on
+    it, and every projected player who is on screen wants a box. Scoring one
+    direction alone rewards a fit that sprays points until something is hit.
+
+    It does work. On the 8:25 frame it took 662 candidates that all cleared the
+    paint bar down to one. What it could not do is make that one correct, and
+    the reason is upstream: only six lines are detected, and the four line
+    assignment that would describe the camera exactly is not among the
+    combinations they can form. Coordinate descent from there is stuck in the
+    wrong basin, moving 0.157 to 0.160 and no further.
+    """
+    proj = _project(H, freeze)
+    if not np.isfinite(proj).all():
+        return 0.0
+    on = (proj[:, 0] > 0) & (proj[:, 0] < w) & (proj[:, 1] > 0) & (proj[:, 1] < h)
+    if on.sum() < 5:
+        return 0.0
+    d = np.linalg.norm(boxes[:, None, :] - proj[None, on, :], axis=2)
+    tol = tol_frac * w
+    return float(min((d.min(axis=1) <= tol).mean(), (d.min(axis=0) <= tol).mean()))
+
+
 def refine(H, SRC, mask, grass, w, h):
     """Nudge the four anchor points to maximise paint alignment.
 
