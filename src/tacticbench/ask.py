@@ -78,6 +78,13 @@ Also:
 - Never use an em dash or an en dash.
 """
 
+def shorten(key: str) -> str:
+    """Trim the phrasing retrieval uses into something that fits on a chip."""
+    for tail in (" in this game", " in this match", " per 90"):
+        key = key.replace(tail, "")
+    return key
+
+
 def human(o: int) -> str:
     return "present" if o >= OPEN_ENDED else dt.date.fromordinal(o).isoformat()
 
@@ -146,7 +153,17 @@ def retrieve(
     n = 1
 
     for key, value in (match or {}).items():
-        out.facts.append({"id": n, "kind": "this match", "text": f"{key}: {value}"})
+        out.facts.append(
+            {
+                "id": n,
+                "kind": "this match",
+                # A short form for the chip. Three chips all reading "this
+                # match" name nothing, and the point of showing them is that a
+                # claim can be traced to the thing behind it.
+                "label": f"{shorten(key)} {value}",
+                "text": f"{key}: {value}",
+            }
+        )
         n += 1
 
     if not memory:
@@ -165,6 +182,7 @@ def retrieve(
                 {
                     "id": n,
                     "kind": "squad ranking",
+                    "label": f"{row['player'].split()[-1]} leaves {row['median_value']}",
                     "text": f"{row['player']} ({row['position']}) leaves "
                     f"{row['median_value']} threat on the table per 90 ({row['band']}), "
                     f"holding since {human(row['valid_from'])} across "
@@ -180,6 +198,7 @@ def retrieve(
             {
                 "id": n,
                 "kind": "player",
+                "label": f"{player['nickname']}, {player['appearances']} games",
                 "text": f"{player['nickname']} is a {player['position']} "
                 f"with {player['appearances']} appearances and "
                 f"{round(player['minutes'])} minutes in the graph",
@@ -195,6 +214,7 @@ def retrieve(
                 {
                     "id": n,
                     "kind": "player norm",
+                    "label": f"{PLAYER_LABELS[dim].replace(' per 90', '')} {now['median_value']}",
                     "text": f"{player['nickname']} {PLAYER_LABELS[dim]}: {now['median_value']} "
                     f"({now['band']}), holding since {human(now['valid_from'])} "
                     f"across {now['observations']} games",
@@ -213,6 +233,7 @@ def retrieve(
                         {
                             "id": n,
                             "kind": "player change",
+                            "label": f"{PLAYER_LABELS[dim].replace(' per 90', '')} was {was['median_value']}",
                             "text": f"before {human(now['valid_from'])} his "
                             f"{PLAYER_LABELS[dim]} was {was['median_value']} "
                             f"({was['band']}) across {was['observations']} games, "
@@ -231,6 +252,7 @@ def retrieve(
             {
                 "id": n,
                 "kind": "team norm",
+                "label": f"{label} {now['median_value']}",
                 "text": f"{team} {label}: {now['median_value']} ({now['band']}), "
                 f"holding since {human(now['valid_from'])} across "
                 f"{now['observations']} games",

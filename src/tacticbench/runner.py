@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import json
 import os
+import threading
+import time
 
 from .anonymize import find_leaks
 
@@ -92,6 +94,18 @@ def _ask_api(
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
+#: One CLI call at a time, and a few goes at it.
+#:
+#: Each call is a subprocess, and several at once is how a coach opening three
+#: player cards gets a segfault instead of an answer: the runtime came back
+#: with signal 11 and a crash dump where the prose should be. A lock costs a
+#: little latency when questions overlap and removes the failure entirely.
+#: The retry is for the crash that happens anyway, which is transient by
+#: nature: the same prompt on a fresh process answers.
+_CLI_LOCK = threading.Lock()
+CLI_ATTEMPTS = 3
+
+
 def _ask_cli(
     prompt: str, payload: dict, model: str, max_tokens: int = 1024, system: str = CLI_SYSTEM
 ) -> str:
@@ -114,12 +128,22 @@ def _ask_cli(
         "--model", model,
         prompt + json.dumps(payload, indent=1),
     ]
-    proc = subprocess.run(
-        cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=300
+    last = ""
+    for attempt in range(1, CLI_ATTEMPTS + 1):
+        with _CLI_LOCK:
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=300
+            )
+        if proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+        # A crash dump is not a diagnosis. Keep the signal and the first line.
+        last = (proc.stderr or "").strip().splitlines()
+        last = last[0][:160] if last else f"exit {proc.returncode}"
+        if attempt < CLI_ATTEMPTS:
+            time.sleep(0.6 * attempt)
+    raise RuntimeError(
+        f"the model did not answer after {CLI_ATTEMPTS} attempts ({last})"
     )
-    if proc.returncode != 0:
-        raise RuntimeError(f"claude cli failed ({proc.returncode}): {proc.stderr[:300]}")
-    return proc.stdout.strip()
 
 
 # Backend is selected once per process via TACTICBENCH_BACKEND=api|cli.
