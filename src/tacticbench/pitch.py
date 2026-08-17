@@ -18,16 +18,39 @@ worse, because per-frame kit clustering is unreliable enough to exclude the true
 correspondence. Eleven boxes against nineteen freeze players, with false
 positives on both sides, is too weak a correspondence to bootstrap from.
 
-**What works is asking a model that was trained for exactly this.** Roboflow's
-`football-field-detection-f07vi` predicts 32 pitch landmarks per frame, each one
-a known point on a known-size pitch: box corners, six-yard corners, penalty
-spots, the centre circle intersections. That turns an unsolved correspondence
-problem into a solved one, and the homography is then a least-squares fit with
-RANSAC to throw out the landmarks it got wrong.
+**The third attempt, using a trained keypoint model, also does not work yet, and
+the reason is worth writing down.** Roboflow's `football-field-detection-f07vi`
+returns 32 pitch landmarks per frame, eleven of them confident here, which
+should turn an unsolved correspondence problem into a solved one. It does not,
+because its class numbering does not line up with `SoccerPitchConfiguration` in
+roboflow/sports, and the output is internally inconsistent under every
+alignment tried:
 
-The 32 vertices come from `SoccerPitchConfiguration` in roboflow/sports, on a
-12000x7000cm pitch, converted here to the 120x80 StatsBomb coordinates the rest
-of this codebase speaks.
+* Classes 25 and 26 should sit on the goal line with 27 to 30. They are 40 and
+  50 pixels off the line those four form.
+* Classes 20 to 23 are collinear in the image and are not collinear in pitch
+  space at any offset.
+* Scanning all offsets and reflections, no assignment is simultaneously good on
+  inlier count, on line alignment, and on where it puts the goal. The best by
+  paint alignment (40%) puts the goalposts 241 pixels from the real ones; the
+  best by goalpost error (32 pixels) aligns only 19% of the pitch lines.
+
+A homography absorbs reflections, so inlier count cannot settle orientation
+either: all four reflections of a given offset score identically.
+
+**What did come out of this and is worth keeping is `paint_mask`.** It extracts
+the painted lines cleanly, and that is a real asset for any future attempt: the
+first version of it returned a mask that was almost entirely Argentina's white
+shirts, which made every candidate fit score the same useless 10%.
+
+Where this goes next, in order of how likely it is to work:
+
+1. Identify four non-collinear landmarks by hand on one frame, verify the
+   overlay, then read off what each model class actually means and use that
+   mapping everywhere. One careful frame recovers the convention.
+2. Fit to lines rather than points. `paint_mask` plus a Hough pass gives clean
+   pitch lines; lines transform under the inverse transpose, and there are few
+   enough candidate pitch lines to enumerate.
 """
 
 from __future__ import annotations
@@ -75,6 +98,11 @@ MIN_INLIERS = 6
 #: unconstrained across those lines, which is how a fit can look right on every
 #: point it was measured against and be wrong everywhere else.
 MIN_SPREAD = 0.15
+
+#: Share of the projected pitch that must land on painted line. Lines are thin
+#: and partly occluded by players, so a correct fit does not reach 1.0; a wrong
+#: one sits near chance.
+MIN_PAINT = 0.35
 
 
 def _vertices_cm() -> list[tuple[float, float]]:
@@ -137,11 +165,12 @@ def _vertices_cm() -> list[tuple[float, float]]:
 #: fewer, which is the difference between a projection and a guess. The three
 #: it rejects are genuine misdetections, including a penalty-box corner
 #: reported fifty pixels off the goal line at 0.93 confidence.
-CLASS_OFFSET = -2
 
-#: Landmark class -> StatsBomb coordinates.
-LANDMARKS: dict[int, tuple[float, float]] = {
-    i + 1 - CLASS_OFFSET: (x / LENGTH_CM * PITCH_X, y / WIDTH_CM * PITCH_Y)
+#: Vertex index (1-based, as SoccerPitchConfiguration numbers them) ->
+#: StatsBomb coordinates. Which class maps to which vertex is searched for at
+#: calibration time rather than assumed.
+LANDMARKS_RAW: dict[int, tuple[float, float]] = {
+    i + 1: (x / LENGTH_CM * PITCH_X, y / WIDTH_CM * PITCH_Y)
     for i, (x, y) in enumerate(_vertices_cm())
 }
 
@@ -154,12 +183,21 @@ class Calibration:
     inliers: int
     seen: int
     spread: float
+    #: Share of the drawn pitch that lands on painted line. The real test.
+    paint: float
+    offset: int
+    flip_x: bool
+    flip_y: bool
     frame_w: int
     frame_h: int
 
     @property
     def ok(self) -> bool:
-        return self.inliers >= MIN_INLIERS and self.spread >= MIN_SPREAD
+        return (
+            self.inliers >= MIN_INLIERS
+            and self.spread >= MIN_SPREAD
+            and self.paint >= MIN_PAINT
+        )
 
     def to_image(self, pts) -> np.ndarray:
         """Pitch points to pixels."""
@@ -184,6 +222,8 @@ class Calibration:
             "inliers": self.inliers,
             "landmarks_seen": self.seen,
             "spread": round(self.spread, 3),
+            "paint": round(self.paint, 3),
+            "assignment": {"offset": self.offset, "flip_x": self.flip_x, "flip_y": self.flip_y},
             "frame": [self.frame_w, self.frame_h],
         }
 
@@ -208,6 +248,72 @@ def detect(image_path: Path, api_key: str | None = None) -> list[dict]:
     return preds[0].get("keypoints", []) if preds else []
 
 
+def paint_mask(img):
+    """Pitch lines only: white paint inside the grass, with the players removed.
+
+    The first version took white pixels inside the grass and got a mask that was
+    almost entirely Argentina's shirts. Scoring a projection against that
+    rewards putting pitch lines through footballers, and every candidate fit
+    scored the same useless 10%.
+
+    Paint is thin and players are thick, which a top hat separates cleanly: it
+    keeps bright structures narrower than its kernel and erases anything wider.
+    A line is about four pixels across at this resolution and a player is forty,
+    so a fifteen pixel kernel keeps one and removes the other.
+    """
+    import cv2
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    grass = cv2.morphologyEx(
+        cv2.inRange(hsv, (30, 40, 40), (90, 255, 255)),
+        cv2.MORPH_CLOSE,
+        np.ones((25, 25), np.uint8),
+    )
+    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thin = cv2.morphologyEx(grey, cv2.MORPH_TOPHAT, np.ones((15, 15), np.uint8))
+    lines = cv2.threshold(thin, 28, 255, cv2.THRESH_BINARY)[1]
+    lines = cv2.bitwise_and(lines, grass)
+    return cv2.dilate(lines, np.ones((7, 7), np.uint8)), grass
+
+
+def paint_score(H: "np.ndarray", mask, grass, w: int, h: int) -> float:
+    """How much of the projected pitch lands on actual paint.
+
+    The check that settles orientation. Every label-based score is blind to the
+    pitch being symmetric: a shifted assignment maps one end onto the other and
+    fits perfectly. Paint is not symmetric with respect to the camera, so
+    asking "do the drawn lines sit on the painted lines" cannot be satisfied by
+    the wrong end.
+
+    Sampled along each segment, counting only samples that land on grass, so a
+    projection that throws most of the pitch off frame cannot win by defaulting.
+    """
+    hits = tested = 0
+    for a, b in outline():
+        pa, pb = _project(H, [a, b])
+        if not (np.isfinite(pa).all() and np.isfinite(pb).all()):
+            continue
+        n = max(2, int(np.hypot(*(pb - pa)) / 6))
+        for t in np.linspace(0, 1, n):
+            x, y = pa + (pb - pa) * t
+            xi, yi = int(round(x)), int(round(y))
+            if not (0 <= xi < w and 0 <= yi < h) or not grass[yi, xi]:
+                continue
+            tested += 1
+            if mask[yi, xi]:
+                hits += 1
+    # Too few samples on grass means the pitch was projected somewhere else.
+    return hits / tested if tested >= 40 else 0.0
+
+
+def _project(H, pts) -> "np.ndarray":
+    p = np.asarray(pts, dtype=float).reshape(-1, 2)
+    hom = np.hstack([p, np.ones((len(p), 1))]) @ np.asarray(H).T
+    wv = hom[:, 2:3]
+    wv[np.abs(wv) < 1e-12] = 1e-12
+    return hom[:, :2] / wv
+
+
 def calibrate(image_path: Path, api_key: str | None = None) -> Calibration | None:
     """Fit the pitch-to-image projection for one frame.
 
@@ -222,34 +328,59 @@ def calibrate(image_path: Path, api_key: str | None = None) -> Calibration | Non
     kps = detect(image_path, api_key)
     img = cv2.imread(str(image_path))
     h, w = img.shape[:2]
+    mask, grass = paint_mask(img)
 
-    pitch, image = [], []
-    for k in kps:
-        if k.get("confidence", 0) < MIN_CONFIDENCE:
-            continue
-        here = LANDMARKS.get(int(k["class"]))
-        if here is None:
-            continue
-        pitch.append(here)
-        image.append([k["x"], k["y"]])
-
-    if len(pitch) < 4:
+    seen = [k for k in kps if k.get("confidence", 0) >= MIN_CONFIDENCE]
+    if len(seen) < 4:
         return None
 
-    P = np.array(pitch, dtype=np.float32)
-    H, mask = cv2.findHomography(P, np.array(image, dtype=np.float32), cv2.RANSAC, RANSAC_PX)
-    if H is None or mask is None:
-        return None
+    best: Calibration | None = None
+    # Search the assignment rather than assume it. Which vertex a class means is
+    # not documented anywhere we can read, and the pitch's own symmetry means no
+    # label-based score can settle it: the winner is whichever assignment draws
+    # the pitch lines onto the painted lines.
+    for offset in range(-8, 9):
+        for flip_x in (False, True):
+            for flip_y in (False, True):
+                pitch, image = [], []
+                for k in seen:
+                    v = LANDMARKS_RAW.get(int(k["class"]) + offset)
+                    if v is None:
+                        continue
+                    x, y = v
+                    if flip_x:
+                        x = PITCH_X - x
+                    if flip_y:
+                        y = PITCH_Y - y
+                    pitch.append([x, y])
+                    image.append([k["x"], k["y"]])
+                if len(pitch) < 4:
+                    continue
 
-    keep = P[mask.ravel().astype(bool)]
-    return Calibration(
-        H=H,
-        inliers=int(mask.sum()),
-        seen=len(pitch),
-        spread=spread_of(keep),
-        frame_w=w,
-        frame_h=h,
-    )
+                P = np.array(pitch, dtype=np.float32)
+                H, m = cv2.findHomography(
+                    P, np.array(image, dtype=np.float32), cv2.RANSAC, RANSAC_PX
+                )
+                if H is None or m is None or int(m.sum()) < 4:
+                    continue
+
+                keep = P[m.ravel().astype(bool)]
+                cal = Calibration(
+                    H=H,
+                    inliers=int(m.sum()),
+                    seen=len(pitch),
+                    spread=spread_of(keep),
+                    paint=paint_score(H, mask, grass, w, h),
+                    offset=offset,
+                    flip_x=flip_x,
+                    flip_y=flip_y,
+                    frame_w=w,
+                    frame_h=h,
+                )
+                if best is None or cal.paint > best.paint:
+                    best = cal
+
+    return best
 
 
 def spread_of(pts: np.ndarray) -> float:
@@ -340,7 +471,9 @@ def main() -> None:
         print("no calibration: too few landmarks")
         return
     print(
-        f"{cal.inliers}/{cal.seen} landmarks agree, spread {cal.spread:.2f}  "
+        f"{cal.inliers}/{cal.seen} landmarks agree · spread {cal.spread:.2f} · "
+        f"paint {cal.paint:.0%} · offset {cal.offset:+d} "
+        f"flip {int(cal.flip_x)}{int(cal.flip_y)}  "
         f"({'usable' if cal.ok else 'NOT usable'})"
     )
     if args.check:
