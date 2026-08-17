@@ -48,6 +48,10 @@ next-env.d.ts
 # stays out of the repo. See README for how to supply your own clip.
 /public/tape/
 /public/clips/
+# Stills cut from the broadcast for calibration. Frames of the footage are the
+# footage, and the whole project keeps it out of the repository. Only the
+# homography derived from them is committed.
+/public/calib/
 
 # ── Backend ─────────────────────────────────────────────────────────────
 .cache/
