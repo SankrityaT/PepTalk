@@ -14,10 +14,14 @@ import datetime as dt
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
+from . import workspace
+from .ask import answer
 from .coach import DIMENSION_LABELS, MIN_EVIDENCE, advise, format_advice, recall
 from .demo import team_id
-from .graph import Graph
+from .graph import PLAYER_ID_BASE, Graph
+from .players import PLAYER_DIMENSIONS
 from .temporal import OPEN_ENDED
 
 app = FastAPI(title="Tactical Memory API", version="0.1.0")
@@ -469,6 +473,71 @@ def scenario_advise(statsbomb_id: int, model: str = "opus"):
             "uncited_claims": a.uncited_claims,
             "text": format_advice(a),
         }
+    finally:
+        g.close()
+
+
+class Question(BaseModel):
+    question: str
+    memory: bool = True
+    #: What the interface measured off the game on screen. Passed in rather
+    #: than recomputed so the answer is grounded in the same numbers the coach
+    #: is looking at, and so it survives the memory switch.
+    match: dict = {}
+    workspace: str | None = None
+
+
+@app.post("/api/ask")
+def ask_endpoint(q: Question):
+    """A coach's question: retrieve from the graph, then answer with a model.
+
+    The model never sees the question without the retrieved facts, and never
+    sees anything that is not in them. What comes back carries the ids it
+    cited, so the interface can show the graph nodes behind every claim rather
+    than asking anyone to trust the prose.
+    """
+    ws = workspace.load(q.workspace)
+    g = _graph()
+    try:
+        row = g.match(ws.match_id)
+        at = row["date_ord"] if row else dt.date.today().toordinal()
+    finally:
+        g.close()
+
+    try:
+        return answer(ws.team, q.question, at, memory=q.memory, match=q.match)
+    except Exception as exc:  # noqa: BLE001
+        # A model that will not answer is a failure to report, never something
+        # to paper over with a canned line that reads like a real answer.
+        raise HTTPException(502, f"model unavailable: {exc}") from exc
+
+
+@app.get("/api/squad/{team}")
+def squad(team: str):
+    """The players the graph holds facts for, and how much it holds."""
+    g = _graph()
+    try:
+        return {"team": team, "players": g.players_for_team(team_id(team))}
+    finally:
+        g.close()
+
+
+@app.get("/api/player/{team}/{statsbomb_id}")
+def player(team: str, statsbomb_id: int, at: str | None = None):
+    """One player's dated facts, with the chain of what each one replaced."""
+    g = _graph()
+    try:
+        pid = PLAYER_ID_BASE + statsbomb_id
+        when = _to_ord(at) if at else dt.date.today().toordinal()
+        out = {}
+        for dim in PLAYER_DIMENSIONS:
+            now = g.player_fact_at(pid, dim, when)
+            out[dim] = {
+                "now": _decorate(now),
+                "timeline": [_decorate(f) for f in g.player_timeline(pid, dim)],
+                "flat": _decorate(g.player_flat_lookup(pid, dim)),
+            }
+        return {"player_id": pid, "dimensions": out}
     finally:
         g.close()
 
