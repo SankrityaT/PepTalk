@@ -11,6 +11,7 @@ validity intervals would return instead.
 from __future__ import annotations
 
 import datetime as dt
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +23,10 @@ from .coach import DIMENSION_LABELS, MIN_EVIDENCE, advise, format_advice, recall
 from .demo import team_id
 from .graph import PLAYER_ID_BASE, Graph
 from .players import PLAYER_DIMENSIONS
+
+#: Where the interface serves its static files from. Calibration frames are
+#: written here so a browser can show them and a click can be mapped back.
+UI_PUBLIC = Path("/tmp/peptalk-ui/public")
 from .temporal import OPEN_ENDED
 
 app = FastAPI(title="Tactical Memory API", version="0.1.0")
@@ -540,6 +545,58 @@ def player(team: str, statsbomb_id: int, at: str | None = None):
         return {"player_id": pid, "dimensions": out}
     finally:
         g.close()
+
+
+class Clicks(BaseModel):
+    clip: str
+    #: landmark key -> [x, y] in the frame's own pixels
+    points: dict[str, list[float]]
+
+
+@app.get("/api/calibrate/landmarks")
+def calibration_landmarks():
+    """What a person is asked to click, and what each one means on the pitch."""
+    from .calibrate_click import GOOD_ENOUGH, LANDMARKS, load_all
+
+    return {
+        "landmarks": [
+            {"key": k, "label": v["label"], "hint": v["hint"], "pitch": list(v["pitch"])}
+            for k, v in LANDMARKS.items()
+        ],
+        "good_enough": GOOD_ENOUGH,
+        "done": load_all(),
+    }
+
+
+@app.post("/api/calibrate")
+def calibrate_from_clicks(c: Clicks):
+    """Solve, score against the painted lines, and draw the result to look at.
+
+    Saved only when the pitch model actually lands on the pitch. A misclick
+    comes back as a low score and a visibly wrong overlay, which is the whole
+    point of scoring it rather than trusting the four points.
+    """
+    from .calibrate_click import overlay, save, solve
+
+    frame = UI_PUBLIC / "calib" / f"{c.clip}.jpg"
+    if not frame.exists():
+        raise HTTPException(404, f"no calibration frame for {c.clip}")
+
+    from .calibrate_click import Degenerate
+
+    try:
+        fit = solve({k: (v[0], v[1]) for k, v in c.points.items()}, frame)
+    except Degenerate as exc:
+        raise HTTPException(400, str(exc)) from exc
+    if fit is None:
+        raise HTTPException(400, "need at least four known landmarks")
+
+    out = UI_PUBLIC / "calib" / f"{c.clip}_check.jpg"
+    overlay(frame, fit.H, out)
+    body = fit.as_json()
+    if body["good"]:
+        save(c.clip, fit, c.points)
+    return {**body, "clip": c.clip, "check": f"/calib/{c.clip}_check.jpg"}
 
 
 @app.get("/api/health")
