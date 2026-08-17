@@ -86,6 +86,18 @@ LANDMARKS: dict[str, dict] = {
         "pitch": (120.0, 5550 / 7000 * 80),
         "y_pair": "box_goalline_a",
     },
+    "six_front_a": {
+        "label": "the front corner of the SMALL box, LEFT",
+        "hint": "the six yard box, nearest corner away from the goal",
+        "pitch": ((12000 - 550) / 12000 * 120, 2584 / 7000 * 80),
+        "y_pair": "six_front_b",
+    },
+    "six_front_b": {
+        "label": "the front corner of the SMALL box, RIGHT",
+        "hint": "the same corner on the other side",
+        "pitch": ((12000 - 550) / 12000 * 120, 4416 / 7000 * 80),
+        "y_pair": "six_front_a",
+    },
     "box_front_a": {
         "label": "the front corner of the big box, LEFT",
         "hint": "where the 18 yard line turns toward the goal",
@@ -108,6 +120,9 @@ GOOD_ENOUGH = 0.45
 #: a straight line. Four points on the goal line satisfy every other check and
 #: determine nothing.
 MIN_SPREAD_CLICKS = 0.08
+
+#: Share of the frame the clicks must span, as a fraction of its area.
+MIN_CLICK_AREA = 0.06
 
 
 class Degenerate(ValueError):
@@ -162,6 +177,19 @@ def solve(clicks: dict[str, tuple[float, float]], frame: Path) -> Fit | None:
     if img is None:
         return None
     h, w = img.shape[:2]
+
+    # The clicks also have to be spread across the picture, not only across the
+    # pitch. Four landmarks bunched around the goal are well separated in pitch
+    # coordinates and cover a tenth of the frame, and the homography they give
+    # is fine where they are and wild everywhere else: the projected pitch came
+    # back covering 8% of the image.
+    pix = np.array(list(known.values()), dtype=float)
+    if (np.ptp(pix[:, 0]) / w) * (np.ptp(pix[:, 1]) / h) < MIN_CLICK_AREA:
+        raise Degenerate(
+            "those points are all bunched in one part of the picture. Spread "
+            "them out: the far corner of the box is worth more than a second "
+            "point beside the goal."
+        )
     mask, grass = paint_mask(img)
 
     best: Fit | None = None
