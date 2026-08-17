@@ -175,3 +175,30 @@ def test_a_measurement_beside_a_scoreline_is_still_a_claim():
     assert not cited(
         result("In the 3-3 with France your width was 23.44 and that is the problem.")
     ).passed
+
+
+# ── vocabulary of the disclaimer vs vocabulary of the claim ────────────
+
+def test_naming_what_is_missing_is_not_a_claim():
+    """Two real answers this rule wrongly failed.
+
+    An assistant saying it has no baseline, or that a baseline is what would be
+    needed, is doing the right thing. Flagging the noun punished the honesty it
+    was written to enforce.
+    """
+    assert abstention(result("To answer that we would need his off-the-ball baseline.", memory=False)).passed
+    assert abstention(result("I have no season norm in front of me.", memory=False)).passed
+
+
+def test_a_subjunctive_about_this_match_is_not_history():
+    """"could have been pushed higher" is judgement about the game on screen."""
+    assert abstention(
+        result("The block could have been pushed a good few metres further up.", memory=False)
+    ).passed
+
+
+def test_asserted_habituality_is_still_caught():
+    """The rule must keep its teeth after both loosenings."""
+    assert not abstention(result("His block has been higher than this all season.", memory=False)).passed
+    assert not abstention(result("They typically press higher.", memory=False)).passed
+    assert not abstention(result("That is below his average.", memory=False)).passed

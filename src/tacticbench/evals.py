@@ -46,8 +46,16 @@ RESULTS = ROOT / "results"
 #: Language that only means something with dated history behind it. With memory
 #: off none of it is available, so any of these in an answer is a fabrication.
 HISTORY_WORDS = re.compile(
-    r"\b(usual(ly)?|normal(ly)?|typical(ly)?|norm|baseline|average|used to|"
-    r"has been|have been|across \d+ games?|compared (to|with)|trend(ing|ed)?|"
+    # "norm" and "baseline" are deliberately absent. They are the vocabulary of
+    # the disclaimer, not of the claim: an answer saying "I have no baseline"
+    # or "we would need his norm" is doing exactly the right thing, and flagging
+    # the noun failed answers whose only fault was naming what they lacked.
+    # What is forbidden is asserting habituality, and these words do that.
+    r"\b(usual(ly)?|normal(ly)?|typical(ly)?|average|used to|"
+    # "has been" as a claim, not "could have been", which is about this match.
+    r"(?<!could )(?<!would )(?<!should )(?<!might )(?<!may )(?<!must )has been|"
+    r"(?<!could )(?<!would )(?<!should )(?<!might )(?<!may )(?<!must )have been|"
+    r"across \d+ games?|compared (to|with)|trend(ing|ed)?|"
     r"more than (he|they|usual)|less than (he|they|usual)|"
     # Temporal "since" only. "since 2018" and "since the semi-final" are
     # claims about history; "since narrow attacks congest lanes" is a
