@@ -48,6 +48,13 @@ export function TapePlayer({
   frames,
   /** Stop here, because this is the thing worth looking at. */
   stopAt,
+  /**
+   * Where the broadcast is on the pitch. A window is cut six seconds before
+   * the pass and the director is sometimes still on a close-up, so starting at
+   * zero puts two shirts filling the frame as the poster image. Every replay
+   * and rewind starts here instead.
+   */
+  startAt = 0,
   /** Shown over the frame once it stops. */
   stopLabel = "the moment",
   /** Top-left badge, usually a clock. */
@@ -64,6 +71,7 @@ export function TapePlayer({
   src: string;
   frames: Frame[];
   stopAt?: number;
+  startAt?: number;
   stopLabel?: string;
   clock?: (t: number) => string;
   chalkTeam?: number;
@@ -94,7 +102,7 @@ export function TapePlayer({
     const v = video.current;
     if (!v) return;
     const go = () => {
-      v.currentTime = 0;
+      v.currentTime = startAt;
       if (autoPlay) v.play().catch(() => {});
     };
     if (v.readyState >= 1) go();
@@ -158,7 +166,7 @@ export function TapePlayer({
     // is where this player spends most of its life.
     if (v.paused) {
       if (stopAt !== undefined && v.currentTime >= stopAt - 0.05) {
-        v.currentTime = 0;
+        v.currentTime = startAt;
         announced.current = false;
       }
       v.play().catch(() => {});
@@ -174,7 +182,7 @@ export function TapePlayer({
   const replay = useCallback(() => {
     const v = video.current;
     if (!v) return;
-    v.currentTime = 0;
+    v.currentTime = startAt;
     announced.current = false;
     v.play().catch(() => {});
     setPaused(false);
