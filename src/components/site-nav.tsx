@@ -27,13 +27,13 @@ export function SiteNav() {
 
       <nav className="flex items-center gap-2">
         <a
-          href="#time-travel"
+          href="#the-session"
           className="hidden px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-muted transition-colors duration-150 ease-[var(--ease-ui)] hover:text-chalk sm:block"
         >
-          The demo
+          The product
         </a>
         <a
-          href="https://github.com"
+          href="https://github.com/SankrityaT/PepTalk"
           className="hidden border border-rule px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-chalk transition-colors duration-150 ease-[var(--ease-ui)] hover:bg-white/5 sm:block"
         >
           GitHub
