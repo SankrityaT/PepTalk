@@ -152,7 +152,7 @@ export function SectionProduct() {
             {[
               ["803 → 8", "passes with a better option, down to the ones that would have made a chance"],
               ["one offset per period", "the broadcast clock read off the overlay, so a clip lands on the right second"],
-              ["1,973 dated facts", "every claim carries the node it came from"],
+              ["2,096 dated facts", "every claim carries the node it came from"],
             ].map(([k, v]) => (
               <div key={k}>
                 <dt className="font-mono text-[13px] text-accent">{k}</dt>
@@ -209,7 +209,7 @@ export function SectionMemory() {
           </h2>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             The same question, the same model, the same match. With the graph
-            connected he answers from 1,973 dated facts across 353 sides. Without
+            connected he answers from 2,096 dated facts across 353 sides. Without
             it he can still read the game in front of him, and that is the point:
             what goes is not his eyesight, it is his memory.
           </p>
