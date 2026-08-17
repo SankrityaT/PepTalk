@@ -15,6 +15,7 @@ import { Evidence } from "@/components/session/evidence";
 import { TapePlayer } from "@/components/tape/tape-player";
 import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
+import { MEASURES, SQUAD } from "@/content/roster";
 import { MOMENTS } from "@/content/pep";
 import knowledge from "@/content/snapshots/active/knowledge.json";
 
@@ -219,6 +220,19 @@ const THIS_MATCH: Record<string, string | number> = {
   "goals conceded": 3,
 };
 
+/** What one player's card shows, in the words retrieval uses. */
+function measurementsFor(p: (typeof SQUAD)[number]): Record<string, string | number> {
+  const out: Record<string, string | number> = {
+    player: p.nickname ?? p.name,
+    position: p.position,
+    "minutes in this game": Math.round(p.match.minutes),
+  };
+  for (const m of MEASURES) {
+    out[`${m.label} in this game`] = p.match[m.key];
+  }
+  return out;
+}
+
 export function Session({
   memory,
   onMemory,
@@ -230,6 +244,7 @@ export function Session({
   const graphUp = useGraphUp();
   const setMemory = onMemory;
   const [asked, setAsked] = useState<string[]>([]);
+  const [asking, setAsking] = useState<Record<string, string | number>>(THIS_MATCH);
   const [attached, setAttached] = useState<string[]>([]);
   const [playing, setPlaying] = useState(true);
   const tail = useRef<HTMLDivElement>(null);
@@ -497,7 +512,7 @@ export function Session({
                     key={`${q}::${memory}`}
                     question={q}
                     memory={memory}
-                    match={THIS_MATCH}
+                    match={asking}
                   />
                 </Turn>
               </div>
@@ -535,6 +550,15 @@ export function Session({
             connected={graphUp !== false}
             suggestions={asked.length ? [] : SUGGESTIONS}
             onSend={(q) => {
+              // A question naming a player is answered from that player's
+              // numbers as well as the team's. Retrieval resolves who it is
+              // about on the server; this makes sure what the coach can see on
+              // his card is in front of the model too.
+              const named = SQUAD.find((p) =>
+                q.toLowerCase().includes(p.short.toLowerCase()),
+              );
+              if (named) setAsking({ ...THIS_MATCH, ...measurementsFor(named) });
+              else setAsking(THIS_MATCH);
               // A command is a jump, not a question. Anything Pep would have
               // to answer in prose about a beat that exists is better served
               // by putting the coach on that beat.
@@ -551,11 +575,24 @@ export function Session({
               setPlaying(false);
             }}
             sources={SOURCES}
-            mentions={CLIP_MOMENTS.map((m) => ({
-              key: m.key,
-              label: m.surname,
-              hint: m.match_clock,
-            }))}
+            mentions={[
+              // The squad first: a coach asking about a player wants any of
+              // them, not only the four who happen to be in this session's
+              // clips. Two of those four are France players anyway, and the
+              // graph holds nothing about them.
+              ...SQUAD.map((p) => ({
+                key: `player-${p.key}`,
+                label: p.short,
+                hint: `${p.position.split(" ").map((w) => w[0]).join("")} · ${
+                  p.across?.games ?? 1
+                } games`,
+              })),
+              ...CLIP_MOMENTS.map((m) => ({
+                key: m.key,
+                label: m.surname,
+                hint: m.match_clock,
+              })),
+            ]}
             commands={COMMANDS}
             memory={memory}
             onMemory={setMemory}
