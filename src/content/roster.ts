@@ -1,6 +1,7 @@
 import roster from "./snapshots/active/roster.json";
+import playerClips from "./snapshots/active/player-clips.json";
 import photos from "../../public/players/index.json";
-import { CLIP_MOMENTS } from "./clip";
+import { CLIP_MOMENTS, ClipMoment } from "./clip";
 import { MOMENTS } from "./pep";
 
 /**
@@ -150,9 +151,25 @@ export const MEASURES: Measure[] = [
   },
 ];
 
-/** Their moments in the tape, matched on the surname the clips carry. */
-export function momentsFor(p: Player) {
-  return CLIP_MOMENTS.filter((m) => m.surname === p.short);
+/**
+ * Their footage: the session's clips plus the one cut for them personally.
+ *
+ * The session's four come from the match being reviewed and are chosen to tell
+ * that story. A player's own clip is his costliest ball from whichever game the
+ * workspace can show, which is what took the squad from two players with
+ * footage to eight: one match gives a scoreline, a campaign gives a squad.
+ */
+const OWN = (playerClips as unknown as { clips: ClipMoment[] }).clips;
+
+export function momentsFor(p: Player): ClipMoment[] {
+  const seen = new Set<string>();
+  const out: ClipMoment[] = [];
+  for (const m of [...CLIP_MOMENTS, ...OWN]) {
+    if (m.surname !== p.short || seen.has(m.key)) continue;
+    seen.add(m.key);
+    out.push(m);
+  }
+  return out;
 }
 
 /**
