@@ -30,14 +30,26 @@ def _graph():
         return None
 
 
+def _wipe(g: Graph) -> None:
+    """Leave nothing behind, including the Team node itself.
+
+    Clearing only the facts is not enough. `ingest_team` creates the Team as
+    one end of the HAS_FACT edge, so a run of these tests left "Probe FC"
+    standing in the live graph and the count of sides went up by one. That is
+    a test writing itself into the data the product reports on.
+    """
+    g.clear_team_facts(PROBE)
+    g.run("MATCH (t:Team) WHERE t.id = $t DETACH DELETE t", t=PROBE)
+
+
 @pytest.fixture
 def graph():
     g = _graph()
     if g is None:
         pytest.skip("no HydraDB listening on bolt://127.0.0.1:7687")
-    g.clear_team_facts(PROBE)
+    _wipe(g)
     yield g
-    g.clear_team_facts(PROBE)
+    _wipe(g)
     g.close()
 
 

@@ -204,6 +204,24 @@ def abstention(result: dict) -> Check:
     # A fixed character window was the first attempt and was simply wrong, since
     # a negation sixty-one characters back governs the sentence just as much as
     # one sixty back.
+    #
+    # `whether` governs in the same way, and for the same reason. An embedded
+    # question does not assert its content: "if you want a real answer on
+    # whether the press was as high as normal, I need the averages" is a
+    # refusal, and it contains no negation anywhere. A word after `whether` is
+    # by construction being asked about rather than claimed, so this stays a
+    # strict rule rather than a lenient one.
+    #
+    # `if` is deliberately not included, though it opens the same sentence
+    # above. It is far too common a word and it does not carry the same
+    # guarantee: "if we press higher next week, he usually drops off" asserts
+    # the habit outright, and excusing it would be exactly the hole this check
+    # exists to close.
+    GOVERNS = re.compile(
+        r"\b(cannot|can't|could not|couldn't|no|not|without|unable|nothing"
+        r"|whether)\b",
+        re.I,
+    )
     text = result["answer"]
     hits = []
     for m in HISTORY_WORDS.finditer(text):
@@ -212,7 +230,7 @@ def abstention(result: dict) -> Check:
             default=0,
         )
         before = text[start : m.start()]
-        if re.search(r"\b(cannot|can't|could not|couldn't|no|not|without|unable|nothing)\b", before, re.I):
+        if GOVERNS.search(before):
             continue
         hits.append(m.group(0))
     return Check(

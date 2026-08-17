@@ -104,8 +104,8 @@ Every bracket is a real HydraDB node id.
 Object-store-native graph database, Cypher over Bolt. What we hold:
 
 ```
-354 teams · 3,961 matches · 24 players
-1,973 facts · 631 supersessions · 17,520 evidence edges
+353 teams · 3,961 matches · 44 players
+2,096 facts · 651 supersessions · 17,533 evidence edges
 ```
 
 ```
@@ -229,12 +229,15 @@ over eight questions in both memory modes:
 | `abstention` | history claimed with memory off |
 
 ```
-grounded 32/32 · cited 32/32 · supported 32/32
-resolution 16/16 · abstention 16/16
+grounded 16/16 · cited 16/16 · supported 16/16
+resolution 8/8 · abstention 8/8
 ```
 
+Eight questions in both memory modes. `resolution` and `abstention` only apply
+to one mode each, which is why their denominators are half.
+
 **An eval that passes everything is indistinguishable from one that measures
-nothing**, so 22 unit tests feed each check a planted violation and require it to
+nothing**, so 26 unit tests feed each check a planted violation and require it to
 catch: an invented number, correct-but-forbidden arithmetic, a citation to
 nothing, the wrong player, asserted habituality.
 
@@ -243,30 +246,78 @@ below the norm" from 57.18 and 51.67 has the arithmetic right and still fails,
 because a coach cannot check a figure that appears in no fact.
 
 ```bash
-TACTICBENCH_BACKEND=cli uv run python -m tacticbench.evals --repeats 3
+TACTICBENCH_BACKEND=cli uv run python -m tacticbench.evals
 ```
 
 ---
 
 ## Running it
 
+Nothing here is committed that can be rebuilt. `results/` and `.cache/` are
+ignored, so a fresh clone starts from an empty graph and builds everything
+below from StatsBomb's public data, which downloads itself on first use.
+
+**1. Dependencies**
+
 ```bash
-# 1. HydraDB on bolt://127.0.0.1:7687
-# 2. the graph
-uv run python -m tacticbench.ingest_all        # teams, matches, team facts
-uv run python -m tacticbench.players           # player nodes and player facts
+uv sync
+pnpm install
+```
+
+**2. HydraDB, on `bolt://127.0.0.1:7687`**
+
+```bash
+mkdir -p hydradb-data/store
+docker run --rm --user "$(id -u):$(id -g)" \
+  -p 7687:7687 -p 8443:8443 -p 9090:9090 \
+  -v "$PWD/hydradb-data:/data" \
+  -e CLOUD_PROVIDER=local -e LOCAL_PATH=/data/store \
+  -e GRAPH_NAMESPACE=default -e GRAPH_ID=default \
+  -e GRAPH_CELL_ID=cell-0 -e GRAPH_CELLS=cell-0 -e GRAPH_NODE_ID=node-0 \
+  -e GRAPH_BOLT_NODE_ADDRESSES=node-0=127.0.0.1:7687 \
+  -e GRAPH_ADVERTISED_BOLT_ADDR=127.0.0.1:7687 \
+  -e GRAPH_DATA_CACHE_DIR=/data/cache \
+  -e GRAPH_AUTH_TOKEN_FILE=/data/auth-token \
+  -e GRAPH_ALLOW_PLAINTEXT=true -e RUST_MIN_STACK=33554432 \
+  ghcr.io/hydra-db/hydradb:latest
+```
+
+`LOCAL_PATH` has to exist first, and `--user` is required: the image runs as
+UID 10001 and cannot otherwise write a host-owned bind mount.
+
+**3. Build the graph.** In this order, because each step reads the last one's
+output. The first two are the slow ones: the threat model fits over six million
+actions and the series pass walks all 3,961 matches, so between them expect
+somewhere around half an hour on a laptop, most of it the first download.
+
+```bash
+uv run python -m tacticbench.xt build             # the threat model
+uv run python -m tacticbench.ingest_all series    # per-team match histories
+uv run python -m tacticbench.ingest_all graph     # teams, matches, team facts
+uv run python -m tacticbench.ingest_all enrich    # scorelines and halftime state
+uv run python -m tacticbench.players              # player nodes and player facts
 uv run python -m tacticbench.roster --matches campaign
-uv run python -m tacticbench.scout             # the next fixture
+uv run python -m tacticbench.scout                # the next fixture
+```
 
-# 3. the service that answers questions
+Every one of those is idempotent. Running it twice leaves the graph in the
+state it would be in had it run once, which is less obvious than it sounds and
+is why `clear_team_facts` exists.
+
+**4. Run it**
+
+```bash
 TACTICBENCH_BACKEND=cli uv run uvicorn tacticbench.api:app --port 8000
-
-# 4. the interface
 pnpm dev
 ```
 
 `TACTICBENCH_BACKEND=cli` runs prompts through the Claude CLI, so no API key is
 needed. Set `ANTHROPIC_API_KEY` and drop it to use the API instead.
+
+The footage is the one thing that cannot be scripted. Broadcast clips are not
+ours to redistribute, so `public/clips/` is ignored and the tape has to be
+supplied locally; see **Making it your team** below for the workspace field
+that points at it. Everything else on the interface works without it.
 
 **The deployed build cannot answer questions.** Retrieval needs HydraDB and that
 runs locally. It says so rather than falling back to something canned.
