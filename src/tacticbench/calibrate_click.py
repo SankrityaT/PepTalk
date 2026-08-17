@@ -46,6 +46,7 @@ from .pitch import (
     outline,
     paint_mask,
     paint_score,
+    refine,
     spread_of,
 )
 
@@ -123,6 +124,20 @@ MIN_SPREAD_CLICKS = 0.08
 
 #: Share of the frame the clicks must span, as a fraction of its area.
 MIN_CLICK_AREA = 0.06
+
+
+#: The four pitch points the polish step moves. Corners of the penalty area,
+#: because they are far apart and always near whatever a camera behind a goal
+#: is looking at.
+REFINE_ANCHORS = np.array(
+    [
+        [120.0, 1450 / 7000 * 80],
+        [120.0, 5550 / 7000 * 80],
+        [(12000 - 2015) / 12000 * 120, 1450 / 7000 * 80],
+        [(12000 - 2015) / 12000 * 120, 5550 / 7000 * 80],
+    ],
+    dtype=np.float32,
+)
 
 
 class Degenerate(ValueError):
@@ -207,8 +222,19 @@ def solve(clicks: dict[str, tuple[float, float]], frame: Path) -> Fit | None:
         )
         if H is None or not np.isfinite(H).all():
             continue
-        fit = Fit(H=H, paint=paint_score(H, mask, grass, w, h),
-                  coverage=coverage(H, w, h), flipped=flipped)
+        # Polish. The clicks put the projection in the right basin, which is
+        # the part no search could manage; a four point fit then inherits the
+        # click precision exactly, and a couple of pixels on a landmark is a
+        # couple of percent on the score. Nudging where those four points land,
+        # to maximise how much of the pitch falls on painted line, recovers it
+        # without asking anyone to click more carefully.
+        # Parameterised on four fixed pitch points rather than on the clicks:
+        # a person may click five landmarks, and a perspective transform is
+        # defined by exactly four. These four also span the pitch, so nudging
+        # them moves the projection evenly instead of pivoting it about
+        # whichever corner happened to be clicked first.
+        H, polished = refine(H, REFINE_ANCHORS, mask, grass, w, h)
+        fit = Fit(H=H, paint=polished, coverage=coverage(H, w, h), flipped=flipped)
         if best is None or fit.paint > best.paint:
             best = fit
     return best
