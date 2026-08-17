@@ -59,6 +59,11 @@ TOKEN = "local-development-token-32-bytes"
 MATCH_ID_BASE = 10_000_000
 FACT_ID_BASE = 100_000_000
 
+#: Ids reserved per team for its facts. The block is what makes a re-ingest
+#: safe to clear (see `clear_team_facts`); it is not a limit anyone is near,
+#: since the largest team in the set segments to a few dozen facts.
+FACTS_PER_TEAM = 10_000
+
 # Evidence edges kept per fact. See ingest_team for why this is capped.
 CITATIONS_PER_FACT = 12
 
@@ -226,12 +231,64 @@ class Graph:
             )
         return len(series)
 
+    def clear_team_facts(self, team_id: int) -> int:
+        """Drop a team's facts so a re-ingest replaces rather than accumulates.
+
+        Adding a match re-segments the team's whole history, because eras come
+        from quantiles over every observation and one new game can move a
+        boundary. Team fact ids are handed out sequentially as the writing
+        loop runs, so a re-segmentation that yields *fewer* eras writes over
+        the low ids and abandons the high ones. Measured against a live node:
+        eight eras, re-ingested as six, left eight facts standing and grew the
+        supersession chain from seven edges to twelve.
+
+        Both halves of that are bad, and the stale facts are the worse half.
+        They keep the validity intervals from the old segmentation, so they
+        overlap the new ones and `fact_at` matches two facts for one date,
+        returning whichever the engine reaches first. The duplicate edges come
+        from `CREATE` on a relationship, which does not upsert the way a node
+        keyed by id does.
+
+        Scoped through the `HAS_FACT` edge, not by `f.team_id`, and that is the
+        part worth being careful about. A *player's* fact carries `team_id`
+        too, so the obvious `WHERE f.team_id = $tid` reaches 180 facts for
+        Argentina when only 10 of them are the team's; the other 170 are the
+        squad's, and deleting them would wipe the roster's entire history as a
+        silent side effect of re-ingesting the team.
+
+        Reachability is the exact discriminator: a team's facts hang off
+        `(Team)-[:HAS_FACT]->`, a player's off `(Player)-[:HAS_FACT]->`, and
+        the two sets are disjoint. Scoping by id block would also work today
+        but only by arithmetic luck. `team_id_for` returns up to 90,099 while
+        player facts start at 700,000,000, so a team whose crc32 lands near
+        60,000 would have its block overlap theirs.
+
+        DETACH takes the SUPERSEDED_BY chain and the OBSERVED_IN citations with
+        it, which is the half of the bug that `CREATE` on a relationship
+        causes: a node keyed by id upserts, an edge does not.
+        """
+        gone = self.run(
+            "MATCH (t:Team)-[:HAS_FACT]->(f:Fact) WHERE t.id = $tid RETURN f.id AS id",
+            tid=team_id,
+        )
+        for r in gone:
+            self.run("MATCH (f:Fact) WHERE f.id = $fid DETACH DELETE f", fid=r["id"])
+        return len(gone)
+
     def ingest_team(
-        self, team: str, team_id: int, series: list[MatchMetrics], facts: dict[str, list[Fact]]
+        self,
+        team: str,
+        team_id: int,
+        series: list[MatchMetrics],
+        facts: dict[str, list[Fact]],
+        replace: bool = True,
     ) -> dict:
+        # Replace by default: ingesting a team twice should leave the graph in
+        # the state it would be in had it been ingested once.
+        cleared = self.clear_team_facts(team_id) if replace else 0
         matches = self.ingest_matches(team, team_id, series)
 
-        fact_id = FACT_ID_BASE + team_id * 10_000
+        fact_id = FACT_ID_BASE + team_id * FACTS_PER_TEAM
         written_facts = written_obs = written_links = 0
 
         for dim, flist in facts.items():
@@ -280,6 +337,7 @@ class Graph:
             "facts": written_facts,
             "observations": written_obs,
             "supersedes": written_links,
+            "cleared": cleared,
         }
 
     def ingest_players(
@@ -766,6 +824,34 @@ def save_series(team: str, series: list[MatchMetrics]) -> Path:
     return p
 
 
-def load_series(team: str) -> list[MatchMetrics]:
+def load_series(team: str, missing_ok: bool = False) -> list[MatchMetrics]:
+    """This team's match history, from either place it might have been written.
+
+    There are two writers and they do not agree on a layout. `save_series`
+    writes one file per team; the bulk pass in `ingest_all` writes every team
+    into `all_series.json` and no per-team files at all. Reading only the first
+    reports a side with a decade of history as having none, which for Barcelona
+    means 531 matches that are in the repo and unreachable.
+
+    Raising by default is deliberate. A caller that segments eras from this is
+    building a norm, and a norm built from an empty series is not an empty
+    answer, it is a confident wrong one. `missing_ok` is for the callers that
+    genuinely have nothing yet, such as adding the first game for a side nobody
+    has ingested.
+    """
     p = RESULTS / f"series_{team.replace(' ', '_').lower()}.json"
-    return [MatchMetrics(**row) for row in json.loads(p.read_text())]
+    if p.exists():
+        return [MatchMetrics(**row) for row in json.loads(p.read_text())]
+
+    combined = RESULTS / "all_series.json"
+    if combined.exists():
+        rows = json.loads(combined.read_text()).get(team)
+        if rows:
+            return [MatchMetrics(**r) for r in rows]
+
+    if missing_ok:
+        return []
+    raise FileNotFoundError(
+        f"no match history for {team!r}: looked in {p.name} and all_series.json. "
+        f"Run `uv run demo ingest` for one team, or `uv run ingest-all series` for the set."
+    )
