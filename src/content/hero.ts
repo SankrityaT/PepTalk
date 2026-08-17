@@ -221,6 +221,11 @@ export const CLAIM_COPY = {
   subjectB: "Barcelona 2021",
   tail: "are the same team.",
   punchline: "HydraDB doesn't.",
+  // The old line spent three clauses on what similarity gets wrong and never
+  // said what replaces it, which leaves the punchline unearned. Two sentences:
+  // the failure, then the fix.
   footnote:
-    "Similarity retrieval finds the nearest neighbour. It has no way to know a fact expired, so it answers with an average across eras that describes neither, and it answers confidently.",
+    "Similarity finds the nearest neighbour. It cannot tell that a fact expired, so it averages the eras and describes neither.",
+  answer:
+    "Every fact here carries the dates it was true and a link to whatever replaced it. Ask about 2011 and about 2021 and you get two answers, both correct.",
 } as const;
