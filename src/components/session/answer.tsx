@@ -30,6 +30,8 @@ const EASE = [0.4, 0, 0.2, 1] as const;
 export type Fact = {
   id: number;
   kind: string;
+  /** Short form for the chip, built by retrieval, which knows what it built. */
+  label?: string;
   text: string;
   node?: number;
   dimension?: string;
@@ -139,13 +141,15 @@ export function Answer({
           {result.cited.map((f) => (
             <span
               key={f.id}
-              title={f.text}
+              title={`${f.text}${f.node ? `  ·  node ${f.node}` : ""}`}
               className={`rounded px-1.5 py-0.5 font-mono text-[10px] ${
                 KIND_TONE[f.kind] ?? "bg-white/[0.07] text-warm"
               }`}
             >
-              {f.kind}
-              {f.node ? ` #${f.node}` : ""}
+              {/* What the fact says, not what kind it is. Three chips reading
+                  "this match" name nothing, and the reason for showing them at
+                  all is that a claim can be traced to the thing behind it. */}
+              {f.label ?? f.kind}
             </span>
           ))}
         </div>

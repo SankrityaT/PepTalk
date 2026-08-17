@@ -34,9 +34,20 @@ export async function POST(req: NextRequest) {
     });
 
     if (!res.ok) {
-      const detail = await res.text();
+      // A crash dump is not a diagnosis. Keep the first line of the reason and
+      // spare the coach a page of stack.
+      const raw = await res.text();
+      let detail = raw;
+      try {
+        detail = String(JSON.parse(raw).detail ?? raw);
+      } catch {
+        /* not JSON; use it as it came */
+      }
       return NextResponse.json(
-        { error: `the graph service answered ${res.status}`, detail: detail.slice(0, 400) },
+        {
+          error: "the model did not answer",
+          detail: detail.split("\n")[0].slice(0, 180),
+        },
         { status: 502 },
       );
     }
