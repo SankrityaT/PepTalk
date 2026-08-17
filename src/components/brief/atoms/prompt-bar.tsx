@@ -29,7 +29,13 @@ import { useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const EASE = "cubic-bezier(0.23,1,0.32,1)";
 
-export type Mention = { key: string; label: string; hint?: string };
+export type Mention = {
+  key: string;
+  label: string;
+  hint?: string;
+  /** A face, where we have one. A squad reads faster than a list of surnames. */
+  avatar?: string;
+};
 
 export type Source = {
   key: string;
@@ -196,7 +202,13 @@ export function PromptBar({
 
   /* The + button opens the same menu the @ key does, with the file picker at
      the top. One list to learn rather than two. */
-  const rows: { key: string; name: string; desc?: string; source?: Source }[] =
+  const rows: {
+    key: string;
+    name: string;
+    desc?: string;
+    source?: Source;
+    avatar?: string;
+  }[] =
     menu === "@"
       ? [
           ...sources
@@ -204,7 +216,7 @@ export function PromptBar({
             .map((s) => ({ key: s.key, name: s.name, desc: s.desc, source: s })),
           ...mentions
             .filter((m) => m.label.toLowerCase().includes(query))
-            .map((m) => ({ key: m.key, name: m.label, desc: m.hint })),
+            .map((m) => ({ key: m.key, name: m.label, desc: m.hint, avatar: m.avatar })),
         ]
       : menu === "/"
         ? commands
@@ -376,10 +388,21 @@ export function PromptBar({
               onClick={() => pick(row)}
               className="relative z-10 flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-left"
             >
-              {row.source && (
+              {row.source ? (
                 <span className="flex size-5 shrink-0 items-center justify-center text-muted">
                   <Icon size={14}>{GLYPHS[row.source.glyph]}</Icon>
                 </span>
+              ) : row.avatar ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={row.avatar}
+                  alt=""
+                  className="size-5 shrink-0 rounded-full object-cover object-top ring-1 ring-white/10"
+                />
+              ) : (
+                // Hold the column so names stay in one line whether or not a
+                // player has a photograph, which most squads will not.
+                <span className="size-5 shrink-0" />
               )}
               <span className="shrink-0 text-[12.5px] font-medium text-chalk">{row.name}</span>
               <span className="min-w-0 flex-1 truncate text-right text-[11.5px] text-muted-2">
