@@ -125,3 +125,38 @@ def test_the_clock_runs_on_the_opponents_events_too():
     """The final whistle is the last event of the match, whoever played it."""
     events = [starting_xi(["Messi"]), tick(95, period=2, team="France")]
     assert minutes_from_events(events, TEAM) == {"Messi": 95.0}
+
+
+# ── the surname a clip is filed under ──────────────────────────────────
+
+from tacticbench.roster import display_surname
+
+
+def test_a_collapsed_compound_surname_is_repaired():
+    """The defect this exists for.
+
+    StatsBomb records Alexis Mac Allister's nickname as "Alexis MacAllister".
+    The roster filed him under MacAllister and the clips under Mac Allister, so
+    his footage stopped joining to his card. Nothing errored; he simply had no
+    clips, which is indistinguishable from a player who genuinely has none.
+    """
+    assert display_surname("Alexis Mac Allister", "Alexis MacAllister") == "Mac Allister"
+
+
+def test_a_maternal_surname_does_not_override_the_broadcast_name():
+    """Why the blunter rule could not be reused.
+
+    Rejecting the nickname whenever it disagrees with the full name turns
+    Messi into Cuccittini and Di Maria into Hernandez, because the heuristic
+    reads the last word of a Spanish full name as the surname.
+    """
+    assert display_surname("Lionel Andrés Messi Cuccittini", "Lionel Messi") == "Messi"
+    assert display_surname("Ángel Fabián Di María Hernández", "Ángel Di María") == "Di María"
+
+
+def test_agreement_is_left_alone():
+    assert display_surname("Nicolás Hernán Otamendi", "Nicolás Otamendi") == "Otamendi"
+
+
+def test_no_nickname_falls_back_to_the_full_name():
+    assert display_surname("Nicolás Hernán Otamendi", None) == "Otamendi"

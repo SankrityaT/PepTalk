@@ -26,6 +26,44 @@
         "progressive_ratio": 0.13,
         "turnover_rate": 0.49
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.19,
+          "band": "steady",
+          "obs": 12,
+          "since": "2018-06-21"
+        },
+        "xt_left": {
+          "value": 0.55,
+          "band": "wasteful",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 2.86,
+          "band": "linking",
+          "obs": 11,
+          "since": "2018-06-26"
+        },
+        "progressive_ratio": {
+          "value": 0.18,
+          "band": "mixed",
+          "obs": 13,
+          "since": "2018-06-16"
+        },
+        "defensive_actions": {
+          "value": 2.19,
+          "band": "involved",
+          "obs": 13,
+          "since": "2018-06-16"
+        },
+        "turnover_rate": {
+          "value": 0.03,
+          "band": "secure",
+          "obs": 13,
+          "since": "2018-06-16"
+        }
+      },
       "across": {
         "games": 7,
         "minutes": 733.8,
@@ -59,6 +97,44 @@
         "defensive_actions": 10.15,
         "progressive_ratio": 0.306,
         "turnover_rate": 4.19
+      },
+      "norm": {
+        "xt_created": {
+          "value": 0.65,
+          "band": "creative",
+          "obs": 16,
+          "since": "2018-06-16"
+        },
+        "xt_left": {
+          "value": 0.38,
+          "band": "mixed",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 7.99,
+          "band": "advanced",
+          "obs": 16,
+          "since": "2018-06-16"
+        },
+        "progressive_ratio": {
+          "value": 0.19,
+          "band": "mixed",
+          "obs": 16,
+          "since": "2018-06-16"
+        },
+        "defensive_actions": {
+          "value": 12.94,
+          "band": "relentless",
+          "obs": 11,
+          "since": "2018-06-21"
+        },
+        "turnover_rate": {
+          "value": 2.96,
+          "band": "loose",
+          "obs": 16,
+          "since": "2018-06-16"
+        }
       },
       "across": {
         "games": 7,
@@ -94,6 +170,44 @@
         "progressive_ratio": 0.444,
         "turnover_rate": 0.0
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.04,
+          "band": "quiet",
+          "obs": 13,
+          "since": "2022-11-22"
+        },
+        "xt_left": {
+          "value": 0.02,
+          "band": "decisive",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 0.94,
+          "band": "deep",
+          "obs": 13,
+          "since": "2022-11-22"
+        },
+        "progressive_ratio": {
+          "value": 0.39,
+          "band": "direct",
+          "obs": 13,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 0.0,
+          "band": "passive",
+          "obs": 13,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 0.0,
+          "band": "secure",
+          "obs": 13,
+          "since": "2022-11-22"
+        }
+      },
       "across": {
         "games": 7,
         "minutes": 733.8,
@@ -127,6 +241,44 @@
         "defensive_actions": 3.63,
         "progressive_ratio": 0.4,
         "turnover_rate": 0.0
+      },
+      "norm": {
+        "xt_created": {
+          "value": 0.2,
+          "band": "steady",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "xt_left": {
+          "value": 0.45,
+          "band": "mixed",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 4.18,
+          "band": "linking",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "progressive_ratio": {
+          "value": 0.24,
+          "band": "mixed",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 3.11,
+          "band": "involved",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 0.22,
+          "band": "secure",
+          "obs": 12,
+          "since": "2022-11-22"
+        }
       },
       "across": {
         "games": 7,
@@ -162,6 +314,44 @@
         "progressive_ratio": 0.203,
         "turnover_rate": 1.82
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.23,
+          "band": "steady",
+          "obs": 6,
+          "since": "2022-12-18"
+        },
+        "xt_left": {
+          "value": 0.6,
+          "band": "wasteful",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 9.07,
+          "band": "advanced",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "progressive_ratio": {
+          "value": 0.16,
+          "band": "mixed",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 7.17,
+          "band": "involved",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 1.45,
+          "band": "mixed",
+          "obs": 7,
+          "since": "2022-12-13"
+        }
+      },
       "across": {
         "games": 7,
         "minutes": 601.0,
@@ -196,6 +386,44 @@
         "progressive_ratio": 0.273,
         "turnover_rate": 0.75
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.22,
+          "band": "steady",
+          "obs": 15,
+          "since": "2018-06-16"
+        },
+        "xt_left": {
+          "value": 0.36,
+          "band": "mixed",
+          "obs": 6,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 0.95,
+          "band": "deep",
+          "obs": 3,
+          "since": "2022-12-09"
+        },
+        "progressive_ratio": {
+          "value": 0.23,
+          "band": "mixed",
+          "obs": 13,
+          "since": "2018-06-26"
+        },
+        "defensive_actions": {
+          "value": 8.53,
+          "band": "involved",
+          "obs": 15,
+          "since": "2018-06-16"
+        },
+        "turnover_rate": {
+          "value": 0.54,
+          "band": "mixed",
+          "obs": 15,
+          "since": "2018-06-16"
+        }
+      },
       "across": {
         "games": 6,
         "minutes": 393.3,
@@ -212,7 +440,7 @@
       "key": "27886",
       "name": "Alexis Mac Allister",
       "nickname": "Alexis MacAllister",
-      "short": "MacAllister",
+      "short": "Mac Allister",
       "jersey": 20,
       "position": "Left Center Midfield",
       "country": "Argentina",
@@ -229,6 +457,44 @@
         "defensive_actions": 7.8,
         "progressive_ratio": 0.156,
         "turnover_rate": 2.29
+      },
+      "norm": {
+        "xt_created": {
+          "value": 0.29,
+          "band": "steady",
+          "obs": 11,
+          "since": "2022-11-26"
+        },
+        "xt_left": {
+          "value": 0.67,
+          "band": "wasteful",
+          "obs": 5,
+          "since": "2022-11-30"
+        },
+        "final_third_entries": {
+          "value": 3.4,
+          "band": "linking",
+          "obs": 8,
+          "since": "2022-12-09"
+        },
+        "progressive_ratio": {
+          "value": 0.11,
+          "band": "sideways",
+          "obs": 11,
+          "since": "2022-11-26"
+        },
+        "defensive_actions": {
+          "value": 11.52,
+          "band": "relentless",
+          "obs": 11,
+          "since": "2022-11-26"
+        },
+        "turnover_rate": {
+          "value": 2.05,
+          "band": "mixed",
+          "obs": 10,
+          "since": "2022-11-30"
+        }
       },
       "across": {
         "games": 6,
@@ -264,6 +530,44 @@
         "progressive_ratio": 0.038,
         "turnover_rate": 3.85
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.21,
+          "band": "steady",
+          "obs": 11,
+          "since": "2022-11-26"
+        },
+        "xt_left": {
+          "value": 0.14,
+          "band": "decisive",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 2.3,
+          "band": "linking",
+          "obs": 11,
+          "since": "2022-11-26"
+        },
+        "progressive_ratio": {
+          "value": 0.04,
+          "band": "sideways",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 21.95,
+          "band": "relentless",
+          "obs": 9,
+          "since": "2022-12-03"
+        },
+        "turnover_rate": {
+          "value": 4.17,
+          "band": "loose",
+          "obs": 8,
+          "since": "2022-12-09"
+        }
+      },
       "across": {
         "games": 7,
         "minutes": 485.3,
@@ -297,6 +601,44 @@
         "defensive_actions": 5.31,
         "progressive_ratio": 0.088,
         "turnover_rate": 1.81
+      },
+      "norm": {
+        "xt_created": {
+          "value": 0.47,
+          "band": "creative",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "xt_left": {
+          "value": 0.65,
+          "band": "wasteful",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 6.8,
+          "band": "advanced",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "progressive_ratio": {
+          "value": 0.14,
+          "band": "mixed",
+          "obs": 12,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 13.38,
+          "band": "relentless",
+          "obs": 9,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 1.18,
+          "band": "mixed",
+          "obs": 12,
+          "since": "2022-11-22"
+        }
       },
       "across": {
         "games": 7,
@@ -332,6 +674,44 @@
         "progressive_ratio": 0.359,
         "turnover_rate": 0.0
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.26,
+          "band": "steady",
+          "obs": 11,
+          "since": "2022-11-22"
+        },
+        "xt_left": {
+          "value": 0.34,
+          "band": "mixed",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 4.0,
+          "band": "linking",
+          "obs": 11,
+          "since": "2022-11-22"
+        },
+        "progressive_ratio": {
+          "value": 0.23,
+          "band": "mixed",
+          "obs": 11,
+          "since": "2022-11-22"
+        },
+        "defensive_actions": {
+          "value": 6.65,
+          "band": "involved",
+          "obs": 11,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 0.96,
+          "band": "mixed",
+          "obs": 11,
+          "since": "2022-11-22"
+        }
+      },
       "across": {
         "games": 7,
         "minutes": 594.0,
@@ -366,6 +746,44 @@
         "progressive_ratio": 0.12,
         "turnover_rate": 1.68
       },
+      "norm": {
+        "xt_created": {
+          "value": 0.7,
+          "band": "creative",
+          "obs": 11,
+          "since": "2018-06-16"
+        },
+        "xt_left": {
+          "value": 0.4,
+          "band": "mixed",
+          "obs": 4,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 3.92,
+          "band": "linking",
+          "obs": 7,
+          "since": "2018-06-26"
+        },
+        "progressive_ratio": {
+          "value": 0.22,
+          "band": "mixed",
+          "obs": 10,
+          "since": "2018-06-26"
+        },
+        "defensive_actions": {
+          "value": 8.45,
+          "band": "involved",
+          "obs": 11,
+          "since": "2018-06-16"
+        },
+        "turnover_rate": {
+          "value": 1.73,
+          "band": "mixed",
+          "obs": 7,
+          "since": "2022-11-26"
+        }
+      },
       "across": {
         "games": 5,
         "minutes": 304.8,
@@ -399,6 +817,44 @@
         "defensive_actions": 20.9,
         "progressive_ratio": 0.316,
         "turnover_rate": 4.26
+      },
+      "norm": {
+        "xt_created": {
+          "value": 0.35,
+          "band": "steady",
+          "obs": 8,
+          "since": "2018-06-21"
+        },
+        "xt_left": {
+          "value": 0.39,
+          "band": "mixed",
+          "obs": 6,
+          "since": "2022-11-22"
+        },
+        "final_third_entries": {
+          "value": 4.78,
+          "band": "linking",
+          "obs": 4,
+          "since": "2022-12-03"
+        },
+        "progressive_ratio": {
+          "value": 0.22,
+          "band": "mixed",
+          "obs": 8,
+          "since": "2018-06-21"
+        },
+        "defensive_actions": {
+          "value": 8.39,
+          "band": "involved",
+          "obs": 7,
+          "since": "2022-11-22"
+        },
+        "turnover_rate": {
+          "value": 1.79,
+          "band": "mixed",
+          "obs": 8,
+          "since": "2018-06-21"
+        }
       },
       "across": {
         "games": 6,

@@ -32,6 +32,7 @@ top the list, and totals let them.
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 from pathlib import Path
 
@@ -231,6 +232,33 @@ def measure_match(match_id: int, team: str, xt_model: dict) -> dict[str, dict]:
     return out
 
 
+def display_surname(full: str, nickname: str | None) -> str:
+    """The surname a coach says out loud, and a clip is filed under.
+
+    The nickname is the broadcast name and is normally right. StatsBomb breaks
+    it for compound surnames, though: Alexis Mac Allister is recorded as "Alexis
+    MacAllister", so the roster filed him under MacAllister while the clips
+    filed him under Mac Allister, and his footage silently stopped joining to
+    his card. Nothing errored. He simply had no clips.
+
+    `pep.display_names` rejects a nickname whenever it disagrees with the full
+    name, which is too blunt here: that rule turns Messi into Cuccittini and Di
+    María into Hernández, because their full names carry maternal surnames the
+    heuristic reads as the last word.
+
+    The malformation is narrower than disagreement. It is a surname whose spaces
+    have been eaten, so it is only preferred when the two forms are the same
+    letters with different spacing.
+    """
+    from_nick = short_name(nickname) if nickname else ""
+    from_full = short_name(full)
+    if not from_nick:
+        return from_full
+    if from_nick.replace(" ", "") == from_full.replace(" ", "") and from_nick != from_full:
+        return from_full
+    return from_nick
+
+
 def rates_for(r: dict) -> dict:
     """Counts to per-90 rates. Shared with the fact builder, deliberately.
 
@@ -302,8 +330,51 @@ def campaign(key: str | None = None) -> list[int]:
         g.close()
 
 
+def norms_from_graph(team: str, at: int) -> dict[int, dict]:
+    """Each player's current dated norm, by StatsBomb id.
+
+    The card used to show a mean over the campaign while the answer beside it
+    cited the graph's era median, so the same player's final third norm read
+    8.22 in one place and 6.8 in the other. Both were computed correctly and
+    they measured different things: a mean of per-match rates over seven games
+    of one tournament, against the median of the era that is currently running,
+    which spans twelve.
+
+    The graph's is the one to show. It is dated, it is what the answer is
+    grounded in, and "what is true of him now" is the question a coach asked.
+
+    Requires `python -m tacticbench.players` to have run for this side.
+    """
+    from .graph import PLAYER_ID_BASE, Graph, team_id_for
+    from .players import PLAYER_DIMENSIONS
+    from .temporal import OPEN_ENDED
+
+    g = Graph()
+    try:
+        out: dict[int, dict] = {}
+        for p in g.players_for_team(team_id_for(team)):
+            dims = {}
+            for dim in PLAYER_DIMENSIONS:
+                f = g.player_fact_at(p["id"], dim, at)
+                if not f:
+                    continue
+                dims[dim] = {
+                    "value": f["median_value"],
+                    "band": f["band"],
+                    "obs": f["observations"],
+                    "since": dt.date.fromordinal(f["valid_from"]).isoformat()
+                    if f["valid_from"] < OPEN_ENDED
+                    else None,
+                }
+            if dims:
+                out[int(p["statsbomb_id"])] = dims
+        return out
+    finally:
+        g.close()
+
+
 def build(key: str | None = None, matches: list[int] | None = None) -> dict:
-    """The roster: this match, and the same players across everything held."""
+    """The roster: this match, and the same players against their dated norms."""
     ws = workspace.load(key)
     xt_model = json.loads((RESULTS / "xt_model.json").read_text())
 
@@ -336,6 +407,22 @@ def build(key: str | None = None, matches: list[int] | None = None) -> dict:
         return rates_for(r)
 
 
+    # The dated norms the graph holds, which is what the answers cite.
+    at = dt.date.today().toordinal()
+    try:
+        from .graph import Graph
+
+        g = Graph()
+        try:
+            row = g.match(ws.match_id)
+            at = row["date_ord"] if row else at
+        finally:
+            g.close()
+        graph_norms = norms_from_graph(ws.team, at)
+    except Exception as exc:  # noqa: BLE001
+        print(f"  no graph norms ({type(exc).__name__}); cards will show campaign rates only")
+        graph_norms = {}
+
     here = per_match[ws.match_id]
     players = []
     for name, r in sorted(here.items(), key=lambda kv: -kv[1]["minutes"]):
@@ -350,7 +437,7 @@ def build(key: str | None = None, matches: list[int] | None = None) -> dict:
                 # photo fetcher needs: "Ángel Di María" has an article,
                 # "Ángel Fabián Di María Hernández" does not even redirect.
                 "nickname": r["nickname"],
-                "short": short_name(r["nickname"] or name),
+                "short": display_surname(name, r["nickname"]),
                 "jersey": r["jersey"],
                 "position": r["position"],
                 "country": r["country"],
@@ -363,6 +450,11 @@ def build(key: str | None = None, matches: list[int] | None = None) -> dict:
                     "options_seen": r.get("options_seen", 0),
                     **rates(r),
                 },
+                # What the graph says is true of him now, dimension by
+                # dimension, each with the date it started holding.
+                "norm": graph_norms.get(int(r["player_id"])) or None,
+                # Kept beside it and clearly separate: the raw campaign rate,
+                # which is a different question and must not be labelled a norm.
                 "across": {
                     "games": t["games"],
                     "minutes": round(t["minutes"], 1),
