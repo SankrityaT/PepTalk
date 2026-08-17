@@ -209,7 +209,7 @@ export function SectionMemory() {
           </h2>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             The same question, the same model, the same match. With the graph
-            connected he answers from 1,973 dated facts across 354 sides. Without
+            connected he answers from 1,973 dated facts across 353 sides. Without
             it he can still read the game in front of him, and that is the point:
             what goes is not his eyesight, it is his memory.
           </p>

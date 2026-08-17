@@ -33,7 +33,7 @@ export function SectionClose() {
           transition={{ duration: 0.7, ease: EASE }}
         >
           <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
-            05 — your turn
+            06 — your turn
           </p>
           <h2 className="mt-4 max-w-3xl text-[34px] leading-[1.08] font-medium tracking-[-0.02em] text-chalk sm:text-[46px]">
             Open it on the World Cup final.
