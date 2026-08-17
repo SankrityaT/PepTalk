@@ -174,11 +174,36 @@ def _vertices_cm() -> list[tuple[float, float]]:
 #: reported fifty pixels off the goal line at 0.93 confidence.
 
 #: Vertex index (1-based, as SoccerPitchConfiguration numbers them) ->
-#: StatsBomb coordinates. Which class maps to which vertex is searched for at
-#: calibration time rather than assumed.
+#: StatsBomb coordinates.
 LANDMARKS_RAW: dict[int, tuple[float, float]] = {
     i + 1: (x / LENGTH_CM * PITCH_X, y / WIDTH_CM * PITCH_Y)
     for i, (x, y) in enumerate(_vertices_cm())
+}
+
+#: The model numbers its vertices in reverse: class 1 is vertex 30, class 30 is
+#: vertex 1. Recovered by projecting every known vertex through a homography a
+#: person had verified and reading off which landed on which keypoint. Ten of
+#: ten agreed.
+#:
+#: The reversal spans thirty, not thirty-two, so classes 31 and 32 fall outside
+#: it and are dropped rather than forced. Neither appeared among the confident
+#: keypoints on the frame this was read from, so there is nothing to check them
+#: against, and a guess there would be the same mistake in a new place.
+#:
+#: Every earlier attempt searched additive offsets, class + k, and none fit
+#: because the relation is a reflection. The evidence was in front of me and
+#: read as noise: the differences came out 29, 27, 25, 17, 15, 13, 11, 7, which
+#: is an arithmetic sequence stepping by two, and that is exactly what
+#: vertex - class looks like when vertex = 33 - class.
+def vertex_for(cls: int) -> int:
+    return 31 - int(cls)
+
+
+#: Landmark class -> StatsBomb coordinates.
+LANDMARKS: dict[int, tuple[float, float]] = {
+    cls: LANDMARKS_RAW[vertex_for(cls)]
+    for cls in range(1, 33)
+    if vertex_for(cls) in LANDMARKS_RAW
 }
 
 
@@ -365,57 +390,54 @@ def calibrate(image_path: Path, api_key: str | None = None) -> Calibration | Non
     h, w = img.shape[:2]
     mask, grass = paint_mask(img)
 
-    seen = [k for k in kps if k.get("confidence", 0) >= MIN_CONFIDENCE]
-    if len(seen) < 4:
+    pitch, image = [], []
+    for k in kps:
+        if k.get("confidence", 0) < MIN_CONFIDENCE:
+            continue
+        here = LANDMARKS.get(int(k["class"]))
+        if here is None:
+            continue
+        pitch.append(here)
+        image.append([k["x"], k["y"]])
+
+    if len(pitch) < 4:
         return None
 
-    best: Calibration | None = None
-    # Search the assignment rather than assume it. Which vertex a class means is
-    # not documented anywhere we can read, and the pitch's own symmetry means no
-    # label-based score can settle it: the winner is whichever assignment draws
-    # the pitch lines onto the painted lines.
-    for offset in range(-8, 9):
-        for flip_x in (False, True):
-            for flip_y in (False, True):
-                pitch, image = [], []
-                for k in seen:
-                    v = LANDMARKS_RAW.get(int(k["class"]) + offset)
-                    if v is None:
-                        continue
-                    x, y = v
-                    if flip_x:
-                        x = PITCH_X - x
-                    if flip_y:
-                        y = PITCH_Y - y
-                    pitch.append([x, y])
-                    image.append([k["x"], k["y"]])
-                if len(pitch) < 4:
-                    continue
+    P = np.array(pitch, dtype=np.float32)
+    H, mask_in = cv2.findHomography(
+        P, np.array(image, dtype=np.float32), cv2.RANSAC, RANSAC_PX
+    )
+    if H is None or mask_in is None:
+        return None
 
-                P = np.array(pitch, dtype=np.float32)
-                H, m = cv2.findHomography(
-                    P, np.array(image, dtype=np.float32), cv2.RANSAC, RANSAC_PX
-                )
-                if H is None or m is None or int(m.sum()) < 4:
-                    continue
+    # Polish against the painted lines, as the clicked path does. Worth about
+    # ten points of alignment and costs nothing.
+    H, painted = refine(H, REFINE_ANCHORS, mask, grass, w, h)
 
-                keep = P[m.ravel().astype(bool)]
-                cal = Calibration(
-                    H=H,
-                    inliers=int(m.sum()),
-                    seen=len(pitch),
-                    spread=spread_of(keep),
-                    paint=paint_score(H, mask, grass, w, h),
-                    offset=offset,
-                    flip_x=flip_x,
-                    flip_y=flip_y,
-                    frame_w=w,
-                    frame_h=h,
-                )
-                if best is None or cal.paint > best.paint:
-                    best = cal
+    return Calibration(
+        H=H,
+        inliers=int(mask_in.sum()),
+        seen=len(pitch),
+        spread=spread_of(P[mask_in.ravel().astype(bool)]),
+        paint=painted,
+        offset=0,
+        flip_x=False,
+        flip_y=False,
+        frame_w=w,
+        frame_h=h,
+    )
 
-    return best
+
+#: The four pitch points the polish step moves, matching the clicked path.
+REFINE_ANCHORS = np.array(
+    [
+        [PITCH_X, 1450 / WIDTH_CM * PITCH_Y],
+        [PITCH_X, 5550 / WIDTH_CM * PITCH_Y],
+        [(LENGTH_CM - PENALTY_BOX_L) / LENGTH_CM * PITCH_X, 1450 / WIDTH_CM * PITCH_Y],
+        [(LENGTH_CM - PENALTY_BOX_L) / LENGTH_CM * PITCH_X, 5550 / WIDTH_CM * PITCH_Y],
+    ],
+    dtype=np.float32,
+)
 
 
 def spread_of(pts: np.ndarray) -> float:
