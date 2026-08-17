@@ -41,6 +41,7 @@ export default function Calibrate() {
   const [active, setActive] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
+  const [hover, setHover] = useState<{ x: number; y: number; cx: number; cy: number } | null>(null);
   const img = useRef<HTMLImageElement>(null);
 
   const shot = SHOTS[at];
@@ -60,6 +61,18 @@ export default function Calibrate() {
   // A click lands on a scaled <img>, so it has to be mapped back to the
   // frame's own pixels. Getting this wrong is invisible: every point is
   // consistently off and the fit merely comes back a little worse.
+  const track = (e: React.MouseEvent<HTMLImageElement>) => {
+    const el = img.current;
+    if (!el?.naturalWidth) return;
+    const box = el.getBoundingClientRect();
+    setHover({
+      x: ((e.clientX - box.left) / box.width) * el.naturalWidth,
+      y: ((e.clientY - box.top) / box.height) * el.naturalHeight,
+      cx: ((e.clientX - box.left) / box.width) * 100,
+      cy: ((e.clientY - box.top) / box.height) * 100,
+    });
+  };
+
   const place = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!active || !img.current) return;
     const box = img.current.getBoundingClientRect();
@@ -104,9 +117,11 @@ export default function Calibrate() {
           <div>
             <h1 className="text-[20px] font-medium">Calibrate the camera</h1>
             <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted">
-              Click four of these on the picture. You can see the goal, which is
-              the thing the automatic fit cannot work out. Thirty seconds an
-              angle, and it is then right for every arrow drawn on this camera.
+              Pick a landmark on the right, then click it on the picture. The
+              magnifier follows your cursor so you can put the point exactly
+              where you mean. Four of them, spread across the frame rather than
+              bunched by the goal, and it will tell you straight away whether
+              they landed.
             </p>
           </div>
           <span className="font-mono text-[11px] text-muted-2">
@@ -135,18 +150,51 @@ export default function Calibrate() {
               src={result?.check ? `${result.check}?t=${Date.now()}` : `/calib/${shot?.key}.jpg`}
               alt=""
               onClick={place}
+              onMouseMove={track}
+              onMouseLeave={() => setHover(null)}
               className="w-full cursor-crosshair rounded-xl ring-1 ring-white/10"
             />
+
+            {/* A magnifier under the cursor. Clicking a penalty spot on a 1280
+                pixel frame shown at 840 is guesswork otherwise: one screen
+                pixel is one and a half real ones, and the thing being aimed at
+                is a few pixels across. */}
+            {hover && img.current?.naturalWidth && (
+              <span
+                className="pointer-events-none absolute z-20 size-32 overflow-hidden rounded-full ring-2 ring-accent"
+                style={{
+                  left: `${hover.cx}%`,
+                  top: `${hover.cy}%`,
+                  transform: "translate(-50%, -140%)",
+                  backgroundImage: `url(${`/calib/${shot?.key}.jpg`})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: `${img.current.naturalWidth * 5}px ${img.current.naturalHeight * 5}px`,
+                  backgroundPosition: `${-hover.x * 5 + 64}px ${-hover.y * 5 + 64}px`,
+                  // Blocks rather than a smoothed blur: the point is to see
+                  // which pixel is being aimed at, and interpolation invents a
+                  // gradient between the two that matter.
+                  imageRendering: "pixelated",
+                }}
+              >
+                <span className="absolute top-1/2 left-0 h-px w-full bg-accent/70" />
+                <span className="absolute top-0 left-1/2 h-full w-px bg-accent/70" />
+              </span>
+            )}
             {Object.entries(picked).map(([k, [x, y]]) => {
               const nat = img.current;
               if (!nat?.naturalWidth) return null;
               return (
                 <span
                   key={k}
-                  className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent px-1.5 font-mono text-[9px] text-canvas ring-2 ring-canvas"
+                  className="pointer-events-none absolute z-10"
                   style={{ left: `${(x / nat.naturalWidth) * 100}%`, top: `${(y / nat.naturalHeight) * 100}%` }}
                 >
-                  {k.replace(/_/g, " ").slice(0, 10)}
+                  {/* The dot is the point. The label sits beside it, because a
+                      pill centred on the spot hides the thing you aimed at. */}
+                  <span className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent size-2 ring-2 ring-canvas" />
+                  <span className="absolute left-2.5 -top-2 whitespace-nowrap rounded bg-canvas/85 px-1 font-mono text-[9px] text-accent">
+                    {k.replace(/_/g, " ")}
+                  </span>
                 </span>
               );
             })}
