@@ -73,6 +73,24 @@ def all_matches(client: httpx.Client) -> list[dict]:
     return out
 
 
+def lineups(client: httpx.Client, match_id: int) -> list[dict]:
+    """Both teams' lineups: player ids, jersey numbers, positions with minutes.
+
+    Always cached. There is one of these per match rather than one per event, so
+    the whole reason to skip the cache elsewhere does not apply, and the roster
+    reads it for every game a squad played.
+    """
+    cached = _read_cache("lineups", str(match_id))
+    if cached is not None:
+        return cached
+    r = client.get(f"{RAW}/lineups/{match_id}.json")
+    if r.status_code == 404:
+        return []
+    payload = r.raise_for_status().json()
+    _write_cache("lineups", str(match_id), payload)
+    return payload
+
+
 def events(client: httpx.Client, match_id: int, cache: bool = True) -> list[dict]:
     """Full event feed for one match.
 

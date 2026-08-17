@@ -38,7 +38,7 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -70,7 +70,7 @@ class Workspace:
     competition: str = ""
     season: str = ""
 
-    #: A recording of the match. Anything yt-dlp accepts.
+    #: A recording of the workspace match. Anything yt-dlp accepts.
     video_id: str = ""
 
     #: A recording of the match already on disk, as an absolute path. This is
@@ -78,6 +78,15 @@ class Workspace:
     #: or the other, never both — `source` decides which, and prefers this one
     #: because a local file is cheaper and cannot rot.
     video_path: str = ""
+
+    #: Recordings of the side's other matches, keyed by StatsBomb match id, as
+    #: {"video_id": ..., "period_offset": {1: 96.0, 2: 599.0}}.
+    #:
+    #: One match is not enough to give a squad footage. Measured across the
+    #: whole campaign, ten of twelve players have a moment worth stopping the
+    #: video for; measured on the final alone, two do. The engine was never the
+    #: limit, the tape was.
+    sources: dict[int, dict] = field(default_factory=dict)
 
     #: Video seconds minus match seconds, per period. Read off the broadcast
     #: clock; see the module docstring. Periods with no entry are skipped
@@ -94,10 +103,31 @@ class Workspace:
     #: Lighter kit first. Used to colour the boxes and name the sides.
     kits: tuple[str, str] = ("", "")
 
-    def offset_for(self, minute: int) -> float | None:
-        """Video offset for a match minute, or None if that period is unset."""
+    def offset_for(self, minute: int, match_id: int | None = None) -> float | None:
+        """Video offset for a match minute, or None if that period is unset.
+
+        Per match, because the break between halves differs every broadcast and
+        an offset borrowed from another game lands the clip minutes away from
+        the play it claims to show.
+        """
         period = 1 if minute < 45 else 2 if minute < 90 else 3 if minute < 105 else 4
-        return self.period_offset.get(period)
+        offsets = self.offsets_for_match(match_id)
+        return offsets.get(period)
+
+    def offsets_for_match(self, match_id: int | None = None) -> dict[int, float]:
+        if match_id is None or match_id == self.match_id:
+            return self.period_offset
+        src = self.sources.get(match_id) or {}
+        return {int(k): float(v) for k, v in (src.get("period_offset") or {}).items()}
+
+    def video_for_match(self, match_id: int | None = None) -> str:
+        if match_id is None or match_id == self.match_id:
+            return self.video_id
+        return (self.sources.get(match_id) or {}).get("video_id", "")
+
+    def has_footage(self, match_id: int) -> bool:
+        """Whether a clip can be cut from this match at all."""
+        return bool(self.video_for_match(match_id)) and bool(self.offsets_for_match(match_id))
 
     def video_time(self, minute: int, second: int) -> float | None:
         off = self.offset_for(minute)
@@ -154,11 +184,28 @@ def load(key: str | None = None) -> Workspace:
         )
     raw = json.loads(path.read_text())
     raw["period_offset"] = {int(k): float(v) for k, v in raw.get("period_offset", {}).items()}
+    # JSON keys are strings, and a match id that stays a string silently matches
+    # nothing: every lookup misses and every clip is quietly skipped.
+    raw["sources"] = {
+        int(mid): {
+            **src,
+            "period_offset": {int(k): float(v) for k, v in (src.get("period_offset") or {}).items()},
+        }
+        for mid, src in (raw.get("sources") or {}).items()
+    }
     if raw.get("tape_window"):
         raw["tape_window"] = tuple(raw["tape_window"])
     if raw.get("kits"):
         raw["kits"] = tuple(raw["kits"])
-    return Workspace(**raw)
+    # Ignore fields this version does not know about, rather than dying. Two
+    # people on two branches will have workspace files from two versions of
+    # this dataclass, and a hard failure there reads as "the app is broken"
+    # when it means "your colleague added a field".
+    known = {f.name for f in fields(Workspace)}
+    unknown = sorted(set(raw) - known)
+    if unknown:
+        print(f"workspace {key}: ignoring unknown field(s) {', '.join(unknown)}")
+    return Workspace(**{k: v for k, v in raw.items() if k in known})
 
 
 def available() -> list[str]:
@@ -185,13 +232,35 @@ BUILT_IN = Workspace(
     competition="FIFA World Cup",
     season="2022",
     video_id="RgqKdplLIk4",
-    # Read off the broadcast overlay: video 12:01 shows 10:25, video 1:02:01
-    # shows 52:02. The 503s between the two offsets is the half time break.
-    # Extra time has another break and was never measured, so 3 and 4 are
-    # absent and extra-time moments are skipped rather than misplaced.
-    period_offset={1: 96.0, 2: 599.0},
+    # Read off the broadcast overlay, one probe per period: video 12:01 shows
+    # 10:25, video 1:02:01 shows 52:02, video 2:20:01 shows 118:05. The gaps
+    # between offsets are the breaks, which is why one number cannot cover the
+    # whole match. Period 3 was never needed and is absent rather than guessed.
+    period_offset={1: 96.0, 2: 599.0, 4: 1316.0},
+    # The quarter-final, because one match does not give a squad footage.
+    # Across the campaign ten of twelve players have a moment worth stopping
+    # for; on the final alone, two do, and six of the ten have their best ball
+    # in this game. Offsets read off this broadcast's own overlay: video 12:01
+    # shows 09:26, video 1:15:01 shows 64:31, video 2:12:01 shows 106:38.
+    # Nothing flagged falls in period 3, so it is absent rather than guessed.
+    sources={
+        3869321: {
+            "video_id": "QIpZ1pad73w",
+            "period_offset": {1: 155.0, 2: 630.0, 4: 1523.0},
+        },
+        # Saudi Arabia, also published in full. Video 20:01 shows 17:24 and
+        # 1:20:01 shows 70:17.
+        3857300: {
+            "video_id": "taD7yT6Bmi0",
+            "period_offset": {1: 157.0, 2: 584.0},
+        },
+    },
     tape_window=("00:22:00", "00:23:30"),
-    goal_windows={"80:59": {"window": ["01:30:44", "01:31:06"], "goal_at": 13.5}},
+    goal_windows={
+        "79:24": {"window": ["01:29:00", "01:29:32"], "goal_at": 23.0},
+        "80:59": {"window": ["01:30:44", "01:31:06"], "goal_at": 13.5},
+        "117:05": {"window": ["02:18:36", "02:19:10"], "goal_at": 25.0},
+    },
     kits=("Argentina", "France"),
 )
 
@@ -215,3 +284,18 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def snapshot_dir(key: str | None = None) -> Path:
+    """Where this workspace's snapshots belong.
+
+    Namespaced by key because they used not to be. Every workspace wrote the
+    same twelve filenames, so a second one overwrote the first, and since the
+    files are committed, every merge between two people collided on all twelve.
+    The interface copies the selected directory to `snapshots/active`, which is
+    generated and gitignored, so nothing shared is ever written by two hands.
+    """
+    ws = load(key)
+    out = ROOT / "src" / "content" / "snapshots" / ws.key
+    out.mkdir(parents=True, exist_ok=True)
+    return out

@@ -25,7 +25,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .workspace import Workspace
+from .workspace import Workspace, snapshot_dir
 
 #: Where cut footage is served from. The interface asks for `/clips/<file>`,
 #: so anything written here has to land under `public/`.
@@ -100,24 +100,178 @@ def write_all(
     date: str,
     tracks: dict[str, dict] | None = None,
 ) -> list[Path]:
-    """Every snapshot for one game. Returns what was written."""
-    ws.snapshots.mkdir(parents=True, exist_ok=True)
+    """Every snapshot for one game. Returns what was written.
+
+    Into `src/content/snapshots/<key>/`, which is where the interface looks:
+    `scripts/use-workspace.mjs` copies the chosen key to `snapshots/active`
+    and the session imports from there. Writing anywhere else produces a
+    complete, correct report that nothing renders.
+    """
+    out_dir = snapshot_dir(ws.key)
     written = [
-        _write(ws.snapshots / "pep.json", pep),
+        _write(out_dir / "pep.json", pep),
+        _write(out_dir / "pep-wc2022.json", pep),
         _write(
-            ws.snapshots / "clip-moments.json",
+            out_dir / "clip-moments.json",
             clip_moments(ws, pep, clips, tracks or {}),
         ),
-        _write(ws.snapshots / "dashboard.json", dashboard(ws, metrics, meta, label, date)),
-        _write(ws.snapshots / "meta.json", describe(ws, pep, clips, label, date)),
+        _write(out_dir / "dashboard.json", dashboard(ws, metrics, meta, label, date)),
+        _write(out_dir / "meta.json", describe(ws, pep, clips, label, date)),
+        _write(out_dir / "knowledge.json", knowledge(ws, metrics)),
     ]
-    return written
+    written += _fill_gaps(out_dir)
+    return [p for p in written if p]
+
+
+#: Snapshots the session imports that this pipeline does not produce. Each is
+#: a separate workstream — the squad, the opponent scout, goals conceded — and
+#: a missing one is a hard import error rather than an empty panel, so the
+#: committed example's copy is used until that workstream runs for this game.
+INHERITED = (
+    "brief.json",
+    "conceded.json",
+    "roster.json",
+    "player-clips.json",
+    "scout.json",
+    "wc-tracking.json",
+    "tape-reads.json",
+    "tracking.json",
+    "calibration.json",
+    "memory-wc2022.json",
+)
+
+
+def activate(key: str) -> int:
+    """Point the interface at this workspace's snapshots.
+
+    The same copy `scripts/use-workspace.mjs` does, from Python, so adding a
+    game through the interface does not require dropping to a terminal to see
+    it. TypeScript imports are static — the app cannot pick a directory at
+    runtime — so `snapshots/active` is the indirection, and it is generated
+    and gitignored rather than committed.
+    """
+    import shutil
+
+    snaps = ROOT / "src" / "content" / "snapshots"
+    src, dest = snaps / key, snaps / "active"
+    if not src.exists():
+        return 0
+    shutil.rmtree(dest, ignore_errors=True)
+    shutil.copytree(src, dest)
+    # Remember the choice. `scripts/use-workspace.mjs` runs before every dev
+    # and build and would otherwise reset to the committed example, throwing
+    # away the game a coach just added on the next restart.
+    (snaps / ".active").write_text(key + "\n")
+    return len(list(dest.iterdir()))
+
+
+def _fill_gaps(out_dir: Path) -> list[Path]:
+    """Borrow anything the session needs that this run did not write.
+
+    A static import cannot fail softly: one absent file and the whole report
+    stops compiling. Copying the example's version keeps the page rendering
+    and is honest as long as nothing claims the borrowed data is this match's
+    — which is why `meta.json` records what was actually generated.
+    """
+    example = ROOT / "src" / "content" / "snapshots" / "wc2022"
+    if not example.exists() or example == out_dir:
+        return []
+    import shutil
+
+    out: list[Path] = []
+    for name in INHERITED:
+        src, dest = example / name, out_dir / name
+        if src.exists() and not dest.exists():
+            shutil.copy2(src, dest)
+            out.append(dest)
+    return out
 
 
 def _write(path: Path, payload: dict) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=1))
     return path
+
+
+def knowledge(ws: Workspace, metrics: dict[str, dict]) -> dict:
+    """What the graph knows about this team, for the memory cards.
+
+    Read back out of HydraDB rather than computed here, because the whole
+    claim those cards make is "this is what was normal for you, and here is
+    how many games say so". A number assembled in this file would look
+    identical and mean nothing.
+
+    Falls back to the match's own values with no facts behind them when the
+    graph is unreachable or the team is below the evidence floor — six
+    observations — which is the honest answer for a side nobody has ingested.
+    """
+    from .temporal import DIMENSIONS
+
+    mine = metrics.get(ws.team, {})
+    dims: list[dict] = []
+    scale = {"teams": 0, "matches": 0, "facts": 0}
+
+    try:
+        from .demo import team_id
+        from .graph import Graph
+
+        g = Graph()
+        try:
+            tid = team_id(ws.team)
+            for dim, labels in DIMENSIONS.items():
+                rows = g.timeline(tid, dim)
+                if not rows:
+                    continue
+                latest = rows[-1]
+                dims.append(
+                    {
+                        "dimension": dim,
+                        "label": dim.replace("_", " ").replace(" pct", ""),
+                        "value": round(float(latest.get("median_value") or 0.0), 1),
+                        "band": latest.get("band", ""),
+                        "obs": int(latest.get("observations") or 0),
+                        "percentile": 50,
+                        "peers": 0,
+                        "median": round(float(latest.get("median_value") or 0.0), 2),
+                        "top": [],
+                    }
+                )
+            scale = {
+                "teams": g.run("MATCH (t:Team) RETURN count(*) AS n")[0]["n"],
+                "matches": g.run("MATCH (m:Match) RETURN count(*) AS n")[0]["n"],
+                "facts": g.run("MATCH (f:Fact) RETURN count(*) AS n")[0]["n"],
+            }
+        finally:
+            g.close()
+    except Exception:  # noqa: BLE001 - the graph is optional for rendering
+        pass
+
+    if not dims:
+        # No facts for this side yet. Report the match's own numbers and say
+        # so with obs=0, rather than inventing a norm from one game.
+        for dim in DIMENSIONS:
+            if mine.get(dim) is None:
+                continue
+            dims.append(
+                {
+                    "dimension": dim,
+                    "label": dim.replace("_", " ").replace(" pct", ""),
+                    "value": round(float(mine[dim]), 1),
+                    "band": "",
+                    "obs": 0,
+                    "percentile": 50,
+                    "peers": 0,
+                    "median": round(float(mine[dim]), 2),
+                    "top": [],
+                }
+            )
+
+    return {
+        "team": ws.team,
+        "scale": {**scale, "supersessions": 0, "competitions": []},
+        "dimensions": dims,
+        "source": "tacticbench bootstrap (HydraDB)",
+    }
 
 
 def describe(ws: Workspace, pep: dict, clips: list[dict], label: str, date: str) -> dict:
@@ -246,27 +400,75 @@ def dashboard(
     """
     mine = metrics.get(ws.team, {})
     home = meta["home_team"]["home_team_name"]
+    fh = int(meta.get("home_score") or 0)
+    fa = int(meta.get("away_score") or 0)
+    at_home = home == ws.team
+    mine_goals, theirs_goals = (fh, fa) if at_home else (fa, fh)
     row = {
         "id": ws.match_id,
         "date": date,
         "label": label,
         "comp": meta.get("competition_name") or ws.competition,
-        "fh": int(meta.get("home_score") or 0),
-        "fa": int(meta.get("away_score") or 0),
+        "fh": fh,
+        "fa": fa,
+        # Halftime is not derived here; the scan pass owns it. Zero rather
+        # than a guess, which the interface renders as "no halftime split".
+        "hh": 0,
+        "ha": 0,
         "poss": round(mine.get("possession_share_pct") or 0.0, 1),
         "press": round(mine.get("press_height") or 0.0, 2),
         "xg": round(mine.get("xg") or 0.0, 3),
         "shots": int(mine.get("shots") or 0),
         "width": round(mine.get("team_width") or 0.0, 2),
         "pfr": round(mine.get("pass_forward_ratio") or 0.0, 3),
-        "home": home == ws.team,
+        "result": {
+            "us": mine_goals,
+            "them": theirs_goals,
+            "opponent": meta["away_team"]["away_team_name"]
+            if at_home
+            else meta["home_team"]["home_team_name"],
+            "outcome": "W"
+            if mine_goals > theirs_goals
+            else "L"
+            if mine_goals < theirs_goals
+            else "D",
+            "scoreline": f"{mine_goals}-{theirs_goals}",
+            # Shootouts are excluded everywhere in this pipeline: eight
+            # penalties would swamp a match's chance count and say nothing
+            # about how the side played.
+            "went_to_penalties": False,
+            "stage": (meta.get("competition_stage") or {}).get("name") or "",
+        },
+        "home": at_home,
     }
     return {
         "team": ws.team,
         "campaign": f"{ws.competition} {ws.season}".strip(),
+        **_xt_grid(),
         "matches": [row],
         "totals": {"matches": 1, "in_graph": 2, "facts": 0},
         "source": "tacticbench bootstrap",
+    }
+
+
+def _xt_grid() -> dict:
+    """The expected-threat surface, as the interface draws it.
+
+    Global rather than per match — it is what "dangerous" means, learned
+    across every cached game — so it is read from the trained model rather
+    than recomputed or, worse, invented per workspace.
+    """
+    path = ROOT / "results" / "xt_model.json"
+    if not path.exists():
+        return {"xt_grid": [], "grid_x": 0, "grid_y": 0,
+                "xt_trained_on": 0, "xt_actions": 0}
+    m = json.loads(path.read_text())
+    return {
+        "xt_grid": m.get("xt", []),
+        "grid_x": m.get("grid_x", 16),
+        "grid_y": m.get("grid_y", 12),
+        "xt_trained_on": m.get("matches", 0),
+        "xt_actions": m.get("actions", 0),
     }
 
 

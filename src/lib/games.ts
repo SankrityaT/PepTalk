@@ -74,6 +74,8 @@ export type AddedGame = {
   clips: number;
   written_by: "model" | "numbers";
   has_footage: boolean;
+  /** True for the game the interface is currently showing. */
+  active?: boolean;
 };
 
 /** The service is optional; a clear message beats a stack trace. */
@@ -230,8 +232,20 @@ export async function job(id: string): Promise<Job> {
   return call(`/games/${id}`);
 }
 
-export async function added(): Promise<{ games: AddedGame[] }> {
+export async function added(): Promise<{ games: AddedGame[]; active: string }> {
   return call("/games");
+}
+
+/**
+ * Point the interface at a different game.
+ *
+ * The caller reloads afterwards: imports are static, so the app reads one
+ * directory and the server copies the chosen workspace into it.
+ */
+export async function activate(
+  key: string,
+): Promise<{ active: string; files: number }> {
+  return call(`/games/${key}/activate`, { method: "POST" });
 }
 
 /** A finished game's snapshot, by name (`pep`, `clip-moments`, `dashboard`). */

@@ -343,6 +343,41 @@ body {
   }
 }
 
+/* ── the composer ──────────────────────────────────────────────────────
+   A menu grows from the composer's top edge, so it scales up from the
+   bottom rather than fading in place. */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Dictation, while the browser is listening. */
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* One pass of accent across the composer when the graph comes back. */
+@keyframes mem-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -27,6 +27,7 @@ show real progress instead of a timer. The CLI passes a callback that prints.
 from __future__ import annotations
 
 import json
+import math
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -257,7 +258,10 @@ def run(
             label=label,
             date=date,
         )
-        s.detail = {"files": len(written)}
+        # And point the interface at them, so a coach who just added a game
+        # sees it rather than being told to run a script.
+        active = snapshots.activate(ws.key)
+        s.detail = {"files": len(written), "active": active}
 
     return {
         "workspace": ws.key,
@@ -267,7 +271,7 @@ def run(
         "clips": len(clips),
         "steps": steps,
         "total_ms": round((time.time() - started) * 1000),
-        "snapshots": str(ws.snapshots),
+        "snapshots": str(workspace.snapshot_dir(ws.key)),
     }
 
 
@@ -291,6 +295,73 @@ def _ensure_xt() -> dict:
     return {"trained_on": model.get("matches", 0), "built": True}
 
 
+#: How much of the report belongs to the coach's own side.
+#:
+#: Not all of it. Half the flagged moments in any match are the opponent's, and
+#: those are the chances that were there against you — the defensive half of
+#: the report, and the part a coach is most exposed by. But a report that opens
+#: with six of the opponent's moments is a report about the opponent, which is
+#: exactly what "I picked LAFC and got Inter Miami's game" felt like.
+OURS_SHARE = 0.625
+
+
+def _for_bench(moments: list[dict], team: str, top: int) -> list[dict]:
+    """The `top` moments worth showing *this* bench.
+
+    Ranked by value within each side, then filled so the coach's own side
+    leads. Selecting purely on value hands the report to whichever team had
+    the louder game, which for a side that lost 1-3 is the other one.
+
+    Holds for any team in any fixture, including the awkward shapes:
+
+    * a side with more moments than the report has room for
+    * a side with none at all, where the report is entirely defensive
+    * a small `top`, where a naive ratio rounds our share down to parity —
+      `round(4 * 0.625)` is 2, which split a four-moment report evenly and
+      was the bug this docstring used to describe as fixed
+    * more moments wanted than exist, where the report is simply shorter
+    """
+    ours = [m for m in moments if m.get("team") == team]
+    theirs = [m for m in moments if m.get("team") != team]
+
+    # Ceil, not round: at top=4 a rounded share gives 2 of ours and 2 of
+    # theirs, which is not "your game with their chances against you", it is
+    # a joint report. Ceil keeps ours ahead at every size.
+    # Ours first, up to the share, then theirs, then give whichever side has
+    # anything left the remaining slots. Both quotas are computed against what
+    # actually exists, so no side is capped below what it could fill and the
+    # report is never shorter than the moments available.
+    want_ours = min(len(ours), max(1, math.ceil(top * OURS_SHARE)))
+    want_theirs = min(len(theirs), top - want_ours)
+    # Spare capacity goes back to whoever can use it.
+    spare = top - want_ours - want_theirs
+    if spare > 0:
+        want_ours = min(len(ours), want_ours + spare)
+        want_theirs = min(len(theirs), top - want_ours)
+
+    picked = ours[:want_ours] + theirs[:want_theirs]
+    return sorted(picked, key=lambda m: -m.get("missed", 0))
+
+
+def _write_sides(lines: list[dict], team: str) -> list[dict]:
+    """Tag each moment with whose it is, and reword the opponent's.
+
+    `side_of` and `defensive_line` have existed since the World Cup build and
+    were never called from here, so every moment read as "you had this on" —
+    including the six of eight that belonged to the other team.
+    """
+    from .pep import defensive_line, side_of
+
+    out = []
+    for m in lines:
+        side = side_of(m, team)
+        row = {**m, "side": side}
+        if side == "defending":
+            row["line"] = defensive_line(m)
+        out.append(row)
+    return out
+
+
 def _write_pep(ws: Workspace, top: int, out_path: Path) -> dict:
     """Pep's lines for this match, or the computed moments without them.
 
@@ -305,14 +376,22 @@ def _write_pep(ws: Workspace, top: int, out_path: Path) -> dict:
         from .pep import build
 
         payload = build(ws.match_id, top, out_path, model=_model())
+        # Same split as the fallback below: the model writes every line in the
+        # second person, so an untagged opponent moment reads as "you had this
+        # on" to the wrong bench.
+        payload["moments"] = _write_sides(payload.get("moments", []), ws.team)
         payload["written_by"] = "model"
         out_path.write_text(json.dumps(payload, indent=1))
         return payload
     except Exception as exc:  # noqa: BLE001 - any failure falls back to numbers
         from .pep import computed_lines, display_names
 
-        analysis = analyse(ws.match_id, top=top)
-        moments = analysis["top_missed"]
+        # Ask for every material moment, not the top `top`, because which ones
+        # matter depends on whose bench this is and that is decided below. Cut
+        # first and a coach whose side had the quieter game is handed a report
+        # about the opponent.
+        analysis = analyse(ws.match_id, top=10_000)
+        moments = _for_bench(analysis["top_missed"], ws.team, top)
         try:
             names = display_names(ws.match_id)
             for m in moments:
@@ -327,7 +406,7 @@ def _write_pep(ws: Workspace, top: int, out_path: Path) -> dict:
             "completion_model": analysis["completion_model"],
             "moments_found": analysis["moments_found"],
             "passes_with_an_option": analysis["passes_with_an_option"],
-            "moments": computed_lines(moments),
+            "moments": _write_sides(computed_lines(moments), ws.team),
             "written_by": "numbers",
             "note": f"model copy unavailable ({type(exc).__name__}); "
             "lines are computed from the same figures",

@@ -21,7 +21,7 @@ import { Loader } from "@/components/brief/atoms/loader";
 
 export type Step = {
   label: string;
-  /** The real number this stage produced. */
+  /** The real number this stage produced. Filled in once the stage lands. */
   detail: string;
 };
 
@@ -34,19 +34,42 @@ export function Trace({
   doneTitle = "Read your games",
   footer,
   onDone,
+  live,
+  collapseWhenDone = true,
 }: {
   steps: Step[];
   title?: string;
   doneTitle?: string;
   footer?: string;
   onDone?: () => void;
+  /**
+   * Drive the trace off real work instead of a timer.
+   *
+   * The replay of a finished pipeline can step on a clock, because the stages
+   * already happened and their figures are known. A question being answered
+   * right now cannot: the last stage has to keep spinning until the model
+   * actually replies, however long that takes. Pass `false` while the request
+   * is in flight and `true` when it lands.
+   */
+  live?: boolean;
+  collapseWhenDone?: boolean;
 }) {
   const [stage, setStage] = useState(0);
   const [open, setOpen] = useState(true);
+
+  // In live mode the trace walks up to the last stage on its own and waits
+  // there. Claiming a stage finished before its work has is the one thing a
+  // trace must never do, so the ceiling stops one short until the caller says.
+  const ceiling = live === undefined || live ? steps.length : steps.length - 1;
   const running = stage < steps.length;
 
   useEffect(() => {
-    if (!running) {
+    if (stage >= ceiling) {
+      if (stage < steps.length) return;
+      if (!collapseWhenDone) {
+        onDone?.();
+        return;
+      }
       const t = setTimeout(() => {
         setOpen(false);
         onDone?.();
@@ -56,7 +79,7 @@ export function Trace({
     const t = setTimeout(() => setStage((s) => s + 1), STEP_MS);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stage, running, steps.length]);
+  }, [stage, ceiling, steps.length, collapseWhenDone]);
 
   return (
     <div className="rounded-xl bg-surface ring-1 ring-white/[0.06]">

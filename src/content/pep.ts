@@ -1,4 +1,4 @@
-import snapshot from "./snapshots/pep-wc2022.json";
+import snapshot from "./snapshots/active/pep-wc2022.json";
 
 /**
  * Pep's read on a match.
@@ -16,7 +16,13 @@ import snapshot from "./snapshots/pep-wc2022.json";
 export type Moment = {
   id: number;
   minute: number;
+  /** Full broadcast name, e.g. "Rodrigo De Paul". */
   player: string;
+  /**
+   * Surname as a coach says it, e.g. "De Paul". Optional because ClipMoment
+   * carries the same thing under `surname` and is otherwise this shape.
+   */
+  name?: string;
   team: string;
   /** Pep's line: plain English, no analytics vocabulary. */
   line: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import memory from "@/content/snapshots/memory-wc2022.json";
+import memory from "@/content/snapshots/active/memory-wc2022.json";
 
 /**
  * Versus your usual.

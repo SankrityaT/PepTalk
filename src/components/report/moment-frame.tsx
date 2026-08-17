@@ -40,10 +40,13 @@ function Pitch() {
 export function MomentFrame({
   moment,
   compact = false,
+  className = "w-full",
 }: {
   moment: Moment;
   /** Card-sized: drops the legend and the labels. */
   compact?: boolean;
+  /** Sizing. Pass a height-bound class where vertical room is the constraint. */
+  className?: string;
 }) {
   const freeze = moment.freeze ?? [];
   const [fx, fy] = moment.from;
@@ -55,7 +58,7 @@ export function MomentFrame({
   return (
     <svg
       viewBox={`-2 -2 ${L + 4} ${W + 4}`}
-      className="w-full rounded-md bg-pitch ring-1 ring-white/[0.07]"
+      className={`rounded-md bg-pitch ring-1 ring-white/[0.07] ${className}`}
     >
       <Pitch />
 

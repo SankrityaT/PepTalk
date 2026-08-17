@@ -95,7 +95,12 @@ def describe(shot: dict, defence: dict) -> str:
     """
     kind = shot.get("shot", {}).get("type", {}).get("name", "")
     if kind == "Penalty":
-        return "A penalty. The defending that mattered happened before the whistle."
+        # The clip runs from before the whistle on purpose. Geometry at the
+        # spot kick describes a wall; what a coach needs to see is the foul.
+        return (
+            "A penalty. Watch the twenty seconds before the whistle, because "
+            "that is where it was given away."
+        )
     n = defence.get("nearest_defender_yds")
     goal_side_n = defence.get("defenders_goal_side")
     where = "inside the box" if defence["from_box"] else f"from {defence['distance_to_goal']:.0f} yards"

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import reads from "@/content/snapshots/tape-reads.json";
+import reads from "@/content/snapshots/active/tape-reads.json";
 import {
   DETECTIONS,
   DURATION,

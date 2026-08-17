@@ -94,7 +94,7 @@ export function Upload({
             className={`mt-4 flex cursor-pointer flex-col items-center justify-center rounded-xl px-6 py-14 ring-1 transition-all duration-200 ease-[var(--ease-ui)] ${
               over
                 ? "bg-accent/[0.07] ring-accent/60"
-                : "bg-surface ring-white/[0.07] hover:bg-surface-2 hover:ring-white/[0.12]"
+                : "bg-surface ring-white/[0.06] hover:bg-surface-2 hover:ring-white/[0.12]"
             }`}
           >
             <input
@@ -137,7 +137,7 @@ export function Upload({
             onChange={(e) => setRoster(e.target.value)}
             rows={5}
             placeholder={"Marcus Reid\nDanny Okafor\n…"}
-            className="mt-4 w-full resize-y rounded-xl bg-surface px-5 py-4 text-[15px] leading-relaxed text-chalk ring-1 ring-white/[0.07] transition-colors placeholder:text-muted-2 focus:bg-surface-2 focus:ring-white/[0.14] focus:outline-none"
+            className="mt-4 w-full resize-y rounded-xl bg-surface px-5 py-4 text-[15px] leading-relaxed text-chalk ring-1 ring-white/[0.06] transition-colors placeholder:text-muted-2 focus:bg-surface-2 focus:ring-white/[0.14] focus:outline-none"
           />
           {names.length > 0 && (
             <span className="mt-2 block text-[13px] text-muted-2">
@@ -167,7 +167,7 @@ export function Upload({
       )}
 
       {error && (
-        <p className="mt-8 rounded-xl bg-surface px-5 py-4 text-[14px] leading-relaxed text-warm ring-1 ring-white/[0.07]">
+        <p className="mt-8 rounded-xl bg-surface px-5 py-4 text-[14px] leading-relaxed text-warm ring-1 ring-white/[0.06]">
           {error}
         </p>
       )}

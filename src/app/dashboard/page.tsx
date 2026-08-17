@@ -4,48 +4,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChalkFilters } from "@/components/chalk-filters";
+import { PepTalkMark } from "@/components/logo-marks";
 import { Align } from "@/components/report/align";
 import { FixturePicker } from "@/components/report/fixture-picker";
-import { MomentClip, hasClip } from "@/components/report/moment-clip";
-import { MomentFrame } from "@/components/report/moment-frame";
-import { MomentPitch } from "@/components/report/moment-pitch";
-import { PepFeed } from "@/components/report/pep-feed";
-import { TapeRoom } from "@/components/report/tape-room";
-import { ThisWeek } from "@/components/report/this-week";
+import { GameReport } from "@/components/report/game-report";
 import { Upload } from "@/components/report/upload";
-import { VersusUsual } from "@/components/report/versus-usual";
 import { Watching } from "@/components/report/watching";
 import { Workspace } from "@/components/shell/workspace";
-import { GameProvider, byPlayerIn, useGame } from "@/content/game";
-import { MOMENTS, Moment, surname } from "@/content/pep";
+import { GameProvider } from "@/content/game";
+import { MOMENTS, Moment } from "@/content/pep";
 import { type Fixture, start, upload } from "@/lib/games";
 
 /**
- * The coach interface.
+ * The coach's workspace.
  *
- * Warmer than the landing page on purpose. The landing page speaks HydraDB's
- * language — pure black, hairlines, monospace micro-labels — which is right for
- * a developer meeting an infrastructure brand. A volunteer coach opening a
- * report on a Sunday needs something else: sans for reading, mono only for
- * numbers, surfaces that lift off the page, and roughly twice the air.
- *
- * It opens with what to do rather than what happened. The coach was at the
- * game; they do not need a recap. They need Tuesday's session.
- *
- * The front door is the dashboard, not the upload box. A coach who has been
- * using this for a season does not arrive wanting to fill in a form — they
- * arrive wanting to know what Pep found while they were at work. Upload is a
- * button in the corner, which is the right size for something you do once a
- * week against something you read five times.
+ * One screen that matters, and it is the session: the tape pinned on the left,
+ * Pep working down the right. Everything that used to be a separate
+ * destination is now something he shows during it.
  */
 
 type Stage =
-  | "dashboard"
-  | "upload"
-  | "fixture"
-  | "align"
-  | "watching"
-  | "report";
+  "dashboard" | "upload" | "fixture" | "align" | "watching" | "report";
 const EASE = [0.4, 0, 0.2, 1] as const;
 
 export default function ReportPage() {
@@ -155,14 +134,6 @@ export default function ReportPage() {
             transition={{ duration: 0.3 }}
           >
             <Workspace
-              // Picking a clip in the brief carries that exact moment into the
-              // report, rather than dropping the coach on whatever was
-              // selected last.
-              onOpenMoment={(m) => {
-                setSelected(m);
-                setGameKey(null);
-                setStage("report");
-              }}
               onAddGame={() => {
                 reset();
                 setStage("upload");
@@ -183,21 +154,21 @@ export default function ReportPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="px-5 pt-14 sm:px-8"
           >
-            <BackTo onClick={() => setStage("dashboard")} />
-            <Upload
-              busy={sending}
-              progress={progress}
-              error={error}
-              onStart={sendFile}
-              onExample={(names) => {
-                setRoster(names);
-                setGameKey(null);
-                setJob(undefined);
-                setStage("watching");
-              }}
-            />
+            <WizardShell stage="upload" onHome={() => setStage("dashboard")}>
+              <Upload
+                busy={sending}
+                progress={progress}
+                error={error}
+                onStart={sendFile}
+                onExample={(names) => {
+                  setRoster(names);
+                  setGameKey(null);
+                  setJob(undefined);
+                  setStage("watching");
+                }}
+              />
+            </WizardShell>
           </motion.div>
         )}
 
@@ -208,25 +179,25 @@ export default function ReportPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="px-5 pt-14 sm:px-8"
           >
-            <BackTo onClick={() => setStage("dashboard")} />
-            <FixturePicker
-              filename={file?.name}
-              lastStep={!alignable}
-              onBack={() => setStage("upload")}
-              onPick={(f, side) => {
-                setFixture(f);
-                setTeam(side);
-                // Alignment only means something for a continuous recording.
-                // A reel goes straight to the run and gets excerpts.
-                if (alignable) {
-                  setStage("align");
-                } else {
-                  begin(undefined, { fixture: f, side, withFootage: true });
-                }
-              }}
-            />
+            <WizardShell stage="fixture" onHome={() => setStage("dashboard")}>
+              <FixturePicker
+                filename={file?.name}
+                lastStep={!alignable}
+                onBack={() => setStage("upload")}
+                onPick={(f, side) => {
+                  setFixture(f);
+                  setTeam(side);
+                  // Alignment only means something for a continuous recording.
+                  // A reel goes straight to the run and gets excerpts.
+                  if (alignable) {
+                    setStage("align");
+                  } else {
+                    begin(undefined, { fixture: f, side, withFootage: true });
+                  }
+                }}
+              />
+            </WizardShell>
           </motion.div>
         )}
 
@@ -237,24 +208,24 @@ export default function ReportPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="px-5 pt-14 sm:px-8"
           >
-            <BackTo onClick={() => setStage("dashboard")} />
-            <Align
-              video={video}
-              onBack={() => setStage("fixture")}
-              onDone={(first, second) => begin({ first, second })}
-              // No footage at all: the report still has every moment.
-              onSkip={() =>
-                fixture &&
-                begin(undefined, { fixture, side: team, withFootage: false })
-              }
-              // Footage without alignment: excerpts beside each moment.
-              onUseAnyway={() =>
-                fixture &&
-                begin(undefined, { fixture, side: team, withFootage: true })
-              }
-            />
+            <WizardShell stage="align" onHome={() => setStage("dashboard")}>
+              <Align
+                video={video}
+                onBack={() => setStage("fixture")}
+                onDone={(first, second) => begin({ first, second })}
+                // No footage at all: the report still has every moment.
+                onSkip={() =>
+                  fixture &&
+                  begin(undefined, { fixture, side: team, withFootage: false })
+                }
+                // Footage without alignment: excerpts beside each moment.
+                onUseAnyway={() =>
+                  fixture &&
+                  begin(undefined, { fixture, side: team, withFootage: true })
+                }
+              />
+            </WizardShell>
           </motion.div>
         )}
 
@@ -265,27 +236,28 @@ export default function ReportPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="px-5 py-10 sm:px-8"
           >
-            <Watching
-              jobId={job}
-              onDone={(key) => {
-                if (key) setGameKey(key);
-                setSelected(null);
-                setStage("report");
-              }}
-              onFailed={setError}
-            />
-            {error && (
-              <div className="mx-auto mt-8 w-full max-w-2xl">
-                <button
-                  onClick={() => setStage("upload")}
-                  className="text-[15px] text-warm-2 underline decoration-white/20 underline-offset-4 transition-colors hover:text-chalk hover:decoration-white/50"
-                >
-                  Try another game
-                </button>
-              </div>
-            )}
+            <WizardShell stage="watching" onHome={() => setStage("dashboard")}>
+              <Watching
+                jobId={job}
+                onDone={(key) => {
+                  if (key) setGameKey(key);
+                  setSelected(null);
+                  setStage("report");
+                }}
+                onFailed={setError}
+              />
+              {error && (
+                <div className="mx-auto mt-8 w-full max-w-2xl">
+                  <button
+                    onClick={() => setStage("upload")}
+                    className="text-[15px] text-warm-2 underline decoration-white/20 underline-offset-4 transition-colors hover:text-chalk hover:decoration-white/50"
+                  >
+                    Try another game
+                  </button>
+                </div>
+              )}
+            </WizardShell>
           </motion.div>
         )}
 
@@ -295,11 +267,27 @@ export default function ReportPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: EASE }}
-            className="mx-auto w-full max-w-5xl px-5 sm:px-8"
+            className="px-4 pt-4 sm:px-6"
           >
-            <BackTo onClick={() => setStage("dashboard")} />
+            {/* The session's own header, so a report opened from an added game
+                sits in the same chrome as the one on the dashboard. */}
+            <div className="mb-3 flex items-center justify-between gap-3 rounded-xl bg-surface/40 px-4 py-3 ring-1 ring-white/[0.05]">
+              <span className="flex items-center gap-2">
+                <PepTalkMark size={18} className="text-chalk" />
+                <span className="font-display text-[13px] text-chalk">Pep</span>
+                <span className="font-mono text-[10px] tracking-[0.1em] text-muted-2 uppercase">
+                  your game
+                </span>
+              </span>
+              <button
+                onClick={() => setStage("dashboard")}
+                className="font-mono text-[10px] text-muted transition-colors hover:text-chalk"
+              >
+                &larr; dashboard
+              </button>
+            </div>
             <GameProvider gameKey={gameKey}>
-              <Report
+              <GameReport
                 roster={roster}
                 selected={selected}
                 onSelect={setSelected}
@@ -312,204 +300,53 @@ export default function ReportPage() {
   );
 }
 
-/** The way home. A coach who cannot get back to the dashboard is stuck. */
-function BackTo({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="mb-8 font-mono text-[11px] text-muted transition-colors hover:text-chalk"
-    >
-      &larr; dashboard
-    </button>
-  );
-}
+/** The four screens that add a game, in the order a coach meets them. */
+const WIZARD: Stage[] = ["upload", "fixture", "align", "watching"];
 
-function Report({
-  roster,
-  selected,
-  onSelect,
+/**
+ * The chrome the add-a-game screens sit in.
+ *
+ * The same header the session uses — the mark, the name, a position on the
+ * right — so adding your own game reads as the product you were already in
+ * rather than a form bolted onto the side of it. The way home lives here too:
+ * a coach who cannot get back to the dashboard is stuck.
+ */
+function WizardShell({
+  stage,
+  onHome,
+  children,
 }: {
-  roster: string[];
-  selected: Moment | null;
-  onSelect: (m: Moment) => void;
+  stage: Stage;
+  onHome: () => void;
+  children: React.ReactNode;
 }) {
-  const game = useGame();
-  const moments = game.moments;
-  const players = byPlayerIn(moments);
-  const named = new Set(roster.map((r) => surname(r).toLowerCase()));
-  // A game added this session has no committed tape; the example does.
-  const isExample = game.key === null;
-
-  // Land on something rather than an empty panel.
-  const shown = selected ?? moments[0] ?? null;
-
-  if (game.loading) {
-    return (
-      <p className="py-24 text-center text-[15px] text-muted">
-        Opening your report&hellip;
-      </p>
-    );
-  }
+  const step = WIZARD.indexOf(stage);
 
   return (
-    <div className="flex flex-col gap-20">
-      {/* ── Greeting ────────────────────────────────────────────────── */}
-      <header>
-        <p className="text-[13px] text-muted-2">
-          {game.competition} &middot; {game.date}
-        </p>
-        <h1 className="mt-2 text-[30px] leading-tight font-medium text-chalk sm:text-[40px]">
-          Here&rsquo;s your game.
-        </h1>
-        <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-warm-2">
-          {moments.length === 0
-            ? "Pep watched all of it and nothing crossed the bar worth stopping the tape for. That is a result, not an error."
-            : `Pep watched all of it. The short version: you kept turning back when the box was open. ${moments.length} times worth showing the group.`}
-        </p>
-        {game.error && (
-          <p className="mt-4 max-w-2xl text-[13px] leading-relaxed text-muted">
-            Showing the example match: {game.error}
-          </p>
-        )}
-      </header>
-
-      {/* ── The tape ────────────────────────────────────────────────── */}
-      {/* First, because it is the thing being talked about. A coach who scrolls
-          into a set of diagrams without seeing the footage they came from has
-          been handed homework. */}
-      {isExample && (
-        <section>
-          <TapeRoom />
-        </section>
-      )}
-
-      {/* ── The point of the whole thing ────────────────────────────── */}
-      {game.themes.length > 0 && <ThisWeek onSelect={onSelect} />}
-
-      {/* ── The evidence ────────────────────────────────────────────── */}
-      <section>
-        <h2 className="text-[15px] font-medium text-warm-2">
-          The moments behind that
-        </h2>
-        <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-muted">
-          Pick one and Pep draws what was played against what was on.
-        </p>
-
-        <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_21rem]">
-          <div className="rounded-lg bg-surface p-5 ring-1 ring-white/[0.06]">
-            {/* The freeze frame when we have one — showing the eleven other
-                players is the difference between an assertion and evidence.
-                Falls back to the bare chalk pitch for older snapshots. */}
-            {/* The footage first when there is any: a coach recognises their
-                game from the picture of it. The freeze frame is the fallback
-                and is still the evidence — it shows who was open. */}
-            {hasClip(shown) ? (
-              <div className="flex flex-col gap-5">
-                <MomentClip moment={shown!} />
-                {/* Always kept alongside the footage, never replaced by it.
-                    The freeze frame is the evidence — it shows who was open —
-                    and for an excerpt it is the only thing on screen that is
-                    actually this moment. */}
-                {shown?.freeze?.length ? (
-                  <MomentFrame moment={shown} />
-                ) : (
-                  <MomentPitch moment={shown} />
-                )}
-              </div>
-            ) : shown?.freeze?.length ? (
-              <MomentFrame moment={shown} />
-            ) : (
-              <MomentPitch moment={shown} />
-            )}
-            {shown && (
-              <>
-                <p className="mt-5 text-[16px] leading-relaxed text-warm">
-                  {shown.line}
-                </p>
-                <p className="mt-2 font-mono text-[11px] text-muted-2">
-                  {shown.minute}&rsquo; &middot; {surname(shown.player)}{" "}
-                  &middot; {shown.freeze?.length ?? 0} players tracked
-                </p>
-              </>
-            )}
-          </div>
-
-          <div className="max-h-[32rem] overflow-hidden rounded-lg bg-surface ring-1 ring-white/[0.06]">
-            <PepFeed selected={shown?.id ?? null} onSelect={onSelect} />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Players ─────────────────────────────────────────────────── */}
-      <section>
-        <h2 className="text-[15px] font-medium text-warm-2">
-          Who to have a word with
-        </h2>
-
-        <ul className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {players.map((p) => {
-            const inSquad = named.size === 0 || named.has(surname(p.player).toLowerCase());
-            return (
-              <li
-                key={p.player}
-                className="rounded-lg bg-surface p-5 ring-1 ring-white/[0.06]"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <span className="text-[16px] font-medium text-chalk">
-                    {surname(p.player)}
-                  </span>
-                  <span className="font-mono text-[12px] tabular-nums text-muted-2">
-                    {p.moments.length}
-                  </span>
-                </div>
-                <p className="mt-2.5 text-[14px] leading-relaxed text-warm-2">
-                  {p.moments.length > 1
-                    ? `${p.moments.length} times you had a forward ball on and took the safer one.`
-                    : p.moments[0].no_riskier
-                      ? "Once, with a better ball available that was no harder to play."
-                      : "Once, though the better ball was a genuinely hard ask."}
-                </p>
-                <button
-                  onClick={() => onSelect(p.moments[0])}
-                  className="mt-4 rounded bg-white/[0.05] px-3 py-1.5 font-mono text-[11px] tabular-nums text-warm transition-colors hover:bg-accent/20 hover:text-chalk"
-                >
-                  show me {p.moments[0].minute}&rsquo;
-                </button>
-                {!inSquad && (
-                  <span className="mt-3 block text-[12px] text-muted-2">
-                    came off the bench
-                  </span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </section>
-
-      {/* Reads a committed memory snapshot, so it only has an answer for the
-          example match's sides. Rather than render an empty panel for a game
-          it knows nothing about, it is left out. */}
-      {isExample && <VersusUsual team="Argentina" />}
-
-      {/* ── Provenance ──────────────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.07] pt-8">
-        <p className="max-w-3xl text-[13px] leading-relaxed text-muted-2">
-          Every moment here was computed, not written. How dangerous a pass is
-          comes from a model trained on 3,961 matches of elite football; how
-          likely it was to arrive comes from a model fitted on this match&rsquo;s
-          own passing. Pep only raises a moment when a better ball existed{" "}
-          <em className="not-italic text-muted">after</em> accounting for the
-          chance it got cut out, which is why the spectacular ones usually
-          aren&rsquo;t recommended.
-        </p>
-        {game.writtenBy === "numbers" && (
-          <p className="mt-3 max-w-3xl text-[13px] leading-relaxed text-muted-2">
-            The wording of these lines was computed from the same figures rather
-            than written by the model, because no API key was set when this ran.
-            The moments and the numbers are unaffected.
-          </p>
-        )}
-      </footer>
+    <div className="mx-auto w-full max-w-5xl px-4 pt-4 sm:px-6">
+      <div className="flex items-center justify-between gap-3 rounded-xl bg-surface/40 px-4 py-3 ring-1 ring-white/[0.05]">
+        <span className="flex items-center gap-2">
+          <PepTalkMark size={18} className="text-chalk" />
+          <span className="font-display text-[13px] text-chalk">Pep</span>
+          <span className="font-mono text-[10px] tracking-[0.1em] text-muted-2 uppercase">
+            adding a game
+          </span>
+        </span>
+        <span className="flex items-center gap-3">
+          {step >= 0 && (
+            <span className="font-mono text-[10px] tabular-nums text-muted-2">
+              {step + 1}/{WIZARD.length}
+            </span>
+          )}
+          <button
+            onClick={onHome}
+            className="font-mono text-[10px] text-muted transition-colors hover:text-chalk"
+          >
+            &larr; dashboard
+          </button>
+        </span>
+      </div>
+      <div className="pt-10">{children}</div>
     </div>
   );
 }

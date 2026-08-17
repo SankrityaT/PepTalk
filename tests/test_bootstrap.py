@@ -154,26 +154,261 @@ class TestCutWindow:
 
 
 class TestPlanUsesWorkspaceOffsets:
-    """Windows are planned against the workspace's own alignment."""
+    """Windows are planned against the workspace's own alignment.
 
-    def test_offsets_are_applied(self):
+    Offsets are looked up per match rather than passed in, so these stub the
+    lookup instead of the argument: a squad clip can come from any fixture the
+    workspace holds footage for, and each carries its own alignment.
+    """
+
+    @pytest.fixture
+    def offsets(self, monkeypatch):
+        """Pin the offsets `plan` will read for whatever match it is given."""
+
+        def use(mapping):
+            monkeypatch.setattr(
+                fetch_clips.WS, "offsets_for_match", lambda match_id=None: mapping
+            )
+
+        return use
+
+    def test_offsets_are_applied(self, offsets):
+        offsets({1: 96.0})
         moments = [{"minute": 10, "second": 0}]
-        [w] = fetch_clips.plan(moments, {1: 96.0})
+        [w] = fetch_clips.plan(moments)
         assert w.video_s == 10 * 60 + 96.0
 
-    def test_period_without_an_offset_is_skipped(self):
+    def test_period_without_an_offset_is_skipped(self, offsets):
         # Extra time has a second break, so period 2's offset does not carry.
         # Better no window than one minutes from the play it claims to show.
+        offsets({1: 96.0, 2: 599.0})
         moments = [{"minute": 100, "second": 0}]
-        assert fetch_clips.plan(moments, {1: 96.0, 2: 599.0}) == []
+        assert fetch_clips.plan(moments) == []
 
-    def test_overlapping_windows_merge(self):
+    def test_overlapping_windows_merge(self, offsets):
+        offsets({1: 96.0})
         moments = [{"minute": 10, "second": 0}, {"minute": 10, "second": 2}]
-        assert len(fetch_clips.plan(moments, {1: 96.0})) == 1
+        assert len(fetch_clips.plan(moments)) == 1
 
-    def test_separate_moments_stay_separate(self):
+    def test_separate_moments_stay_separate(self, offsets):
+        offsets({1: 96.0})
         moments = [{"minute": 10, "second": 0}, {"minute": 40, "second": 0}]
-        assert len(fetch_clips.plan(moments, {1: 96.0})) == 2
+        assert len(fetch_clips.plan(moments)) == 2
+
+
+class TestWhoseGameItIs:
+    """The report belongs to the bench that asked for it.
+
+    Half the flagged moments in any match are the opponent's. Ranking purely
+    on value hands the report to whichever side had the louder game — picking
+    LAFC in a 1-3 loss returned six Inter Miami moments out of eight, every one
+    of them worded "you had this on".
+    """
+
+    def _moments(self):
+        # Theirs are more valuable, which is the case that broke.
+        return [
+            {"team": "Inter Miami", "missed": 0.30, "player": "A"},
+            {"team": "Inter Miami", "missed": 0.28, "player": "B"},
+            {"team": "Inter Miami", "missed": 0.26, "player": "C"},
+            {"team": "Inter Miami", "missed": 0.24, "player": "D"},
+            {"team": "LAFC", "missed": 0.10, "player": "E"},
+            {"team": "LAFC", "missed": 0.09, "player": "F"},
+            {"team": "LAFC", "missed": 0.08, "player": "G"},
+            {"team": "LAFC", "missed": 0.07, "player": "H"},
+        ]
+
+    def test_the_coachs_own_side_leads(self):
+        """Every moment they have, even when the opponent's are worth more.
+
+        Only four of theirs exist here, so the most that can be shown is four;
+        the failure this guards is taking the top eight by value, which gave
+        the LAFC coach six Inter Miami moments and two of their own.
+        """
+        from tacticbench.bootstrap import _for_bench
+
+        picked = _for_bench(self._moments(), "LAFC", 8)
+        ours = sum(1 for m in picked if m["team"] == "LAFC")
+        assert ours == 4, "all of the coach's own moments must survive"
+        assert ours >= len(picked) - ours, "never fewer than the opponent's"
+
+    def test_own_side_leads_when_there_are_enough_to_choose_from(self):
+        from tacticbench.bootstrap import _for_bench
+
+        ms = self._moments() + [
+            {"team": "LAFC", "missed": 0.06, "player": "I"},
+            {"team": "LAFC", "missed": 0.05, "player": "J"},
+        ]
+        picked = _for_bench(ms, "LAFC", 8)
+        ours = sum(1 for m in picked if m["team"] == "LAFC")
+        assert ours > len(picked) - ours, "the coach's own side must lead"
+
+    def test_the_same_match_mirrors_for_the_other_bench(self):
+        from tacticbench.bootstrap import _for_bench
+
+        a = _for_bench(self._moments(), "LAFC", 8)
+        b = _for_bench(self._moments(), "Inter Miami", 8)
+        assert sum(1 for m in a if m["team"] == "LAFC") == sum(
+            1 for m in b if m["team"] == "Inter Miami"
+        )
+
+    def test_the_opponent_is_never_dropped_entirely(self):
+        """Their chances are the defensive half of the report, not noise."""
+        from tacticbench.bootstrap import _for_bench
+
+        picked = _for_bench(self._moments(), "LAFC", 8)
+        assert any(m["team"] == "Inter Miami" for m in picked)
+
+    def test_holds_for_any_split_of_any_match(self):
+        """The invariants, over every shape a real fixture can take.
+
+        Hand-picked cases pass easily; the ratio was quietly wrong at small
+        `top` (round(4 * 0.625) == 2 split a four-moment report evenly) and the
+        backfill double-counted, returning more moments than asked for. Both
+        survived two hand-checked matches and fell over here.
+        """
+        import math
+        import random
+
+        from tacticbench.bootstrap import _for_bench
+
+        rng = random.Random(11)
+        for _ in range(3000):
+            n_ours = rng.randint(0, 40)
+            n_theirs = rng.randint(0, 40)
+            top = rng.randint(1, 20)
+            ms = [{"team": "US", "missed": rng.random()} for _ in range(n_ours)]
+            ms += [{"team": "THEM", "missed": rng.random()} for _ in range(n_theirs)]
+            ms.sort(key=lambda m: -m["missed"])
+
+            picked = _for_bench(ms, "US", top)
+            ours = sum(1 for m in picked if m["team"] == "US")
+            theirs = len(picked) - ours
+            avail = min(top, n_ours + n_theirs)
+            case = f"{n_ours} ours / {n_theirs} theirs / top {top}"
+
+            assert len(picked) == avail, f"wrong count: {case}"
+            assert len(picked) == len({id(m) for m in picked}), f"duplicate: {case}"
+            if n_ours >= top:
+                assert ours > theirs, f"own side starved: {case}"
+            # As many of ours as the share allows, given what exists.
+            want = min(n_ours, max(1, math.ceil(top * 0.625)))
+            want = min(n_ours, max(want, top - n_theirs))
+            assert ours >= min(want, avail), f"dropped ours: {case}"
+
+    def test_a_quiet_side_still_fills_the_report(self):
+        from tacticbench.bootstrap import _for_bench
+
+        only_theirs = [m for m in self._moments() if m["team"] == "Inter Miami"]
+        assert len(_for_bench(only_theirs, "LAFC", 4)) == 4
+
+    def test_opponent_moments_are_reworded(self):
+        """"You had this on" addressed to the wrong bench is nonsense."""
+        from tacticbench.bootstrap import _write_sides
+
+        lines = [
+            {
+                "team": "Inter Miami",
+                "line": "You had the ball in the box on.",
+                "best_zone": "in the box",
+                "best_defenders": 2,
+                "best_completion": 0.7,
+            },
+            {"team": "LAFC", "line": "You had the ball in the box on.",
+             "best_zone": "in the box", "best_defenders": 1, "best_completion": 0.8},
+        ]
+        out = _write_sides(lines, "LAFC")
+        theirs = next(m for m in out if m["team"] == "Inter Miami")
+        mine = next(m for m in out if m["team"] == "LAFC")
+
+        assert theirs["side"] == "defending"
+        assert theirs["line"].startswith("They had")
+        assert "of yours" in theirs["line"]
+
+        assert mine["side"] == "attacking"
+        assert mine["line"].startswith("You had")
+
+
+class TestFixturesOffered:
+    """Only fixtures that can actually be analysed reach the picker.
+
+    `match_available_360` is a competition-level flag and is not true of every
+    match under it: AFCON carries it and 51 of its 52 fixtures 404 on the
+    three-sixty feed. Offering one means a coach picks a game, waits, and is
+    told it cannot be done.
+    """
+
+    def test_the_index_filters_out_matches_without_a_file(self, monkeypatch):
+        from tacticbench import games
+
+        monkeypatch.setattr(games, "_fixtures_cache", None)
+        monkeypatch.setattr(games, "_matches_with_360", lambda: {1, 3})
+        monkeypatch.setattr(
+            games.data,
+            "competitions",
+            lambda c: [
+                {
+                    "competition_id": 9,
+                    "season_id": 1,
+                    "competition_name": "Test",
+                    "season_name": "2023",
+                    "match_available_360": True,
+                }
+            ],
+        )
+        monkeypatch.setattr(
+            games.data,
+            "matches",
+            lambda c, ci, si: [
+                {
+                    "match_id": i,
+                    "match_date": "2023-01-01",
+                    "home_team": {"home_team_name": "A"},
+                    "away_team": {"away_team_name": "B"},
+                    "home_score": 1,
+                    "away_score": 0,
+                }
+                for i in (1, 2, 3)
+            ],
+        )
+        got = {f["match_id"] for f in games._fixtures()}
+        assert got == {1, 3}, "match 2 has no 360 file and must not be offered"
+
+    def test_an_unreachable_index_falls_back_rather_than_offering_nothing(
+        self, monkeypatch
+    ):
+        from tacticbench import games
+
+        monkeypatch.setattr(games, "_fixtures_cache", None)
+        monkeypatch.setattr(games, "_matches_with_360", lambda: set())
+        monkeypatch.setattr(
+            games.data,
+            "competitions",
+            lambda c: [
+                {
+                    "competition_id": 9,
+                    "season_id": 1,
+                    "competition_name": "Test",
+                    "season_name": "2023",
+                    "match_available_360": True,
+                }
+            ],
+        )
+        monkeypatch.setattr(
+            games.data,
+            "matches",
+            lambda c, ci, si: [
+                {
+                    "match_id": 7,
+                    "match_date": "2023-01-01",
+                    "home_team": {"home_team_name": "A"},
+                    "away_team": {"away_team_name": "B"},
+                    "home_score": 1,
+                    "away_score": 0,
+                }
+            ],
+        )
+        assert len(games._fixtures()) == 1
 
 
 class TestReelMode:

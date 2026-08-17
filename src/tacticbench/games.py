@@ -70,26 +70,67 @@ _lock = threading.Lock()
 # ── fixtures ─────────────────────────────────────────────────────────────
 
 _fixtures_cache: list[dict] | None = None
+_360_cache: set[int] | None = None
+
+#: The three-sixty directory, listed rather than probed. 477 HEAD requests to
+#: find the ~426 that exist is a minute of round trips; one listing is a
+#: second.
+THREE_SIXTY_INDEX = (
+    "https://api.github.com/repos/statsbomb/open-data/contents/data/three-sixty"
+)
+
+
+def _matches_with_360() -> set[int]:
+    """Match ids that genuinely have a freeze-frame file.
+
+    Empty on any failure, which the caller reads as "cannot tell" and falls
+    back to the competition flag. Better to offer a fixture that turns out
+    unusable — `bootstrap` refuses it with a clear message — than to offer
+    nothing because GitHub was briefly unreachable.
+    """
+    global _360_cache
+    if _360_cache is not None:
+        return _360_cache
+    try:
+        r = httpx.get(THREE_SIXTY_INDEX, timeout=60, follow_redirects=True)
+        r.raise_for_status()
+        _360_cache = {
+            int(f["name"].removesuffix(".json"))
+            for f in r.json()
+            if f.get("name", "").endswith(".json")
+        }
+    except Exception:  # noqa: BLE001 - unreachable index is not fatal
+        _360_cache = set()
+    return _360_cache
 
 
 def _fixtures() -> list[dict]:
     """Every open-data fixture that has 360, newest first.
 
-    Filtered on `match_available_360` from the competitions feed, because 360
-    availability is a StatsBomb fact and not something the graph knows. Without
-    freeze frames a match cannot produce moments, so offering it in the picker
-    would be offering a report that comes back empty.
+    Filtered on the 360 files that actually exist, not on the competition's
+    `match_available_360` flag. The flag is set per competition and is not true
+    of every match in it: the Africa Cup of Nations carries it, and roughly
+    half its fixtures 404 on the three-sixty feed. Offering one of those means
+    a coach picks a game, waits, and is told it cannot be analysed — the guard
+    in `bootstrap` catches it cleanly, but the right place to catch it is
+    before they choose.
     """
     global _fixtures_cache
     if _fixtures_cache is not None:
         return _fixtures_cache
 
+    have_360 = _matches_with_360()
     out: list[dict] = []
     with httpx.Client(timeout=90.0) as c:
         for comp in data.competitions(c):
             if not comp.get("match_available_360"):
                 continue
             for m in data.matches(c, comp["competition_id"], comp["season_id"]):
+                # The flag got us to the right competitions; this is the
+                # per-match truth. Falls back to the flag alone if the listing
+                # is unreachable, so an offline run still offers something.
+                if have_360 and m["match_id"] not in have_360:
+                    continue
                 home = m["home_team"]["home_team_name"]
                 away = m["away_team"]["away_team_name"]
                 out.append(
@@ -345,16 +386,80 @@ def status(job_id: str):
 
 @router.get("/api/games")
 def added():
-    """Games on disk, whichever process added them."""
+    """Every game on disk, and which one the interface is showing.
+
+    Read from `src/content/snapshots/<key>/`, which is where the report
+    actually lives — an earlier version looked under `workspaces/` and listed
+    nothing once the pipeline started writing where the app reads.
+
+    The committed example is included rather than filtered out: after adding a
+    game a coach's own match leads, and Argentina becomes one of the options
+    rather than the thing they are stuck with.
+    """
+    import json
+
+    snaps = ROOT / "src" / "content" / "snapshots"
+    current = active_key()
     out = []
     for key in workspace.available():
-        meta = workspace.WORKSPACES / key / "snapshots" / "meta.json"
+        meta = snaps / key / "meta.json"
         if meta.exists():
-            import json
+            row = json.loads(meta.read_text())
+        elif (snaps / key).exists():
+            # The example ships snapshots without a meta.json, since it was
+            # assembled before this pipeline existed.
+            ws = workspace.load(key)
+            row = {
+                "key": key,
+                "team": ws.team,
+                "label": ws.label,
+                "date": "",
+                "competition": ws.competition,
+                "season": ws.season,
+                "moments_found": 0,
+                "clips": 0,
+                "has_footage": True,
+            }
+        else:
+            continue
+        out.append({**row, "active": key == current})
+    # Newest first, then the active one lifted to the top. A coach opening the
+    # switcher is looking at where they are before where else they could go.
+    out.sort(key=lambda r: r.get("date") or "", reverse=True)
+    out.sort(key=lambda r: not r.get("active"))
+    return {"games": out, "active": current}
 
-            out.append(json.loads(meta.read_text()))
-    out.sort(key=lambda r: r.get("date", ""), reverse=True)
-    return {"games": out}
+
+def active_key() -> str:
+    """Which workspace the interface is currently showing."""
+    pointer = ROOT / "src" / "content" / "snapshots" / ".active"
+    try:
+        key = pointer.read_text().strip()
+    except OSError:
+        return workspace.DEFAULT
+    return key or workspace.DEFAULT
+
+
+@router.post("/api/games/{key}/activate")
+def switch(key: str):
+    """Point the interface at a different game.
+
+    Copies that workspace's snapshots into `active/` and records the choice,
+    so the switch survives the next restart. The page reloads afterwards
+    because the imports are static — the app cannot pick a directory at
+    runtime, which is the whole reason `active/` exists.
+    """
+    from . import snapshots as snaps
+
+    if key not in workspace.available():
+        raise HTTPException(404, f"no workspace {key}")
+    n = snaps.activate(key)
+    if not n:
+        raise HTTPException(
+            409,
+            f"{key} has no snapshots yet. Run the pipeline for it first.",
+        )
+    return {"active": key, "files": n}
 
 
 @router.get("/api/games/{key}/snapshot/{name}")

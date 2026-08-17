@@ -62,19 +62,39 @@ class Window:
     video_s: float
     start: float
     end: float
+    #: Which match this came from. A workspace can hold footage for several,
+    #: and a clip named only by its clock collides across them: 47:23 exists in
+    #: every game.
+    match_id: int = 0
+    player: str = ""
 
 
-def video_time(
-    period: int, minute: int, second: int, offsets: dict[int, float] | None = None
-) -> float | None:
+def period_of(minute: int, period: int | None = None) -> int:
+    """Which period a match minute falls in.
+
+    Prefer the period the event carries. Inferring it from the clock is wrong
+    wherever stoppage time overlaps the next half: Tagliafico's 45:45 pass
+    against Saudi Arabia is in period 1, which ran to minute 51, and reading it
+    as period 2 would cut the clip ten minutes from the play.
+
+    The fallback is four periods, not three. An earlier version treated
+    everything past 90 as period 3, which put Di Maria's 115:51 on an unset
+    offset and dropped it entirely.
+    """
+    if period:
+        return int(period)
+    return 1 if minute < 45 else 2 if minute < 90 else 3 if minute < 105 else 4
+
+
+def video_time(period: int, minute: int, second: int, match_id: int | None = None) -> float | None:
     """Where in the recording a match-clock moment sits.
 
-    Returns None for extra time. There is a second break before it, so the
-    period-2 offset does not carry, and applying it anyway would place the
-    window minutes away from the play it claims to show. Better to fetch
-    nothing than the wrong passage.
+    Returns None for a period with no measured offset. Every break shifts the
+    two clocks apart again, so an offset from another period, or another
+    broadcast, places the window minutes from the play it claims to show.
+    Better to fetch nothing than the wrong passage.
     """
-    off = (PERIOD_OFFSET if offsets is None else offsets).get(period)
+    off = WS.offsets_for_match(match_id).get(period)
     if off is None:
         return None
     return minute * 60 + second + off
@@ -85,7 +105,7 @@ def hhmmss(t: float) -> str:
     return f"{t // 3600:02d}:{(t % 3600) // 60:02d}:{t % 60:02d}"
 
 
-def plan(moments: list[dict], offsets: dict[int, float] | None = None) -> list[Window]:
+def plan(moments: list[dict], match_id: int | None = None) -> list[Window]:
     """One window per moment, merging any that overlap.
 
     Two of the flagged passes are two seconds apart, and downloading that
@@ -99,8 +119,8 @@ def plan(moments: list[dict], offsets: dict[int, float] | None = None) -> list[W
     for m in ordered:
         minute, second = m["minute"], m.get("second") or 0
         # Whichever periods the workspace measured; the rest are skipped.
-        period = 1 if minute < 45 else 2 if minute < 90 else 3
-        v = video_time(period, minute, second, offsets)
+        period = period_of(minute, m.get("period"))
+        v = video_time(period, minute, second, match_id)
         if v is None:
             continue
         w = Window(
@@ -110,6 +130,8 @@ def plan(moments: list[dict], offsets: dict[int, float] | None = None) -> list[W
             video_s=v,
             start=v - LEAD_S,
             end=v + TAIL_S,
+            match_id=match_id or WS.match_id,
+            player=m.get("player") or "",
         )
         if out and w.start <= out[-1].end:
             out[-1].end = max(out[-1].end, w.end)
@@ -219,38 +241,109 @@ def _duration(path: Path) -> float | None:
         return None
 
 
+def source_for(match_id: int | None = None) -> str:
+    """Where this match's footage comes from: a local file, or a URL.
+
+    An uploaded recording only ever belongs to the workspace match, so the
+    local path wins there and the other matches fall back to their `sources`
+    entry. Returning a full URL rather than a bare id keeps `cut_window`'s
+    "local path or URL" contract the only thing callers have to know.
+    """
+    if match_id is None or match_id == WS.match_id:
+        return WS.source
+    vid = WS.video_for_match(match_id)
+    return f"https://www.youtube.com/watch?v={vid}" if vid else ""
+
+
 def fetch(w: Window, force: bool = False, source: str | None = None) -> Path | None:
-    """One window of the active workspace's footage."""
+    """One window of footage, from whichever match the window belongs to.
+
+    Clips are named by match as well as key: a squad pass covers several
+    fixtures, and two of them can easily hold a moment at the same clock.
+    """
     return cut_window(
-        URL if source is None else source,
+        source_for(w.match_id) if source is None else source,
         w.start,
         w.end,
-        CLIPS / f"wc_{w.key}.mp4",
+        CLIPS / f"{w.match_id}_{w.key}.mp4",
         force,
     )
 
 
+def squad_windows() -> list[Window]:
+    """One window per player: their costliest ball, from a match we can show.
+
+    The old selection was the eight material moments of a single match, which
+    gave two players footage. Widening to every match the workspace holds
+    footage for, and taking each player's best rather than the match's best,
+    covers the squad instead of the scoreline.
+
+    A player only appears if his moment clears the same materiality gate as
+    everywhere else. Showing a coach a 0.04 threat gap and calling it his
+    costliest ball is the "that pass was unnecessary" mistake in a new place.
+    """
+    from .pass_options import analyse, is_material
+
+    best: dict[str, tuple[float, dict, int]] = {}
+    for mid in [WS.match_id, *WS.sources]:
+        if not WS.has_footage(mid):
+            continue
+        try:
+            found = analyse(mid)
+        except Exception as exc:  # noqa: BLE001
+            print(f"  {mid}: no analysis ({type(exc).__name__})")
+            continue
+        for r in found["all_options"]:
+            if r.get("team") != WS.team or not r.get("player") or not is_material(r):
+                continue
+            if period_of(r["minute"], r.get("period")) not in WS.offsets_for_match(mid):
+                continue  # no measured offset for that period, so unshowable
+            got = best.get(r["player"])
+            if got is None or r["missed"] > got[0]:
+                best[r["player"]] = (r["missed"], r, mid)
+
+    out: list[Window] = []
+    for _, row, mid in best.values():
+        out += plan([row], mid)
+    return out
+
+
 def main() -> None:
+    import argparse
+
     from .pass_options import analyse
 
-    out = analyse(WS.match_id)
-    windows = plan(out["top_missed"])
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--squad", action="store_true",
+                    help="one clip per player across every match with footage")
+    ap.add_argument("--force", action="store_true")
+    args = ap.parse_args()
 
-    print(f"{len(out['top_missed'])} moments -> {len(windows)} windows\n")
+    if args.squad:
+        windows = squad_windows()
+        print(f"{len(windows)} players with a showable moment\n")
+    else:
+        out = analyse(WS.match_id)
+        windows = plan(out["top_missed"], WS.match_id)
+        print(f"{len(out['top_missed'])} moments -> {len(windows)} windows\n")
+
     manifest = []
     for w in windows:
-        if w.period not in PERIOD_OFFSET:
+        if w.period not in WS.offsets_for_match(w.match_id):
             print(f"  skip {w.key}: no offset for period {w.period}")
             continue
-        print(f"  {w.key}  match {hhmmss(w.match_s)}  video {hhmmss(w.video_s)}  "
-              f"[{hhmmss(w.start)} - {hhmmss(w.end)}]", flush=True)
-        path = fetch(w)
+        who = f"{w.player.split()[-1]:<12}" if w.player else " " * 12
+        print(f"  {who} {w.match_id} {w.key}  match {hhmmss(w.match_s)}  "
+              f"video {hhmmss(w.video_s)}", flush=True)
+        path = fetch(w, force=args.force)
         if path is None:
             print("    could not fetch, skipping")
             continue
         manifest.append(
             {
                 "key": w.key,
+                "match_id": w.match_id,
+                "player": w.player,
                 "period": w.period,
                 "match_s": w.match_s,
                 "video_s": w.video_s,
@@ -263,8 +356,9 @@ def main() -> None:
         )
 
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / "clip_manifest.json").write_text(json.dumps(manifest, indent=1))
-    print(f"\nwrote {RESULTS / 'clip_manifest.json'}")
+    name = "squad_manifest.json" if args.squad else "clip_manifest.json"
+    (RESULTS / name).write_text(json.dumps(manifest, indent=1))
+    print(f"\n{len(manifest)} clips -> {RESULTS / name}")
 
 
 if __name__ == "__main__":

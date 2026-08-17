@@ -114,7 +114,7 @@ export function Align({
       </p>
 
       {broken >= 2 && (
-        <div className="mt-8 rounded-xl bg-surface px-5 py-5 ring-1 ring-white/[0.07]">
+        <div className="mt-8 rounded-xl bg-surface px-5 py-5 ring-1 ring-white/[0.06]">
           <p className="text-[15px] leading-relaxed text-warm">
             This recording does not reach those points, so there is no match
             clock to line up. That usually means it is a highlights reel or a
@@ -165,7 +165,7 @@ export function Align({
 
       {/* ── What that gives us ──────────────────────────────────────── */}
       {(result || error) && (
-        <div className="mt-8 rounded-xl bg-surface px-5 py-4 ring-1 ring-white/[0.07]">
+        <div className="mt-8 rounded-xl bg-surface px-5 py-4 ring-1 ring-white/[0.06]">
           {error ? (
             <p className="text-[14px] text-warm-2">{error}</p>
           ) : result ? (
@@ -270,7 +270,7 @@ function Half({
         </span>
       </div>
 
-      <div className="mt-3.5 overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.07]">
+      <div className="mt-3.5 overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.06]">
         {failed ? (
           <p className="px-5 py-10 text-center text-[14px] text-muted">
             {failed}
@@ -328,7 +328,7 @@ function Box({
         const digits = e.target.value.replace(/\D/g, "").slice(0, 3);
         if (digits === "" || Number(digits) <= max) onChange(digits);
       }}
-      className="w-16 rounded-lg bg-surface px-3 py-2 text-center font-mono text-[15px] tabular-nums text-chalk ring-1 ring-white/[0.07] transition-colors placeholder:text-muted-2 focus:bg-surface-2 focus:ring-white/[0.14] focus:outline-none"
+      className="w-16 rounded-lg bg-surface px-3 py-2 text-center font-mono text-[15px] tabular-nums text-chalk ring-1 ring-white/[0.06] transition-colors placeholder:text-muted-2 focus:bg-surface-2 focus:ring-white/[0.14] focus:outline-none"
     />
   );
 }

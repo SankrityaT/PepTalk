@@ -30,7 +30,126 @@ PUBLIC = Path("/tmp/peptalk-ui/public/clips")
 EVERY_N = 3
 
 
+def build_squad() -> None:
+    """Track the per-player clips and write what the roster needs.
+
+    Kept separate from the session's moments on purpose. The session is a
+    narrative through one match and its four clips are chosen for that; a
+    player card wants that player's own ball, which may be from any game the
+    workspace can show. Writing both into one file would mean one of them
+    reordering the other.
+    """
+    from .cv_video import track
+    from .pass_options import analyse
+    from .pep import describe
+    from .roster import display_surname
+
+    manifest = json.loads((RESULTS / "squad_manifest.json").read_text())
+    PUBLIC.mkdir(parents=True, exist_ok=True)
+
+    def nicknames(match_id: int) -> dict[str, str]:
+        """Full name -> the lineup's nickname, straight from the feed.
+
+        Not via pep.display_names, which rejects a nickname whenever it
+        disagrees with the full name. That rule is right for its own purpose
+        and wrong here: it turns Nahuel Molina Lucero into "Lucero" and Angel
+        Di Maria Hernandez into "Hernandez", because it reads the last word of
+        a Spanish full name as the surname. Those clips then joined to no
+        player card at all.
+        """
+        import httpx
+
+        from . import data
+
+        with httpx.Client(timeout=120) as c:
+            sides = data.lineups(c, match_id)
+        out = {}
+        for side in sides:
+            for p in side.get("lineup", []):
+                if p.get("player_name"):
+                    out[p["player_name"]] = p.get("player_nickname") or ""
+        return out
+
+    rows, names_cache, options_cache = [], {}, {}
+    for w in sorted(manifest, key=lambda w: (w["match_id"], w["key"])):
+        src = Path(w["file"])
+        if not src.exists():
+            print(f"  {w['key']}: file missing, skipping")
+            continue
+        mid = w["match_id"]
+        if mid not in options_cache:
+            options_cache[mid] = analyse(mid)["all_options"]
+            names_cache[mid] = nicknames(mid)
+
+        # The row this clip was cut for, matched on clock and player.
+        minute, second = divmod(int(w["match_s"]), 60)
+        row = next(
+            (r for r in options_cache[mid]
+             if r["minute"] == minute and (r.get("second") or 0) == second
+             and r.get("player") == w["player"]),
+            None,
+        )
+        if row is None:
+            print(f"  {w['key']}: no matching pass, skipping")
+            continue
+
+        print(f"  tracking {mid} {w['key']} ({w['player'].split()[-1]}) ...", flush=True)
+        t = track(src, every_n=EVERY_N, max_frames=200, device="mps")
+        if not t.get("frames"):
+            print("    no usable frames, skipping")
+            continue
+
+        key = f"{mid}_{w['key']}"
+        (PUBLIC / f"{key}.mp4").write_bytes(src.read_bytes())
+
+        full = row.get("player") or ""
+        nick = names_cache[mid].get(full) or None
+        surname = display_surname(full, nick)
+        row["player"] = nick or full
+        f = describe(row)
+        f.update({
+            "key": key,
+            "match_id": mid,
+            "clip": f"/clips/{key}.mp4",
+            "pass_at": w["offset_in_clip"],
+            "match_clock": f"{minute}:{second:02d}",
+            "from": row["from"],
+            "played_to": [round(row["played"]["x"], 1), round(row["played"]["y"], 1)],
+            "best_to": [round(row["best"]["x"], 1), round(row["best"]["y"], 1)],
+            "freeze": row.get("freeze", []),
+            "missed": row["missed"],
+            "frames": t["frames"],
+            "detections": t.get("detections", 0),
+            # Where the broadcast is actually on the pitch. A window is cut six
+            # seconds before the pass and the director is sometimes still on a
+            # close-up for the first few of them: Messi's opens on two shirts
+            # filling the frame. The moment itself is always covered, so this
+            # only moves the poster frame off the replay and onto the football.
+            "pitch_from": round(min((f["t"] for f in t["frames"]), default=0.0), 1),
+            # Same rule the roster files players under, so the two join.
+            "surname": surname,
+        })
+        rows.append(f)
+        print(f"    {len(t['frames'])} frames, {t.get('detections', 0)} detections")
+
+    for i, r in enumerate(rows):
+        r["id"] = 1000 + i
+
+    dest = workspace.snapshot_dir() / "player-clips.json"
+    dest.write_text(json.dumps({"team": WS.team, "clips": rows}))
+    print(f"\n{len(rows)} player clips -> {dest}")
+
+
 def main() -> None:
+    import argparse
+
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--squad", action="store_true", help="build the per-player clips")
+    args = ap.parse_args()
+    if args.squad:
+        build_squad()
+        return
+
     from .cv_video import track
     from .pass_options import analyse
     from .pep import describe, display_names, short_name
@@ -93,7 +212,8 @@ def main() -> None:
         "source": "broadcast clock read off the overlay; one offset per period",
         "moments": moments,
     }
-    dest = Path("/tmp/peptalk-ui/src/content/snapshots/clip-moments.json")
+    # Namespaced by workspace: two teams used to write this same file.
+    dest = workspace.snapshot_dir() / "clip-moments.json"
     dest.write_text(json.dumps(payload))
     print(f"\n{len(moments)} moments with footage -> {dest}")
 

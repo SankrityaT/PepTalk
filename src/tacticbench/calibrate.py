@@ -37,6 +37,8 @@ from pathlib import Path
 
 import numpy as np
 
+from . import workspace
+
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / "results"
 
@@ -246,7 +248,8 @@ def calibrate_moment(moment: dict, rng: np.random.Generator) -> dict | None:
 
 
 def main() -> None:
-    src = Path("/tmp/peptalk-ui/src/content/snapshots/clip-moments.json")
+    # Namespaced by workspace: two teams used to write this same file.
+    src = workspace.snapshot_dir() / "clip-moments.json"
     data = json.loads(src.read_text())
     rng = np.random.default_rng(20221218)
 

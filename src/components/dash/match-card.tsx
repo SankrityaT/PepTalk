@@ -37,7 +37,15 @@ const RESULT_TONE = {
  * a scoring problem beats a possession note, which beats a pressing note.
  */
 function read(m: MatchRow, pressMean: number): string {
-  const { us } = scoreline(m);
+  const r = m.result;
+  const us = r.us;
+
+  // A knockout tie decided on penalties is never "a normal night", and the
+  // generic lines below would have called two of them exactly that.
+  if (r.went_to_penalties) {
+    const won = r.outcome === "W";
+    return `${r.stage} settled from the spot. You ${won ? "held on and won" : "lost"} ${r.pens?.us}-${r.pens?.them}.`;
+  }
   if (m.xg >= 1.8 && us <= 1) {
     return `Made ${m.xg.toFixed(1)} goals' worth of chances and took ${us}.`;
   }
@@ -51,7 +59,10 @@ function read(m: MatchRow, pressMean: number): string {
   if (Math.abs(dp) >= 3) {
     return `Pressed ${Math.abs(dp).toFixed(0)}m ${dp > 0 ? "higher" : "deeper"} than your usual.`;
   }
-  return `${m.shots} shots, ${m.xg.toFixed(1)} expected goals. A normal night.`;
+  if (r.outcome === "L") {
+    return `Beaten. ${m.shots} shots and ${m.xg.toFixed(1)} expected goals was not enough.`;
+  }
+  return `${m.shots} shots, ${m.xg.toFixed(1)} expected goals.`;
 }
 
 export function MatchCard({
@@ -67,7 +78,8 @@ export function MatchCard({
   onOpen?: () => void;
   index?: number;
 }) {
-  const { us, them, opponent } = scoreline(m);
+  const res = scoreline(m);
+  const { opponent } = res;
   const r = result(m);
 
   // Press line: distance up the pitch, drawn as a vertical mark.
@@ -95,7 +107,7 @@ export function MatchCard({
           {m.date}
         </span>
         <span className={`font-mono text-[11px] font-medium tabular-nums ${RESULT_TONE[r]}`}>
-          {r} {us}&ndash;{them}
+          {r} {res.scoreline}
         </span>
       </div>
 
@@ -136,7 +148,7 @@ export function MatchCard({
             {opponent}
           </p>
           <p className="mt-0.5 truncate font-mono text-[10px] text-muted-2">
-            {m.comp}
+            {res.stage || m.comp}
           </p>
           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[10px] tabular-nums text-muted">
             <span>{Math.round(m.poss)}% ball</span>

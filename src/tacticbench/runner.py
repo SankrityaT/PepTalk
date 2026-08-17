@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import json
 import os
+import threading
+import time
 
 from .anonymize import find_leaks
 
@@ -70,10 +72,21 @@ def _client():
     return Anthropic()
 
 
-def _ask_api(prompt: str, payload: dict, model: str, max_tokens: int = 1024) -> str:
+CLI_SYSTEM = "You are a football tactical analyst. Answer only with JSON."
+
+#: Callers that want prose rather than a JSON body pass their own. The backtest
+#: path wants JSON it can score; a coach reading an answer on screen does not,
+#: and the shared prompt was wrapping every reply in a fenced object.
+PROSE_SYSTEM = "You are a football assistant talking to a coach. Answer in plain prose, never JSON, never markdown fences."
+
+
+def _ask_api(
+    prompt: str, payload: dict, model: str, max_tokens: int = 1024, system: str = CLI_SYSTEM
+) -> str:
     msg = _client().messages.create(
         model=model,
         max_tokens=max_tokens,
+        system=system,
         messages=[
             {"role": "user", "content": prompt + json.dumps(payload, indent=1)}
         ],
@@ -81,10 +94,21 @@ def _ask_api(prompt: str, payload: dict, model: str, max_tokens: int = 1024) -> 
     return "".join(b.text for b in msg.content if b.type == "text")
 
 
-CLI_SYSTEM = "You are a football tactical analyst. Answer only with JSON."
+#: One CLI call at a time, and a few goes at it.
+#:
+#: Each call is a subprocess, and several at once is how a coach opening three
+#: player cards gets a segfault instead of an answer: the runtime came back
+#: with signal 11 and a crash dump where the prose should be. A lock costs a
+#: little latency when questions overlap and removes the failure entirely.
+#: The retry is for the crash that happens anyway, which is transient by
+#: nature: the same prompt on a fresh process answers.
+_CLI_LOCK = threading.Lock()
+CLI_ATTEMPTS = 3
 
 
-def _ask_cli(prompt: str, payload: dict, model: str, max_tokens: int = 1024) -> str:
+def _ask_cli(
+    prompt: str, payload: dict, model: str, max_tokens: int = 1024, system: str = CLI_SYSTEM
+) -> str:
     """Run one prompt through the Claude CLI in a fresh subprocess.
 
     Each invocation is a separate process with no shared conversation history,
@@ -98,25 +122,37 @@ def _ask_cli(prompt: str, payload: dict, model: str, max_tokens: int = 1024) -> 
 
     cmd = [
         "claude", "-p",
-        "--system-prompt", CLI_SYSTEM,
+        "--system-prompt", system,
         "--disallowed-tools", "*",
         "--exclude-dynamic-system-prompt-sections",
         "--model", model,
         prompt + json.dumps(payload, indent=1),
     ]
-    proc = subprocess.run(
-        cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=300
+    last = ""
+    for attempt in range(1, CLI_ATTEMPTS + 1):
+        with _CLI_LOCK:
+            proc = subprocess.run(
+                cmd, capture_output=True, text=True, stdin=subprocess.DEVNULL, timeout=300
+            )
+        if proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.strip()
+        # A crash dump is not a diagnosis. Keep the signal and the first line.
+        last = (proc.stderr or "").strip().splitlines()
+        last = last[0][:160] if last else f"exit {proc.returncode}"
+        if attempt < CLI_ATTEMPTS:
+            time.sleep(0.6 * attempt)
+    raise RuntimeError(
+        f"the model did not answer after {CLI_ATTEMPTS} attempts ({last})"
     )
-    if proc.returncode != 0:
-        raise RuntimeError(f"claude cli failed ({proc.returncode}): {proc.stderr[:300]}")
-    return proc.stdout.strip()
 
 
 # Backend is selected once per process via TACTICBENCH_BACKEND=api|cli.
-def _ask(prompt: str, payload: dict, model: str, max_tokens: int = 1024) -> str:
+def _ask(
+    prompt: str, payload: dict, model: str, max_tokens: int = 1024, system: str = CLI_SYSTEM
+) -> str:
     backend = os.environ.get("TACTICBENCH_BACKEND", "api").lower()
     fn = _ask_cli if backend == "cli" else _ask_api
-    return fn(prompt, payload, model, max_tokens)
+    return fn(prompt, payload, model, max_tokens, system)
 
 
 def _parse_json(text: str) -> dict:

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import { GameSwitcher } from "@/components/shell/game-switcher";
 
 /**
  * Workspace navigation.
@@ -16,7 +17,7 @@ import { useLayoutEffect, useRef, useState } from "react";
  * it means hover and selection cannot disagree about where you are.
  */
 
-export type Section = "brief" | "tape" | "roster" | "games" | "model";
+export type Section = "session" | "roster" | "games";
 
 type Item = {
   key: Section;
@@ -27,26 +28,21 @@ type Item = {
   soon?: boolean;
 };
 
+// Review, Goals against and Tape were three rows that all meant "watch the
+// footage", and a coach could not tell them apart. One row, tabs inside it.
+// Three. The previous seven had five screens with no video on them, because a
+// screen is easy to add and a screen of prose is easier still.
 const ITEMS: Item[] = [
-  { key: "brief", label: "Brief", group: "Today", count: true },
-  { key: "tape", label: "Tape", group: "Today" },
-  { key: "roster", label: "Roster", group: "Squad", plus: true, soon: true },
-  { key: "games", label: "Games", group: "Season" },
-  { key: "model", label: "Threat map", group: "Season" },
+  { key: "session", label: "Session", group: "Today", count: true },
+  { key: "roster", label: "Players", group: "Squad", plus: true },
+  { key: "games", label: "Your season", group: "Season" },
 ];
 
 const GROUPS = ["Today", "Squad", "Season"];
 
 function Icon({ kind }: { kind: Section }) {
   const paths: Record<Section, React.ReactNode> = {
-    brief: (
-      <g>
-        <path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z" />
-        <path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-        <path d="M8 12h8M8 16h5" />
-      </g>
-    ),
-    tape: (
+    session: (
       <g>
         <rect x="2" y="5" width="20" height="14" rx="2" />
         <path d="M10 9.5l5 2.5-5 2.5z" />
@@ -63,12 +59,6 @@ function Icon({ kind }: { kind: Section }) {
       <g>
         <rect x="3" y="4" width="18" height="17" rx="2" />
         <path d="M3 9h18M8 2v4M16 2v4" />
-      </g>
-    ),
-    model: (
-      <g>
-        <rect x="2.5" y="5" width="19" height="14" rx="1.5" />
-        <path d="M12 5v14M2.5 9.5h3M2.5 14.5h3M18.5 9.5h3M18.5 14.5h3" />
       </g>
     ),
   };
@@ -130,26 +120,9 @@ export function Sidebar({
     <>
       {/* ── Desktop rail ────────────────────────────────────────────────── */}
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-white/[0.07] p-2.5 lg:flex">
-        {/* Club */}
-        <button
-          type="button"
-          className="mb-2 flex w-full items-center gap-2.5 rounded-lg p-1.5 text-left transition-[background-color,transform] duration-100 hover:bg-white/[0.05] active:scale-[0.97]"
-        >
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-[13px] font-semibold text-canvas">
-            {team.slice(0, 1)}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] leading-tight font-medium text-chalk">
-              {team}
-            </span>
-            <span className="block truncate text-[11px] leading-tight text-muted-2">
-              {squad}
-            </span>
-          </span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-2">
-            <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
-          </svg>
-        </button>
+        {/* Club, and the games behind it. The chevron was decoration until
+            a coach could have more than one game to switch between. */}
+        <GameSwitcher team={team} squad={squad} />
 
         {/* Search */}
         <label className="mb-1.5 flex h-8 items-center gap-2 rounded-lg bg-white/[0.04] px-2.5 ring-1 ring-white/[0.05] focus-within:ring-white/[0.12]">

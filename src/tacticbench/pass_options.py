@@ -222,6 +222,11 @@ def analyse(match_id: int, top: int = 8) -> dict:
                 "from": [round(float(loc[0]), 1), round(float(loc[1]), 1)],
                 "minute": e.get("minute"),
                 "second": e.get("second"),
+                # The real period, not one inferred from the clock. Stoppage
+                # time overlaps: a 45:45 pass can be the end of the first half
+                # or the start of the second, and guessing puts a clip ten
+                # minutes from the play it claims to show.
+                "period": e.get("period"),
                 "team": e.get("team", {}).get("name"),
                 "player": e.get("player", {}).get("name"),
                 "played": played.__dict__,

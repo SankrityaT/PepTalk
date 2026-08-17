@@ -115,7 +115,7 @@ function Live({
       }
     >
       {error ? (
-        <div className="rounded-xl bg-surface px-5 py-5 ring-1 ring-white/[0.07]">
+        <div className="rounded-xl bg-surface px-5 py-5 ring-1 ring-white/[0.06]">
           <p className="text-[15px] leading-relaxed text-warm">{error}</p>
         </div>
       ) : (
