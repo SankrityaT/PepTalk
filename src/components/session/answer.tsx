@@ -251,6 +251,35 @@ function tracing(question: string, memory: boolean, r: Result | null): Step[] {
  */
 const CACHE = new Map<string, Promise<Result>>();
 
+/**
+ * The conversation this browser belongs to, kept across reloads.
+ *
+ * Cross-session continuity is only worth anything if the session outlives the
+ * tab. A per-mount id would mean every reload started a fresh conversation and
+ * Pep would greet a coach he spoke to ten minutes ago as a stranger, which is
+ * the exact failure the memory layer exists to prevent.
+ *
+ * Stored rather than derived, because it has to be the same number tomorrow.
+ * Falls back to a per-load id where storage is unavailable, so a private
+ * window still works and simply does not remember, which is the honest
+ * degradation.
+ */
+function sessionId(): number {
+  const KEY = "peptalk.session";
+  try {
+    const held = window.localStorage.getItem(KEY);
+    if (held) return Number(held);
+    // Day-scoped so a coach coming back next week lands in a new session and
+    // the old one stays readable as its own conversation, which is what makes
+    // "we went over him on the 11th" possible.
+    const fresh = Math.floor(Date.now() / 86_400_000) * 1000 + Math.floor(Math.random() * 1000);
+    window.localStorage.setItem(KEY, String(fresh));
+    return fresh;
+  } catch {
+    return Math.floor(Date.now() / 1000) % 1_000_000;
+  }
+}
+
 function inflight(
   question: string,
   memory: boolean,
@@ -263,7 +292,7 @@ function inflight(
   const p = fetch("/api/ask", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ question, memory, match }),
+    body: JSON.stringify({ question, memory, match, session_id: sessionId() }),
   })
     .then(async (r) => {
       const body = await r.json();
@@ -294,10 +323,19 @@ function asDetail(e: unknown): { error: string; detail?: string } {
  * They are how the model proves each claim came from a retrieved fact, and the
  * chips below carry the same information in a form a coach can read. Leaving
  * both in makes a sentence look like a bibliography.
+ *
+ * Three shapes, because the model writes all three: [4] on its own, [12][11]
+ * when it stacks them, and [12, 11] when two facts support one clause. The
+ * first version missed the grouped form and left a literal "[12, 11]" sitting
+ * in the sentence, which reads as a typo rather than as evidence. The same
+ * shape broke the backend's parser, where it cost the answer its citations
+ * outright; here it was only ugly.
  */
+const CITATION = /\s*(?:\[\s*\d+(?:\s*,\s*\d+)*\s*\])+/g;
+
 function stripIds(text: string): string {
   return text
-    .replace(/\s*\[\d+\](\[\d+\])*/g, "")
+    .replace(CITATION, "")
     .replace(/\s+([.,;:])/g, "$1")
     .trim();
 }
