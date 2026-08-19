@@ -114,7 +114,9 @@ Object-store-native graph database, Cypher over Bolt. What we hold:
 (:Team|:Player)-[:HAS_FACT]->(:Fact {valid_from, valid_to, band, median_value})
 (:Fact)-[:OBSERVED_IN]->(:Match)      ← the evidence
 (:Fact)-[:SUPERSEDED_BY]->(:Fact)     ← what replaced what
-(:Session)-[:HAS_TURN]->(:Turn)-[:CITES]->(:Fact)
+(:Team)-[:HAS_SESSION]->(:Session)-[:HAS_TURN]->(:Turn)
+(:Turn)-[:NEXT]->(:Turn)              ← what was said, in order
+(:Turn)-[:CITES]->(:Fact)             ← what the answer was built from
 ```
 
 Three queries carry the product:
@@ -130,6 +132,45 @@ instead: the single most-evidenced claim, with no validity window, which is what
 vector index would surface. Argentina and Barcelona come back identical on all
 five dimensions.
 
+### The conversation is memory too
+
+The football facts are one half. The other is that a coach's questions and Pep's
+answers live in the same graph, on the same clock, and this is the part that
+makes it a memory layer rather than a retrieval demo.
+
+Every exchange is written as two turns. Pep's carries `CITES` edges to the exact
+`Fact` nodes it quoted. So a week later:
+
+```
+ask on Tuesday   →  "his final third entries are fine at 6.8 per 90 [4],
+                     but threat left on the table is 0.65 [3]"
+                    2 turns written, 6 CITES edges
+
+ask on Friday    →  "We went over him on the 11th. The headline was that
+   (new thread)      his final third entries are fine at 6.8 per 90 [4]"
+
+memory off       →  "This is actually the first time we have spoken."
+```
+
+Three things are worth pulling out of that.
+
+**The transcript is never sent.** A dozen prior turns come back from the graph
+and the facts they cited stay reachable by traversal. That is the difference
+between a memory layer and a long context window: the conversation can run for
+thirty sessions and the prompt does not grow to match.
+
+**Citations point at the facts as they were then.** A fact superseded next month
+does not rewrite what Pep said today. The old turn still points at the old fact,
+which is the honest record of what was believed at the time, and it is a
+traversal rather than a diff.
+
+**Abstention covers the conversation, not just the football.** With memory off
+the recall query does not run, so Pep says he has never met you. That is a
+consequence of retrieval not happening, not a line written for the occasion.
+
+Conversations are listed and openable in the interface, so none of the above has
+to be taken on trust.
+
 ### Constraints we found by probing a live node
 
 HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
@@ -141,7 +182,27 @@ HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
   every temporal predicate is `<=` / `>`.
 - One statement per request; no multi-stage `WITH` pipelines.
 - **Nodes upsert by id but relationships do not.** Found by running an ingest
-  three times and getting six turns. Everything uses `MERGE`.
+  three times and getting six turns. `MERGE` on the path fixes it and `CREATE`
+  does not, verified against a live node: three `MERGE`s of the same path leave
+  one edge, three `CREATE`s leave three.
+
+That last one has a consequence that took a while to see. Because nodes upsert
+and edges do not, **an ingest that writes fewer rows than last time is not
+idempotent**. Adding one match re-segments a team's whole history, since eras
+come from quantiles over every observation, so a re-ingest can produce six eras
+where there were eight. The six overwrite the low ids and the last two are
+abandoned, still carrying the old validity intervals, still on the supersession
+chain. Measured: eight eras re-ingested as six left eight facts standing and
+grew the chain from seven edges to twelve, and `fact_at` then matched two facts
+for one date and returned whichever the engine reached first.
+
+The fix is to clear before writing, scoped **through the `HAS_FACT` edge** and
+not by `f.team_id`. A player's fact carries `team_id` too, so the property alone
+reaches 180 facts for Argentina where only 10 belong to the team; the other 170
+are the squad's, and `ingest_team` does not write them back. Reachability is the
+exact discriminator and id arithmetic is not: `team_id_for` returns up to 90,099
+while player facts start at 700,000,000, so a team whose crc32 landed near
+60,000 would have collided.
 
 ---
 
