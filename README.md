@@ -416,6 +416,8 @@ uv run python -m tacticbench.ingest_all enrich    # scorelines and halftime stat
 uv run python -m tacticbench.players              # player nodes and player facts
 uv run python -m tacticbench.roster --matches campaign
 uv run python -m tacticbench.scout                # the next fixture
+uv run python -m tacticbench.season               # the whole match record
+uv run python -m tacticbench.knowledge_graph      # the graph, as nodes and edges
 ```
 
 Every one of those is idempotent. Running it twice leaves the graph in the

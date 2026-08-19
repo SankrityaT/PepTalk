@@ -1,0 +1,9267 @@
+{
+ "team": "Argentina",
+ "nodes": [
+  {
+   "id": "t25662",
+   "kind": "team",
+   "label": "Argentina",
+   "weight": 3.0
+  },
+  {
+   "id": "m3943077",
+   "kind": "match",
+   "label": "Argentina 1-0 Colombia",
+   "sub": "2024-07-15 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3942785",
+   "kind": "match",
+   "label": "Argentina 2-0 Canada",
+   "sub": "2024-07-10 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3942228",
+   "kind": "match",
+   "label": "Argentina 1-1 Ecuador",
+   "sub": "2024-07-05 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3939986",
+   "kind": "match",
+   "label": "Argentina 2-0 Peru",
+   "sub": "2024-06-30 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3939977",
+   "kind": "match",
+   "label": "Chile 0-1 Argentina",
+   "sub": "2024-06-26 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3939969",
+   "kind": "match",
+   "label": "Argentina 2-0 Canada",
+   "sub": "2024-06-21 \u00b7 Copa America",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3869685",
+   "kind": "match",
+   "label": "Argentina 3-3 France",
+   "sub": "2022-12-18 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": "/clips/008_25.mp4"
+  },
+  {
+   "id": "m3869519",
+   "kind": "match",
+   "label": "Argentina 3-0 Croatia",
+   "sub": "2022-12-13 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3869321",
+   "kind": "match",
+   "label": "Netherlands 2-2 Argentina",
+   "sub": "2022-12-09 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3869151",
+   "kind": "match",
+   "label": "Argentina 2-1 Australia",
+   "sub": "2022-12-03 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3857264",
+   "kind": "match",
+   "label": "Poland 0-2 Argentina",
+   "sub": "2022-11-30 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3857289",
+   "kind": "match",
+   "label": "Argentina 2-0 Mexico",
+   "sub": "2022-11-26 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3857300",
+   "kind": "match",
+   "label": "Argentina 1-2 Saudi Arabia",
+   "sub": "2022-11-22 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m7580",
+   "kind": "match",
+   "label": "France 4-3 Argentina",
+   "sub": "2018-06-30 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m7564",
+   "kind": "match",
+   "label": "Nigeria 1-2 Argentina",
+   "sub": "2018-06-26 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m7545",
+   "kind": "match",
+   "label": "Argentina 0-3 Croatia",
+   "sub": "2018-06-21 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m7531",
+   "kind": "match",
+   "label": "Argentina 1-1 Iceland",
+   "sub": "2018-06-16 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3793185",
+   "kind": "match",
+   "label": "Brazil 0-1 Argentina",
+   "sub": "1990-06-24 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3889149",
+   "kind": "match",
+   "label": "Argentina 3-2 Germany",
+   "sub": "1986-06-29 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3889148",
+   "kind": "match",
+   "label": "Argentina 2-0 Belgium",
+   "sub": "1986-06-25 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3750191",
+   "kind": "match",
+   "label": "Argentina 2-1 England",
+   "sub": "1986-06-22 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "m3888717",
+   "kind": "match",
+   "label": "Netherlands 4-0 Argentina",
+   "sub": "1974-06-26 \u00b7 FIFA World Cup",
+   "weight": 1.4,
+   "clip": null
+  },
+  {
+   "id": "p5503",
+   "kind": "player",
+   "label": "Lionel Messi",
+   "sub": "Right Center Forward",
+   "weight": 1.6,
+   "photo": "/players/5503.jpg"
+  },
+  {
+   "id": "p6909",
+   "kind": "player",
+   "label": "Emiliano Mart\u00ednez",
+   "sub": "Goalkeeper",
+   "weight": 1.6,
+   "photo": "/players/6909.jpg"
+  },
+  {
+   "id": "p3090",
+   "kind": "player",
+   "label": "Nicol\u00e1s Otamendi",
+   "sub": "Left Back",
+   "weight": 1.6,
+   "photo": "/players/3090.jpg"
+  },
+  {
+   "id": "p5507",
+   "kind": "player",
+   "label": "Nicol\u00e1s Tagliafico",
+   "sub": "Left Back",
+   "weight": 1.6,
+   "photo": "/players/5507.jpg"
+  },
+  {
+   "id": "p7797",
+   "kind": "player",
+   "label": "Rodrigo De Paul",
+   "sub": "Right Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/7797.jpg"
+  },
+  {
+   "id": "p20572",
+   "kind": "player",
+   "label": "Cristian Romero",
+   "sub": "Right Center Back",
+   "weight": 1.6,
+   "photo": "/players/20572.jpg"
+  },
+  {
+   "id": "p27886",
+   "kind": "player",
+   "label": "Alexis MacAllister",
+   "sub": "Left Midfield",
+   "weight": 1.6,
+   "photo": "/players/27886.jpg"
+  },
+  {
+   "id": "p38718",
+   "kind": "player",
+   "label": "Enzo Fernandez",
+   "sub": "Left Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/38718.jpg"
+  },
+  {
+   "id": "p29201",
+   "kind": "player",
+   "label": "Nahuel Molina",
+   "sub": "Right Wing Back",
+   "weight": 1.6,
+   "photo": "/players/29201.jpg"
+  },
+  {
+   "id": "p2995",
+   "kind": "player",
+   "label": "\u00c1ngel Di Mar\u00eda",
+   "sub": "Right Midfield",
+   "weight": 1.6,
+   "photo": "/players/2995.jpg"
+  },
+  {
+   "id": "p29560",
+   "kind": "player",
+   "label": "Juli\u00e1n \u00c1lvarez",
+   "sub": "Left Center Forward",
+   "weight": 1.6,
+   "photo": "/players/29560.jpg"
+  },
+  {
+   "id": "p27768",
+   "kind": "player",
+   "label": "Lisandro Mart\u00ednez",
+   "sub": "Left Center Back",
+   "weight": 1.6,
+   "photo": "/players/27768.jpg"
+  },
+  {
+   "id": "p19597",
+   "kind": "player",
+   "label": "Marcos Acu\u00f1a",
+   "sub": "Left Back",
+   "weight": 1.6,
+   "photo": "/players/19597.jpg"
+  },
+  {
+   "id": "p11456",
+   "kind": "player",
+   "label": "Lautaro Mart\u00ednez",
+   "sub": "Center Forward",
+   "weight": 1.6,
+   "photo": "/players/11456.jpg"
+  },
+  {
+   "id": "p16308",
+   "kind": "player",
+   "label": "Leandro Paredes",
+   "sub": "Right Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/16308.jpg"
+  },
+  {
+   "id": "p5506",
+   "kind": "player",
+   "label": "Javier Mascherano",
+   "sub": "Center Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/5506.jpg"
+  },
+  {
+   "id": "p38641",
+   "kind": "player",
+   "label": "Diego Armando Maradona",
+   "sub": "Center Attacking Midfield",
+   "weight": 1.6,
+   "photo": "/players/38641.jpg"
+  },
+  {
+   "id": "p38654",
+   "kind": "player",
+   "label": "Ricardo Giusti",
+   "sub": "Right Midfield",
+   "weight": 1.6,
+   "photo": "/players/38654.jpg"
+  },
+  {
+   "id": "p38657",
+   "kind": "player",
+   "label": "\u00d3scar Ruggeri",
+   "sub": "Left Center Back",
+   "weight": 1.6,
+   "photo": "/players/38657.jpg"
+  },
+  {
+   "id": "p38661",
+   "kind": "player",
+   "label": "Julio Olarticoechea",
+   "sub": "Left Midfield",
+   "weight": 1.6,
+   "photo": "/players/38661.jpg"
+  },
+  {
+   "id": "p38646",
+   "kind": "player",
+   "label": "Jorge Burruchaga",
+   "sub": "Right Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/38646.jpg"
+  },
+  {
+   "id": "p28263",
+   "kind": "player",
+   "label": "Gonzalo Montiel",
+   "sub": "Right Back",
+   "weight": 1.6,
+   "photo": "/players/28263.jpg"
+  },
+  {
+   "id": "p5742",
+   "kind": "player",
+   "label": "Gabriel Mercado",
+   "sub": "Right Back",
+   "weight": 1.6,
+   "photo": "/players/5742.jpg"
+  },
+  {
+   "id": "p38640",
+   "kind": "player",
+   "label": "Nery Pumpido",
+   "sub": "Goalkeeper",
+   "weight": 1.6,
+   "photo": "/players/38640.jpg"
+  },
+  {
+   "id": "p38642",
+   "kind": "player",
+   "label": "Jos\u00e9 Luis Brown",
+   "sub": "Center Back",
+   "weight": 1.6,
+   "photo": "/players/38642.jpg"
+  },
+  {
+   "id": "p38643",
+   "kind": "player",
+   "label": "Jos\u00e9 Luis Cuciuffo",
+   "sub": "Right Center Back",
+   "weight": 1.6,
+   "photo": "/players/38643.jpg"
+  },
+  {
+   "id": "p38644",
+   "kind": "player",
+   "label": "H\u00e9ctor Enrique",
+   "sub": "Left Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/38644.jpg"
+  },
+  {
+   "id": "p38645",
+   "kind": "player",
+   "label": "Sergio Batista",
+   "sub": "Right Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/38645.jpg"
+  },
+  {
+   "id": "p38647",
+   "kind": "player",
+   "label": "Jorge Valdano",
+   "sub": "Center Forward",
+   "weight": 1.6,
+   "photo": "/players/38647.jpg"
+  },
+  {
+   "id": "p20687",
+   "kind": "player",
+   "label": "Nicol\u00e1s Gonz\u00e1lez",
+   "sub": "Left Wing",
+   "weight": 1.6,
+   "photo": "/players/20687.jpg"
+  },
+  {
+   "id": "p3602",
+   "kind": "player",
+   "label": "Marcos Rojo",
+   "sub": "Left Center Back",
+   "weight": 1.6,
+   "photo": "/players/3602.jpg"
+  },
+  {
+   "id": "p5504",
+   "kind": "player",
+   "label": "\u00c9ver Banega",
+   "sub": "Left Center Midfield",
+   "weight": 1.6,
+   "photo": "/players/5504.jpg"
+  },
+  {
+   "id": "p5741",
+   "kind": "player",
+   "label": "Enzo P\u00e9rez",
+   "sub": "Right Center Midfield",
+   "weight": 1.6,
+   "photo": "/players/5741.jpg"
+  },
+  {
+   "id": "p6312",
+   "kind": "player",
+   "label": "Franco Armani",
+   "sub": "Goalkeeper",
+   "weight": 1.6,
+   "photo": "/players/6312.jpg"
+  },
+  {
+   "id": "p3659",
+   "kind": "player",
+   "label": "Willy Caballero",
+   "sub": "Goalkeeper",
+   "weight": 1.6,
+   "photo": "/players/3659.jpg"
+  },
+  {
+   "id": "p3237",
+   "kind": "player",
+   "label": "Sergio Ag\u00fcero",
+   "sub": "Right Center Midfield",
+   "weight": 1.6,
+   "photo": "/players/3237.jpg"
+  },
+  {
+   "id": "p5499",
+   "kind": "player",
+   "label": "Maximiliano Meza",
+   "sub": "Left Attacking Midfield",
+   "weight": 1.6,
+   "photo": "/players/5499.jpg"
+  },
+  {
+   "id": "p3313",
+   "kind": "player",
+   "label": "Giovani Lo Celso",
+   "sub": "Left Defensive Midfield",
+   "weight": 1.6,
+   "photo": "/players/3313.jpg"
+  },
+  {
+   "id": "p5513",
+   "kind": "player",
+   "label": "Eduardo Salvio",
+   "sub": "Right Midfield",
+   "weight": 1.6,
+   "photo": "/players/5513.jpg"
+  },
+  {
+   "id": "p5496",
+   "kind": "player",
+   "label": "Cristian Pav\u00f3n",
+   "sub": "Left Wing",
+   "weight": 1.6,
+   "photo": "/players/5496.jpg"
+  },
+  {
+   "id": "p5497",
+   "kind": "player",
+   "label": "Gonzalo Higua\u00edn",
+   "sub": "Left Center Forward",
+   "weight": 1.6,
+   "photo": "/players/5497.jpg"
+  },
+  {
+   "id": "p7161",
+   "kind": "player",
+   "label": "Germ\u00e1n Pezzella",
+   "sub": "Right Center Back",
+   "weight": 1.6,
+   "photo": "/players/7161.jpg"
+  },
+  {
+   "id": "p28268",
+   "kind": "player",
+   "label": "Exequiel Palacios",
+   "sub": "Left Center Midfield",
+   "weight": 1.6,
+   "photo": "/players/28268.jpg"
+  },
+  {
+   "id": "p7006",
+   "kind": "player",
+   "label": "Papu G\u00f3mez",
+   "sub": "Left Wing",
+   "weight": 1.6,
+   "photo": "/players/7006.jpg"
+  },
+  {
+   "id": "f356620000",
+   "kind": "fact",
+   "label": "press_height deep",
+   "sub": "1974-06-26 to 2018-06-21 \u00b7 6 games",
+   "value": 51.78,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620001",
+   "kind": "fact",
+   "label": "press_height mid",
+   "sub": "2018-06-21 to present \u00b7 16 games",
+   "value": 57.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620002",
+   "kind": "fact",
+   "label": "defensive_action_height deep",
+   "sub": "1974-06-26 to 2022-11-26 \u00b7 10 games",
+   "value": 46.75,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620003",
+   "kind": "fact",
+   "label": "defensive_action_height mid",
+   "sub": "2022-11-26 to present \u00b7 12 games",
+   "value": 52.08,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620004",
+   "kind": "fact",
+   "label": "team_width narrow",
+   "sub": "1974-06-26 to 2022-11-22 \u00b7 9 games",
+   "value": 21.55,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620005",
+   "kind": "fact",
+   "label": "team_width balanced",
+   "sub": "2022-11-22 to present \u00b7 13 games",
+   "value": 23.09,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620006",
+   "kind": "fact",
+   "label": "pass_forward_ratio direct",
+   "sub": "1974-06-26 to 2022-11-22 \u00b7 9 games",
+   "value": 0.71,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620007",
+   "kind": "fact",
+   "label": "pass_forward_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 13 games",
+   "value": 0.59,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620008",
+   "kind": "fact",
+   "label": "possession_share_pct low",
+   "sub": "1974-06-26 to 2018-06-16 \u00b7 5 games",
+   "value": 47.7,
+   "weight": 0.8
+  },
+  {
+   "id": "f356620009",
+   "kind": "fact",
+   "label": "possession_share_pct even",
+   "sub": "2018-06-16 to present \u00b7 17 games",
+   "value": 56.6,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299500",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to present \u00b7 22 games",
+   "value": 8.45,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299510",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 1.2,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299511",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-26 to 2024-06-30 \u00b7 14 games",
+   "value": 4.28,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299512",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2024-06-30 to present \u00b7 5 games",
+   "value": 6.97,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299520",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 0.09,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299521",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-26 to present \u00b7 19 games",
+   "value": 0.21,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299530",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 0.85,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299531",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2018-06-26 to 2022-11-26 \u00b7 6 games",
+   "value": 3.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299532",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-26 to present \u00b7 13 games",
+   "value": 1.73,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299540",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 22 games",
+   "value": 0.7,
+   "weight": 0.8
+  },
+  {
+   "id": "f700299550",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 8 games",
+   "value": 0.4,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309000",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to present \u00b7 26 games",
+   "value": 2.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309010",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 4 games",
+   "value": 7.12,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309011",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-26 to present \u00b7 22 games",
+   "value": 2.86,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309020",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-16 to present \u00b7 26 games",
+   "value": 0.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309030",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to present \u00b7 26 games",
+   "value": 0.03,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309040",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to 2018-06-21 \u00b7 3 games",
+   "value": 0.5,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309041",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-21 to present \u00b7 23 games",
+   "value": 0.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309050",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to 2022-12-03 \u00b7 7 games",
+   "value": 0.56,
+   "weight": 0.8
+  },
+  {
+   "id": "f700309051",
+   "kind": "fact",
+   "label": "xt_left wasteful",
+   "sub": "2022-12-03 to present \u00b7 7 games",
+   "value": 0.41,
+   "weight": 0.8
+  },
+  {
+   "id": "f700323700",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 24.32,
+   "weight": 0.8
+  },
+  {
+   "id": "f700323710",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.95,
+   "weight": 0.8
+  },
+  {
+   "id": "f700323720",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700323730",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 3.7,
+   "weight": 0.8
+  },
+  {
+   "id": "f700323740",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.25,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331300",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2024-06-21 to present \u00b7 8 games",
+   "value": 13.83,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331310",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2024-06-21 to present \u00b7 8 games",
+   "value": 5.93,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331320",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2024-06-21 to present \u00b7 8 games",
+   "value": 0.12,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331330",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2024-06-21 to present \u00b7 8 games",
+   "value": 1.51,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331340",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2024-06-21 to 2024-06-30 \u00b7 5 games",
+   "value": 0.08,
+   "weight": 0.8
+  },
+  {
+   "id": "f700331341",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2024-06-30 to present \u00b7 3 games",
+   "value": 0.28,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360200",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 3.42,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360210",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 6.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360220",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.29,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360230",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360240",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 0.42,
+   "weight": 0.8
+  },
+  {
+   "id": "f700360241",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 0.21,
+   "weight": 0.8
+  },
+  {
+   "id": "f700365900",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700365910",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700365920",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.48,
+   "weight": 0.8
+  },
+  {
+   "id": "f700365930",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700365940",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.03,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549600",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 11.72,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549610",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 2.42,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549620",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 0.05,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549630",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-21 to 2018-06-26 \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549631",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 3.57,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549640",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 0.34,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549700",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-21 to present \u00b7 4 games",
+   "value": 16.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549710",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2018-06-21 to present \u00b7 4 games",
+   "value": 0.47,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549720",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-21 to present \u00b7 4 games",
+   "value": 0.03,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549730",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2018-06-21 to present \u00b7 4 games",
+   "value": 3.98,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549740",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-21 to present \u00b7 4 games",
+   "value": 0.32,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549900",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 19.07,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549910",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 2.51,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549920",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.06,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549930",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 1.3,
+   "weight": 0.8
+  },
+  {
+   "id": "f700549940",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.36,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550300",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to 2018-06-21 \u00b7 3 games",
+   "value": 8.53,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550301",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-21 to 2024-06-26 \u00b7 21 games",
+   "value": 12.94,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550302",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2024-06-26 to present \u00b7 8 games",
+   "value": 8.8,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550310",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to present \u00b7 32 games",
+   "value": 7.99,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550320",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-16 to present \u00b7 32 games",
+   "value": 0.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550330",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2018-06-16 to present \u00b7 32 games",
+   "value": 2.96,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550340",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 32 games",
+   "value": 0.65,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550350",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.38,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550400",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 8.59,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550401",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 23.68,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550410",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 14.29,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550420",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 0.1,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550421",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 0.24,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550430",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550431",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 2.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550440",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 6 games",
+   "value": 0.91,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550600",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-16 to present \u00b7 8 games",
+   "value": 15.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550610",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to present \u00b7 8 games",
+   "value": 9.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550620",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-16 to present \u00b7 8 games",
+   "value": 0.15,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550630",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to present \u00b7 8 games",
+   "value": 0.23,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550640",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 8 games",
+   "value": 0.4,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550700",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to present \u00b7 30 games",
+   "value": 8.53,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550710",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-16 to 2022-12-09 \u00b7 14 games",
+   "value": 2.84,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550711",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-12-09 to 2024-06-26 \u00b7 7 games",
+   "value": 0.95,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550712",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2024-06-26 to present \u00b7 9 games",
+   "value": 3.83,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550720",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-16 to 2018-06-26 \u00b7 4 games",
+   "value": 0.1,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550721",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-26 to present \u00b7 26 games",
+   "value": 0.23,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550730",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-16 to present \u00b7 30 games",
+   "value": 0.68,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550740",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-16 to present \u00b7 30 games",
+   "value": 0.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f700550750",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 12 games",
+   "value": 0.36,
+   "weight": 0.8
+  },
+  {
+   "id": "f700551300",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 14.17,
+   "weight": 0.8
+  },
+  {
+   "id": "f700551310",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 6.55,
+   "weight": 0.8
+  },
+  {
+   "id": "f700551320",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.17,
+   "weight": 0.8
+  },
+  {
+   "id": "f700551330",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.64,
+   "weight": 0.8
+  },
+  {
+   "id": "f700551340",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2018-06-16 to present \u00b7 4 games",
+   "value": 0.5,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574100",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 12.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574110",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 7.96,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574120",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-21 to 2018-06-26 \u00b7 3 games",
+   "value": 0.13,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574121",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 0.06,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574130",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 1.52,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574140",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 0.33,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574200",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 4.78,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574210",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 1.91,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574220",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 0.11,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574230",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-21 to present \u00b7 6 games",
+   "value": 0.67,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574240",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2018-06-21 to 2018-06-26 \u00b7 3 games",
+   "value": 0.06,
+   "weight": 0.8
+  },
+  {
+   "id": "f700574241",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-26 to present \u00b7 3 games",
+   "value": 0.38,
+   "weight": 0.8
+  },
+  {
+   "id": "f700631200",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2018-06-26 to present \u00b7 4 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700631210",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2018-06-26 to present \u00b7 4 games",
+   "value": 0.95,
+   "weight": 0.8
+  },
+  {
+   "id": "f700631220",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "2018-06-26 to present \u00b7 4 games",
+   "value": 0.54,
+   "weight": 0.8
+  },
+  {
+   "id": "f700631230",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2018-06-26 to present \u00b7 4 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700631240",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2018-06-26 to present \u00b7 4 games",
+   "value": 0.05,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690900",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2022-11-22 to present \u00b7 26 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690910",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-11-22 to present \u00b7 26 games",
+   "value": 0.94,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690920",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "2022-11-22 to present \u00b7 26 games",
+   "value": 0.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690930",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-22 to present \u00b7 26 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690940",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2022-11-22 to present \u00b7 26 games",
+   "value": 0.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f700690950",
+   "kind": "fact",
+   "label": "xt_left decisive",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700600",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 9.99,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700610",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 6.76,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700620",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 0.07,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700630",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 1.03,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700640",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 0.35,
+   "weight": 0.8
+  },
+  {
+   "id": "f700700650",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 4 games",
+   "value": 0.44,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716100",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2022-12-09 to present \u00b7 4 games",
+   "value": 3.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716110",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-12-09 to present \u00b7 4 games",
+   "value": 2.62,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716120",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-12-09 to present \u00b7 4 games",
+   "value": 0.23,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716130",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-12-09 to present \u00b7 4 games",
+   "value": 0.27,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716140",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-12-09 to present \u00b7 4 games",
+   "value": 0.13,
+   "weight": 0.8
+  },
+  {
+   "id": "f700716150",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-12-09 to present \u00b7 2 games",
+   "value": 0.5,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779700",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2022-11-22 to 2024-07-05 \u00b7 18 games",
+   "value": 13.69,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779701",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2024-07-05 to present \u00b7 6 games",
+   "value": 9.2,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779710",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 6.8,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779720",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.14,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779730",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 1.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779740",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.47,
+   "weight": 0.8
+  },
+  {
+   "id": "f700779750",
+   "kind": "fact",
+   "label": "xt_left wasteful",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.65,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145600",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2022-11-22 to 2022-11-26 \u00b7 3 games",
+   "value": 2.6,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145601",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-26 to 2024-07-05 \u00b7 7 games",
+   "value": 13.64,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145602",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2024-07-05 to present \u00b7 4 games",
+   "value": 20.92,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145610",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145620",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145630",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 5.43,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145640",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2022-11-22 to 2024-07-05 \u00b7 10 games",
+   "value": 0.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145641",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2024-07-05 to present \u00b7 4 games",
+   "value": 0.38,
+   "weight": 0.8
+  },
+  {
+   "id": "f701145650",
+   "kind": "fact",
+   "label": "xt_left decisive",
+   "sub": "2022-11-22 to present \u00b7 8 games",
+   "value": 0.09,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630800",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2022-11-22 to 2022-11-30 \u00b7 3 games",
+   "value": 1.54,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630801",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-30 to present \u00b7 11 games",
+   "value": 5.83,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630810",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-22 to 2022-11-30 \u00b7 3 games",
+   "value": 3.08,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630811",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2022-11-30 to 2022-12-13 \u00b7 4 games",
+   "value": 6.51,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630812",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-12-13 to present \u00b7 7 games",
+   "value": 4.66,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630820",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630830",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.35,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630840",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.46,
+   "weight": 0.8
+  },
+  {
+   "id": "f701630850",
+   "kind": "fact",
+   "label": "xt_left wasteful",
+   "sub": "2022-11-22 to present \u00b7 8 games",
+   "value": 0.8,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959700",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2018-06-21 to 2022-11-22 \u00b7 3 games",
+   "value": 13.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959701",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 13 games",
+   "value": 8.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959710",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2018-06-21 to 2022-11-22 \u00b7 3 games",
+   "value": 2.87,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959711",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-11-22 to 2022-12-03 \u00b7 5 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959712",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-12-03 to present \u00b7 8 games",
+   "value": 4.78,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959720",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2018-06-21 to present \u00b7 16 games",
+   "value": 0.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959730",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2018-06-21 to present \u00b7 16 games",
+   "value": 1.79,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959740",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2018-06-21 to present \u00b7 16 games",
+   "value": 0.35,
+   "weight": 0.8
+  },
+  {
+   "id": "f701959750",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 12 games",
+   "value": 0.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057200",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 3.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057210",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 4.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057220",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.24,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057230",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057240",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.2,
+   "weight": 0.8
+  },
+  {
+   "id": "f702057250",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.45,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068700",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2024-06-26 to present \u00b7 8 games",
+   "value": 11.35,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068710",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2024-06-26 to 2024-07-05 \u00b7 5 games",
+   "value": 1.84,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068711",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2024-07-05 to present \u00b7 3 games",
+   "value": 4.6,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068720",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2024-06-26 to 2024-07-05 \u00b7 5 games",
+   "value": 0.16,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068721",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2024-07-05 to present \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068730",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2024-06-26 to present \u00b7 8 games",
+   "value": 4.54,
+   "weight": 0.8
+  },
+  {
+   "id": "f702068740",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2024-06-26 to present \u00b7 8 games",
+   "value": 0.17,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776800",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 20 games",
+   "value": 3.02,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776810",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-22 to present \u00b7 20 games",
+   "value": 2.5,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776820",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 20 games",
+   "value": 0.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776830",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-22 to present \u00b7 20 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776840",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-22 to present \u00b7 20 games",
+   "value": 0.18,
+   "weight": 0.8
+  },
+  {
+   "id": "f702776850",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 10 games",
+   "value": 0.2,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788600",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2022-11-26 to present \u00b7 22 games",
+   "value": 11.52,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788610",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2022-11-26 to 2022-12-09 \u00b7 7 games",
+   "value": 6.52,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788611",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-12-09 to present \u00b7 15 games",
+   "value": 2.34,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788620",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2022-11-26 to present \u00b7 22 games",
+   "value": 0.11,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788630",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-26 to 2022-11-30 \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788631",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-30 to present \u00b7 19 games",
+   "value": 2.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788640",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-26 to present \u00b7 22 games",
+   "value": 0.29,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788650",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-26 to 2022-11-30 \u00b7 3 games",
+   "value": 0.45,
+   "weight": 0.8
+  },
+  {
+   "id": "f702788651",
+   "kind": "fact",
+   "label": "xt_left wasteful",
+   "sub": "2022-11-30 to present \u00b7 9 games",
+   "value": 0.67,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826300",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-26 to 2024-07-10 \u00b7 7 games",
+   "value": 7.65,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826301",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2024-07-10 to present \u00b7 3 games",
+   "value": 1.26,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826310",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-26 to present \u00b7 10 games",
+   "value": 3.79,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826320",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-26 to present \u00b7 10 games",
+   "value": 0.28,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826330",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-26 to 2022-12-18 \u00b7 3 games",
+   "value": 1.37,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826331",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-12-18 to present \u00b7 7 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826340",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-26 to present \u00b7 10 games",
+   "value": 0.4,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826350",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 0.38,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826800",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 5.58,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826810",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 2.87,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826820",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 0.19,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826830",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 2.27,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826840",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2022-11-26 to present \u00b7 4 games",
+   "value": 0.15,
+   "weight": 0.8
+  },
+  {
+   "id": "f702826850",
+   "kind": "fact",
+   "label": "xt_left decisive",
+   "sub": "2022-11-26 to present \u00b7 2 games",
+   "value": 0.01,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920100",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 22 games",
+   "value": 6.65,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920110",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-22 to present \u00b7 22 games",
+   "value": 4.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920120",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 22 games",
+   "value": 0.23,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920130",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-11-22 to present \u00b7 22 games",
+   "value": 0.96,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920140",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-22 to present \u00b7 22 games",
+   "value": 0.26,
+   "weight": 0.8
+  },
+  {
+   "id": "f702920150",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.34,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956000",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "2022-11-22 to 2022-12-03 \u00b7 7 games",
+   "value": 10.37,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956001",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "2022-12-03 to present \u00b7 17 games",
+   "value": 21.95,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956010",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "2022-11-22 to 2022-11-26 \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956011",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2022-11-26 to present \u00b7 21 games",
+   "value": 2.3,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956020",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956030",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-22 to 2022-12-09 \u00b7 9 games",
+   "value": 2.25,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956031",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "2022-12-09 to present \u00b7 15 games",
+   "value": 3.85,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956040",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "2022-11-22 to 2022-11-26 \u00b7 3 games",
+   "value": 0.1,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956041",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-11-26 to present \u00b7 21 games",
+   "value": 0.21,
+   "weight": 0.8
+  },
+  {
+   "id": "f702956050",
+   "kind": "fact",
+   "label": "xt_left decisive",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.14,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864000",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864010",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 1.47,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864020",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.4,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864030",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864040",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864100",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 14.25,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864110",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 6.84,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864120",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.32,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864130",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 4.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864140",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.65,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864200",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864210",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 1.98,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864211",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "1986-06-25 to present \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864220",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.38,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864230",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 1.14,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864231",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "1986-06-25 to present \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864240",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.04,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864300",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 0.99,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864301",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-25 to present \u00b7 3 games",
+   "value": 4.83,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864310",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864311",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-25 to present \u00b7 3 games",
+   "value": 3.86,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864320",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.41,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864330",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 1.12,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864340",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.13,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864400",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 4.96,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864410",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 7.73,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864420",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.33,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864430",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 3.73,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864440",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.42,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864500",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 3.96,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864510",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 2.97,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864520",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.35,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864530",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864540",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.15,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864600",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 6.69,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864610",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 6.56,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864620",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.16,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864630",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 3.57,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864631",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-25 to present \u00b7 5 games",
+   "value": 1.6,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864640",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 0.33,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864641",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "1986-06-25 to present \u00b7 5 games",
+   "value": 0.6,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864700",
+   "kind": "fact",
+   "label": "defensive_actions relentless",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 12.55,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864710",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 2.97,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864720",
+   "kind": "fact",
+   "label": "progressive_ratio sideways",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.11,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864730",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 5.22,
+   "weight": 0.8
+  },
+  {
+   "id": "f703864740",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to present \u00b7 6 games",
+   "value": 0.29,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865400",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 7.36,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865410",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 4.41,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865420",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.25,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865430",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 1.54,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865440",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.21,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865700",
+   "kind": "fact",
+   "label": "defensive_actions passive",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 1.46,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865710",
+   "kind": "fact",
+   "label": "final_third_entries deep",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.98,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865720",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 0.29,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865721",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-25 to present \u00b7 5 games",
+   "value": 0.36,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865730",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-22 to 1986-06-25 \u00b7 3 games",
+   "value": 1.89,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865731",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "1986-06-25 to present \u00b7 5 games",
+   "value": 0.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703865740",
+   "kind": "fact",
+   "label": "xt_created quiet",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.08,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866100",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 6.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866110",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 1.98,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866120",
+   "kind": "fact",
+   "label": "progressive_ratio direct",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.39,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866130",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "1986-06-22 to 1986-06-29 \u00b7 5 games",
+   "value": 1.14,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866131",
+   "kind": "fact",
+   "label": "turnover_rate loose",
+   "sub": "1986-06-29 to present \u00b7 3 games",
+   "value": 4.0,
+   "weight": 0.8
+  },
+  {
+   "id": "f703866140",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "1986-06-22 to present \u00b7 8 games",
+   "value": 0.25,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871800",
+   "kind": "fact",
+   "label": "defensive_actions involved",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 7.17,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871810",
+   "kind": "fact",
+   "label": "final_third_entries advanced",
+   "sub": "2022-11-22 to 2024-06-26 \u00b7 14 games",
+   "value": 9.07,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871811",
+   "kind": "fact",
+   "label": "final_third_entries linking",
+   "sub": "2024-06-26 to present \u00b7 10 games",
+   "value": 2.79,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871820",
+   "kind": "fact",
+   "label": "progressive_ratio mixed",
+   "sub": "2022-11-22 to present \u00b7 24 games",
+   "value": 0.16,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871830",
+   "kind": "fact",
+   "label": "turnover_rate secure",
+   "sub": "2022-11-22 to 2022-12-13 \u00b7 11 games",
+   "value": 0.16,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871831",
+   "kind": "fact",
+   "label": "turnover_rate mixed",
+   "sub": "2022-12-13 to present \u00b7 13 games",
+   "value": 1.45,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871840",
+   "kind": "fact",
+   "label": "xt_created creative",
+   "sub": "2022-11-22 to 2022-12-18 \u00b7 12 games",
+   "value": 0.43,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871841",
+   "kind": "fact",
+   "label": "xt_created steady",
+   "sub": "2022-12-18 to present \u00b7 12 games",
+   "value": 0.23,
+   "weight": 0.8
+  },
+  {
+   "id": "f703871850",
+   "kind": "fact",
+   "label": "xt_left mixed",
+   "sub": "2022-11-22 to present \u00b7 14 games",
+   "value": 0.61,
+   "weight": 0.8
+  },
+  {
+   "id": "s20684031",
+   "kind": "session",
+   "label": "Remind me what we went over about De Paul.",
+   "sub": "2 turns",
+   "weight": 1.2
+  },
+  {
+   "id": "n20684031000",
+   "kind": "turn",
+   "label": "Remind me what we went over about De Paul.",
+   "sub": "coach",
+   "weight": 0.6
+  },
+  {
+   "id": "n20684031001",
+   "kind": "turn",
+   "label": "We covered this on the 18th. The headline was that **De Paul** was pin",
+   "sub": "pep",
+   "weight": 0.6
+  },
+  {
+   "id": "s20684496",
+   "kind": "session",
+   "label": "How is De Paul doing in the final third?",
+   "sub": "2 turns",
+   "weight": 1.2
+  },
+  {
+   "id": "n20684496000",
+   "kind": "turn",
+   "label": "How is De Paul doing in the final third?",
+   "sub": "coach",
+   "weight": 0.6
+  },
+  {
+   "id": "n20684496001",
+   "kind": "turn",
+   "label": "Honestly, **De Paul** was far too deep in this one. His final third en",
+   "sub": "pep",
+   "weight": 0.6
+  }
+ ],
+ "edges": [
+  {
+   "s": "t25662",
+   "t": "m3943077",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3942785",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3942228",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3939986",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3939977",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3939969",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3869685",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3869519",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3869321",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3869151",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3857264",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3857289",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3857300",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m7580",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m7564",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m7545",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m7531",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3793185",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3889149",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3889148",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3750191",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "m3888717",
+   "kind": "PLAYED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5503",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p6909",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p3090",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5507",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p7797",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p20572",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p27886",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38718",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p29201",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p2995",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p29560",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p27768",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p19597",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p11456",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p16308",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5506",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38641",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38654",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38657",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38661",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38646",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p28263",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5742",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38640",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38642",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38643",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38644",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38645",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p38647",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p20687",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p3602",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5504",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5741",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p6312",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p3659",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p3237",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5499",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p3313",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5513",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5496",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p5497",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p7161",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p28268",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "p7006",
+   "kind": "FIELDED"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620000",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620001",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620002",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620003",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620004",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620005",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620006",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620007",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620008",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "t25662",
+   "t": "f356620009",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299500",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299510",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299511",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299512",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299520",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299521",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299530",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299531",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299532",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299540",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p2995",
+   "t": "f700299550",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309000",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309010",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309011",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309020",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309030",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309040",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309041",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309050",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3090",
+   "t": "f700309051",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3237",
+   "t": "f700323700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3237",
+   "t": "f700323710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3237",
+   "t": "f700323720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3237",
+   "t": "f700323730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3237",
+   "t": "f700323740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331300",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331310",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331320",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331330",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331340",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3313",
+   "t": "f700331341",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360200",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360210",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360220",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360230",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360240",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3602",
+   "t": "f700360241",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3659",
+   "t": "f700365900",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3659",
+   "t": "f700365910",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3659",
+   "t": "f700365920",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3659",
+   "t": "f700365930",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p3659",
+   "t": "f700365940",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549631",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5496",
+   "t": "f700549640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5497",
+   "t": "f700549700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5497",
+   "t": "f700549710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5497",
+   "t": "f700549720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5497",
+   "t": "f700549730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5497",
+   "t": "f700549740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5499",
+   "t": "f700549900",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5499",
+   "t": "f700549910",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5499",
+   "t": "f700549920",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5499",
+   "t": "f700549930",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5499",
+   "t": "f700549940",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550300",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550301",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550302",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550310",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550320",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550330",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550340",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5503",
+   "t": "f700550350",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550400",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550401",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550410",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550420",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550421",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550430",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550431",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5504",
+   "t": "f700550440",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5506",
+   "t": "f700550600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5506",
+   "t": "f700550610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5506",
+   "t": "f700550620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5506",
+   "t": "f700550630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5506",
+   "t": "f700550640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550711",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550712",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550721",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5507",
+   "t": "f700550750",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5513",
+   "t": "f700551300",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5513",
+   "t": "f700551310",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5513",
+   "t": "f700551320",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5513",
+   "t": "f700551330",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5513",
+   "t": "f700551340",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574100",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574110",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574120",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574121",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574130",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5741",
+   "t": "f700574140",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574200",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574210",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574220",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574230",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574240",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p5742",
+   "t": "f700574241",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6312",
+   "t": "f700631200",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6312",
+   "t": "f700631210",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6312",
+   "t": "f700631220",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6312",
+   "t": "f700631230",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6312",
+   "t": "f700631240",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690900",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690910",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690920",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690930",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690940",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p6909",
+   "t": "f700690950",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7006",
+   "t": "f700700650",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716100",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716110",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716120",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716130",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716140",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7161",
+   "t": "f700716150",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779701",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p7797",
+   "t": "f700779750",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145601",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145602",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145641",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p11456",
+   "t": "f701145650",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630800",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630801",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630810",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630811",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630812",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630820",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630830",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630840",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p16308",
+   "t": "f701630850",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959701",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959711",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959712",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p19597",
+   "t": "f701959750",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057200",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057210",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057220",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057230",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057240",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20572",
+   "t": "f702057250",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068711",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068721",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p20687",
+   "t": "f702068740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776800",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776810",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776820",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776830",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776840",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27768",
+   "t": "f702776850",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788611",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788631",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788650",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p27886",
+   "t": "f702788651",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826300",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826301",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826310",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826320",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826330",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826331",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826340",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28263",
+   "t": "f702826350",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826800",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826810",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826820",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826830",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826840",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p28268",
+   "t": "f702826850",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920100",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920110",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920120",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920130",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920140",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29201",
+   "t": "f702920150",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956000",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956001",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956010",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956011",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956020",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956030",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956031",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956040",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956041",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p29560",
+   "t": "f702956050",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38640",
+   "t": "f703864000",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38640",
+   "t": "f703864010",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38640",
+   "t": "f703864020",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38640",
+   "t": "f703864030",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38640",
+   "t": "f703864040",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38641",
+   "t": "f703864100",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38641",
+   "t": "f703864110",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38641",
+   "t": "f703864120",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38641",
+   "t": "f703864130",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38641",
+   "t": "f703864140",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864200",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864210",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864211",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864220",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864230",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864231",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38642",
+   "t": "f703864240",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864300",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864301",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864310",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864311",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864320",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864330",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38643",
+   "t": "f703864340",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38644",
+   "t": "f703864400",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38644",
+   "t": "f703864410",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38644",
+   "t": "f703864420",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38644",
+   "t": "f703864430",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38644",
+   "t": "f703864440",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38645",
+   "t": "f703864500",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38645",
+   "t": "f703864510",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38645",
+   "t": "f703864520",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38645",
+   "t": "f703864530",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38645",
+   "t": "f703864540",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864600",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864610",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864620",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864630",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864631",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864640",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38646",
+   "t": "f703864641",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38647",
+   "t": "f703864700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38647",
+   "t": "f703864710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38647",
+   "t": "f703864720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38647",
+   "t": "f703864730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38647",
+   "t": "f703864740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38654",
+   "t": "f703865400",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38654",
+   "t": "f703865410",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38654",
+   "t": "f703865420",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38654",
+   "t": "f703865430",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38654",
+   "t": "f703865440",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865700",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865710",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865720",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865721",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865730",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865731",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38657",
+   "t": "f703865740",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866100",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866110",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866120",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866130",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866131",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38661",
+   "t": "f703866140",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871800",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871810",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871811",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871820",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871830",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871831",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871840",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871841",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "p38718",
+   "t": "f703871850",
+   "kind": "HAS_FACT"
+  },
+  {
+   "s": "f356620000",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620000",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620000",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620001",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620001",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620001",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620002",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620002",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620002",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620003",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620003",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620003",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620004",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620004",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620004",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620005",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620005",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620005",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620006",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620006",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620006",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620007",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620007",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620007",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620008",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620008",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620008",
+   "t": "m3888717",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620009",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620009",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620009",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299500",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299500",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299500",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299510",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299510",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299511",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299511",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299511",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299512",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299512",
+   "t": "m3942785",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299512",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299520",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299520",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299521",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299521",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299521",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299530",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299530",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299531",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299531",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299531",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299532",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299532",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299532",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299540",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299540",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299540",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299550",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299550",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700299550",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309000",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309000",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309000",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309010",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309010",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309011",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309011",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309011",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309020",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309020",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309020",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309030",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309030",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309030",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309040",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309040",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309041",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309041",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309041",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309050",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309050",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309050",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309051",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309051",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700309051",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323700",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323700",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323700",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323710",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323710",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323710",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323720",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323720",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323720",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323730",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323730",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323730",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323740",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323740",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700323740",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331300",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331300",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331300",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331310",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331310",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331310",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331320",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331320",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331320",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331330",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331330",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331330",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331340",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331340",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331340",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331341",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700331341",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360200",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360200",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360200",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360210",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360210",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360210",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360220",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360220",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360220",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360230",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360230",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360230",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360240",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360240",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360241",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700360241",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365900",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365900",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365910",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365910",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365920",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365920",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365930",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365930",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365940",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700365940",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549600",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549600",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549600",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549610",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549610",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549610",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549620",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549620",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549620",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549630",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549630",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549631",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549631",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549640",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549640",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549640",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549700",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549700",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549710",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549710",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549720",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549720",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549730",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549730",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549740",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549740",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549900",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549900",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549910",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549910",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549920",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549920",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549930",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549930",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549940",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700549940",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550300",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550300",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550301",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550301",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550301",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550302",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550302",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550302",
+   "t": "m3942785",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550310",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550310",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550310",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550320",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550320",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550320",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550330",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550330",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550330",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550340",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550340",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550340",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550350",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550350",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550350",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550400",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550400",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550401",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550401",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550410",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550410",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550410",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550420",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550420",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550421",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550421",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550430",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550430",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550431",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550431",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550440",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550440",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550440",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550600",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550600",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550600",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550610",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550610",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550610",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550620",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550620",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550620",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550630",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550630",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550630",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550640",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550640",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550640",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550700",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550700",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550700",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550710",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550710",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550710",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550711",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550711",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550711",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550712",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550712",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550712",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550720",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550720",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550721",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550721",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550721",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550730",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550730",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550730",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550740",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550740",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550740",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550750",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550750",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700550750",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551300",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551300",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551310",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551310",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551320",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551320",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551330",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551330",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551340",
+   "t": "m7531",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700551340",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574100",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574100",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574100",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574110",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574110",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574110",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574120",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574120",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574121",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574121",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574130",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574130",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574130",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574140",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574140",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574140",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574200",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574200",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574200",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574210",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574210",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574210",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574220",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574220",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574220",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574230",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574230",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574230",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574240",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574240",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574241",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700574241",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631200",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631200",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631210",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631210",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631220",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631220",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631230",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631230",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631240",
+   "t": "m7564",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700631240",
+   "t": "m7580",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690900",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690900",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690900",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690910",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690910",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690910",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690920",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690920",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690920",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690930",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690930",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690930",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690940",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690940",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690940",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690950",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690950",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700690950",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700600",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700600",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700610",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700610",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700620",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700620",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700630",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700630",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700640",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700640",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700650",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700700650",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716100",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716100",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716110",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716110",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716120",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716120",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716130",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716130",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716140",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716140",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700716150",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779700",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779700",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779700",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779701",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779701",
+   "t": "m3942785",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779701",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779710",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779710",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779710",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779720",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779720",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779720",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779730",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779730",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779730",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779740",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779740",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779740",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779750",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779750",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f700779750",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145600",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145600",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145601",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145601",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145601",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145602",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145602",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145610",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145610",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145610",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145620",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145620",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145620",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145630",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145630",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145630",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145640",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145640",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145640",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145641",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145641",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145650",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145650",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701145650",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630800",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630800",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630801",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630801",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630801",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630810",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630810",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630811",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630811",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630811",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630812",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630812",
+   "t": "m3939969",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630812",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630820",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630820",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630820",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630830",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630830",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630830",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630840",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630840",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630840",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630850",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630850",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701630850",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959700",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959700",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959701",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959701",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959701",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959710",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959710",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959711",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959711",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959711",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959712",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959712",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959712",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959720",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959720",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959720",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959730",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959730",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959730",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959740",
+   "t": "m7545",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959740",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959740",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959750",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959750",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f701959750",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057200",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057200",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057200",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057210",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057210",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057210",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057220",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057220",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057220",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057230",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057230",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057230",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057240",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057240",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057240",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057250",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057250",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702057250",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068700",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068700",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068700",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068710",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068710",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068710",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068711",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068711",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068720",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068720",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068720",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068721",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068721",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068730",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068730",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068730",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068740",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068740",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702068740",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776800",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776800",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776800",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776810",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776810",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776810",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776820",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776820",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776820",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776830",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776830",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776830",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776840",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776840",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776840",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776850",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776850",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702776850",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788600",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788600",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788600",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788610",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788610",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788610",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788611",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788611",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788611",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788620",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788620",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788620",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788630",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788630",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788631",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788631",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788631",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788640",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788640",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788640",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788650",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788650",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788651",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788651",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702788651",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826300",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826300",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826300",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826301",
+   "t": "m3942785",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826301",
+   "t": "m3943077",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826310",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826310",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826310",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826320",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826320",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826320",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826330",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826330",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826331",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826331",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826331",
+   "t": "m3942785",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826340",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826340",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826340",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826350",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826350",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826800",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826800",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826810",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826810",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826820",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826820",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826830",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826830",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826840",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826840",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702826850",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920100",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920100",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920100",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920110",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920110",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920110",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920120",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920120",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920120",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920130",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920130",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920130",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920140",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920140",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920140",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920150",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920150",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702920150",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956000",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956000",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956000",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956001",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956001",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956001",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956010",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956010",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956011",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956011",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956011",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956020",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956020",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956020",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956030",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956030",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956030",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956031",
+   "t": "m3869321",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956031",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956031",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956040",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956040",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956041",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956041",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956041",
+   "t": "m3869151",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956050",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956050",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f702956050",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864000",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864000",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864000",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864010",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864010",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864010",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864020",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864020",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864020",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864030",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864030",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864030",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864040",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864040",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864040",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864100",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864100",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864100",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864110",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864110",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864110",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864120",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864120",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864120",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864130",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864130",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864130",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864140",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864140",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864140",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864200",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864200",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864200",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864210",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864210",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864211",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864211",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864220",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864220",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864220",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864230",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864230",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864231",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864231",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864240",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864240",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864240",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864300",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864300",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864301",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864301",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864310",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864310",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864311",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864311",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864320",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864320",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864320",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864330",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864330",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864330",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864340",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864340",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864340",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864400",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864400",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864400",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864410",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864410",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864410",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864420",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864420",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864420",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864430",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864430",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864430",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864440",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864440",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864440",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864500",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864500",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864500",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864510",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864510",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864510",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864520",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864520",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864520",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864530",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864530",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864530",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864540",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864540",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864540",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864600",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864600",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864600",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864610",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864610",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864610",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864620",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864620",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864620",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864630",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864630",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864631",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864631",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864631",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864640",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864640",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864641",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864641",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864641",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864700",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864700",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864700",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864710",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864710",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864710",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864720",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864720",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864720",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864730",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864730",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864730",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864740",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864740",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703864740",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865400",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865400",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865400",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865410",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865410",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865410",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865420",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865420",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865420",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865430",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865430",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865430",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865440",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865440",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865440",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865700",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865700",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865700",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865710",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865710",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865710",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865720",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865720",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865721",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865721",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865721",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865730",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865730",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865731",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865731",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865731",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865740",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865740",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703865740",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866100",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866100",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866100",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866110",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866110",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866110",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866120",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866120",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866120",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866130",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866130",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866130",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866131",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866131",
+   "t": "m3889149",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866140",
+   "t": "m3750191",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866140",
+   "t": "m3793185",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703866140",
+   "t": "m3889148",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871800",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871800",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871800",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871810",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871810",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871810",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871811",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871811",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871811",
+   "t": "m3942228",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871820",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871820",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871820",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871830",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871830",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871830",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871831",
+   "t": "m3869519",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871831",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871831",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871840",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871840",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871840",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871841",
+   "t": "m3869685",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871841",
+   "t": "m3939977",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871841",
+   "t": "m3939986",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871850",
+   "t": "m3857264",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871850",
+   "t": "m3857289",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f703871850",
+   "t": "m3857300",
+   "kind": "OBSERVED_IN"
+  },
+  {
+   "s": "f356620000",
+   "t": "f356620001",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f356620002",
+   "t": "f356620003",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f356620004",
+   "t": "f356620005",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f356620006",
+   "t": "f356620007",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f356620008",
+   "t": "f356620009",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700299510",
+   "t": "f700299511",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700299511",
+   "t": "f700299512",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700299520",
+   "t": "f700299521",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700299530",
+   "t": "f700299531",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700299531",
+   "t": "f700299532",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700309010",
+   "t": "f700309011",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700309040",
+   "t": "f700309041",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700309050",
+   "t": "f700309051",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700331340",
+   "t": "f700331341",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700360240",
+   "t": "f700360241",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700549630",
+   "t": "f700549631",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550300",
+   "t": "f700550301",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550301",
+   "t": "f700550302",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550400",
+   "t": "f700550401",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550420",
+   "t": "f700550421",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550430",
+   "t": "f700550431",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550710",
+   "t": "f700550711",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550711",
+   "t": "f700550712",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700550720",
+   "t": "f700550721",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700574120",
+   "t": "f700574121",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700574240",
+   "t": "f700574241",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f700779700",
+   "t": "f700779701",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701145600",
+   "t": "f701145601",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701145601",
+   "t": "f701145602",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701145640",
+   "t": "f701145641",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701630800",
+   "t": "f701630801",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701630810",
+   "t": "f701630811",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701630811",
+   "t": "f701630812",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701959700",
+   "t": "f701959701",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701959710",
+   "t": "f701959711",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f701959711",
+   "t": "f701959712",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702068710",
+   "t": "f702068711",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702068720",
+   "t": "f702068721",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702788610",
+   "t": "f702788611",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702788630",
+   "t": "f702788631",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702788650",
+   "t": "f702788651",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702826300",
+   "t": "f702826301",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702826330",
+   "t": "f702826331",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702956000",
+   "t": "f702956001",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702956010",
+   "t": "f702956011",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702956030",
+   "t": "f702956031",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f702956040",
+   "t": "f702956041",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864210",
+   "t": "f703864211",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864230",
+   "t": "f703864231",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864300",
+   "t": "f703864301",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864310",
+   "t": "f703864311",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864630",
+   "t": "f703864631",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703864640",
+   "t": "f703864641",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703865720",
+   "t": "f703865721",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703865730",
+   "t": "f703865731",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703866130",
+   "t": "f703866131",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703871810",
+   "t": "f703871811",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703871830",
+   "t": "f703871831",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "f703871840",
+   "t": "f703871841",
+   "kind": "SUPERSEDED_BY"
+  },
+  {
+   "s": "t25662",
+   "t": "s20684031",
+   "kind": "HAS_SESSION"
+  },
+  {
+   "s": "s20684031",
+   "t": "n20684031000",
+   "kind": "HAS_TURN"
+  },
+  {
+   "s": "s20684031",
+   "t": "n20684031001",
+   "kind": "HAS_TURN"
+  },
+  {
+   "s": "n20684031001",
+   "t": "f700779710",
+   "kind": "CITES"
+  },
+  {
+   "s": "t25662",
+   "t": "s20684496",
+   "kind": "HAS_SESSION"
+  },
+  {
+   "s": "s20684496",
+   "t": "n20684496000",
+   "kind": "HAS_TURN"
+  },
+  {
+   "s": "s20684496",
+   "t": "n20684496001",
+   "kind": "HAS_TURN"
+  },
+  {
+   "s": "n20684496001",
+   "t": "f700779710",
+   "kind": "CITES"
+  },
+  {
+   "s": "n20684496001",
+   "t": "f700779720",
+   "kind": "CITES"
+  },
+  {
+   "s": "n20684496001",
+   "t": "f700779740",
+   "kind": "CITES"
+  },
+  {
+   "s": "n20684496001",
+   "t": "f700779750",
+   "kind": "CITES"
+  }
+ ]
+}
