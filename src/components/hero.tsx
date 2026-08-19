@@ -90,19 +90,11 @@ export function Hero() {
           <div className="mx-auto w-full max-w-6xl px-5 pb-16 sm:px-10 sm:pb-20">
             <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
               <div className="lg:col-span-7">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.6 }}
-                  className="flex items-center gap-2.5"
-                >
-                  {/* HydraDB marks list items with small orange squares
-                      rather than discs. Borrowed as the eyebrow bullet. */}
-                  <span className="h-1.5 w-1.5 bg-accent" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
-                    {HERO_COPY.eyebrow}
-                  </span>
-                </motion.div>
+                {/* No eyebrow. "Match tape / already watched" in ten pixel
+                    mono was the same small grey label every landing page opens
+                    with, and it was announcing the headline directly beneath
+                    it rather than adding to it. The headline can carry the
+                    hero on its own. */}
 
                 <motion.h1
                   initial={{ opacity: 0, y: 16 }}
