@@ -17,7 +17,7 @@ import { PepTalkMark } from "@/components/logo-marks";
  * it means hover and selection cannot disagree about where you are.
  */
 
-export type Section = "session" | "roster" | "games";
+export type Section = "session" | "roster" | "games" | "memory";
 
 type Item = {
   key: Section;
@@ -36,6 +36,10 @@ const ITEMS: Item[] = [
   { key: "session", label: "Session", group: "Today", count: true },
   { key: "roster", label: "Players", group: "Squad", plus: true },
   { key: "games", label: "Your season", group: "Season" },
+  // The graph gets its own row rather than living inside another screen. It is
+  // the only place the schema is visible, and a claim you have to go looking
+  // for is a claim nobody checks.
+  { key: "memory", label: "What Pep knows", group: "Season" },
 ];
 
 const GROUPS = ["Today", "Squad", "Season"];
@@ -59,6 +63,15 @@ function Icon({ kind }: { kind: Section }) {
       <g>
         <rect x="3" y="4" width="18" height="17" rx="2" />
         <path d="M3 9h18M8 2v4M16 2v4" />
+      </g>
+    ),
+    // Three nodes and the edges between them, which is the whole idea.
+    memory: (
+      <g>
+        <circle cx="6" cy="17" r="2.6" />
+        <circle cx="17.5" cy="18.5" r="2.2" />
+        <circle cx="12" cy="6" r="2.8" />
+        <path d="M7.8 15.1 10.6 8.6M13.9 8.2l2.8 8.2M8.5 17.6l6.4.7" />
       </g>
     ),
   };
