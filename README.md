@@ -208,9 +208,25 @@ possession percentages with dates. And the last block is the argument for the
 whole project, because a store without validity intervals has one answer to
 give and it is the wrong one on both dates.
 
-What does not carry across is the footage. Barcelona has no broadcast in this
-repo, so there are no clips, no tracking and no chalk, and the interface's tape
-would be empty. The memory layer generalises; the video half needs a video.
+A third, in a different competition again. Inter Miami, MLS 2023:
+
+```
+evidence: 6 observations
+  2023-08-27 -> present  low  (6 matches, median 57.2)
+       cited: LAFC 1-3 Inter Miami  [Major League Soccer]
+```
+
+Worth showing precisely because it is thin. Six matches is one era and no
+supersession chain, and the segmentation says so rather than inventing
+boundaries out of six numbers. The hysteresis that stops a single odd match
+flipping a side's identity is the same rule that declines to split a short
+series at all.
+
+What does not carry across is the footage. Neither Barcelona nor Inter Miami
+has a broadcast in this repo, so there are no clips, no tracking and no chalk,
+and the interface's tape would be empty for both. The memory layer generalises
+across teams, competitions and fifty years of history; the video half needs a
+video.
 
 ### Constraints we found by probing a live node
 
