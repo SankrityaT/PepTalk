@@ -98,6 +98,11 @@ export function TapePlayer({
   const setT = (v: number) => setLoaded((p) => ({ ...p, t: v }));
   const setPaused = (v: boolean) => setLoaded((p) => ({ ...p, paused: v }));
 
+  // Keyed on src so switching to a clip that does exist clears the notice
+  // rather than leaving it stuck from the previous moment.
+  const [failed, setFailed] = useState<string | null>(null);
+  const noFootage = failed === src;
+
   useEffect(() => {
     const v = video.current;
     if (!v) return;
@@ -189,6 +194,20 @@ export function TapePlayer({
     onPlayingChange?.(true);
   }, [onPlayingChange]);
 
+  // Listened for on the element rather than through React's onError. The
+  // media `error` event does not bubble, so the synthetic handler never sees
+  // it and a missing clip looked like a clip that was simply slow.
+  useEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    const gone = () => setFailed(src);
+    v.addEventListener("error", gone);
+    // A src that fails before this effect runs leaves the element already in
+    // its error state, so ask as well as listen.
+    if (v.error) gone();
+    return () => v.removeEventListener("error", gone);
+  }, [src]);
+
   const frame = frameAt(frames, t);
   const prev = frame ? frames[Math.max(0, frames.indexOf(frame) - 3)] : undefined;
   const dur = duration ?? (stopAt ?? 10) + 4;
@@ -205,6 +224,31 @@ export function TapePlayer({
           preload="auto"
           onClick={toggle}
         />
+
+        {/* The deployed build has no footage and that is a licensing decision,
+            not a bug. Broadcast clips are not ours to redistribute, so
+            public/clips is gitignored and every one of them 404s here while
+            working locally. Saying so is better than a black rectangle with
+            chalk floating on it, which is what this looked like: the tracking
+            is drawn from real detections either way, and a visitor should be
+            told which half is missing rather than left to guess. */}
+        {noFootage && (
+          <div className="absolute inset-0 grid place-items-center bg-black/70 px-6 text-center">
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.14em] text-accent uppercase">
+                footage runs locally
+              </p>
+              <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-warm-2">
+                The broadcast is not ours to redistribute, so the clips stay out
+                of the repository and out of this build.
+              </p>
+              <p className="mt-2 max-w-sm font-mono text-[11px] leading-relaxed text-muted">
+                Everything drawn over it is real: these boxes are the detector&rsquo;s
+                output on this second of the match, cut on the broadcast clock.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="pointer-events-none absolute inset-0">
           {frame?.players.map((p, i) => (

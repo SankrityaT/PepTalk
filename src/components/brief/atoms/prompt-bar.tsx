@@ -664,7 +664,11 @@ export function PromptBar({
             <span className="text-muted">/</span> for commands
           </>
         ) : (
-          "model not connected in this build. answers come from the snapshot the session was built on"
+          // Same admission the tape makes, worded the same way on purpose.
+          // Retrieval needs a HydraDB node and that runs on localhost, so a
+          // deployed build cannot answer a new question and says so rather
+          // than serving something canned that reads like a real answer.
+          "answers run locally. this build has no graph behind it, so what you see is the snapshot the session was built on"
         )}
       </p>
     </div>
