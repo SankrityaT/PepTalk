@@ -171,59 +171,6 @@ consequence of retrieval not happening, not a line written for the occasion.
 Conversations are listed and openable in the interface, so none of the above has
 to be taken on trust.
 
-### LongMemEval
-
-The track names LongMemEval, so we ran it against the same conversation store,
-and the honest framing matters more than the number.
-
-**12 questions, Haiku 4.5, abstention deliberately over-sampled.**
-
-```
-abstention (subset)          6/6   100%
-multi-session                3/3   100%
-single-session-user          2/2   100%
-temporal-reasoning           2/2   100%
-knowledge-update             2/3    67%
-single-session-assistant     0/1     0%
-single-session-preference    0/1     0%
-overall                      9/12   75%
-
-median 37 of 488 turns reach the model, 7.6% of the haystack
-```
-
-**That 75% is not comparable to a published LongMemEval score and should not be
-read as one.** Unanswerable questions are 6% of the real set and half of this
-sample, because they are the behaviour worth measuring here and a proportional
-draw of twelve contains none. An earlier run learned that the hard way: it
-sampled by question type, abstention is not a question type, and the one thing
-this system should be best at went unmeasured.
-
-What the run is evidence for:
-
-**Nothing was invented.** Six questions had no answer in the history and all six
-were refused. Of the three misses, two were partial recall, the camera brand
-without the focal length and two of four refining processes, and one was a
-preference rubric graded as though it were a fact. No confident wrong answers.
-
-**The model never saw the haystack.** 488 turns stored, 37 retrieved, an 8.5 KB
-prompt whatever the history's length. That is the property the benchmark exists
-to stress and it is a database query rather than a context window.
-
-What it is not evidence for: retrieval here is term overlap over a graph-scoped
-candidate set, not embeddings, and it is the weak link. It is also worth being
-plain that this exercises the conversation half of the schema and nothing else.
-`build_facts`, `SUPERSEDED_BY`, `fact_at` and the memory switch are untouched by
-it, because a chat message is not a numeric series with eras in it. The case for
-dated facts is made by the football, not by this.
-
-```bash
-TACTICBENCH_BACKEND=cli uv run python -m tacticbench.longmemeval -n 12 --keep
-```
-
-`--keep` skips teardown. `DETACH DELETE` costs about ten times a `MERGE` here
-and a whole haystack at once exceeds the 30 second query cap, so clearing 488
-turns takes longer than writing them and is best left to the end of a run.
-
 ### Constraints we found by probing a live node
 
 HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
