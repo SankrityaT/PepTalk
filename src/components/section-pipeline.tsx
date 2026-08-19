@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { SectionHead } from "@/components/section-head";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 
 /**
@@ -169,12 +170,7 @@ export function SectionPipeline() {
           animate={seen ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: EASE }}
         >
-          <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
-            05 — how it holds together
-          </p>
-          <h2 className="mt-4 max-w-3xl text-[34px] leading-[1.08] font-medium tracking-[-0.02em] text-chalk sm:text-[46px]">
-            One pass, through every part of it.
-          </h2>
+          <SectionHead n="05">One pass, through every part of it.</SectionHead>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             Eight minutes into the final, De Paul rolled it to the byline with a
             ball into the box available. Four systems that know nothing about

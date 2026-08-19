@@ -130,9 +130,11 @@ export function SectionClaim() {
               style={{ opacity: eyebrowOpacity }}
               className="flex items-center gap-3"
             >
-              <span className="h-px w-8 bg-canvas/50" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-canvas/70">
-                {CLAIM_COPY.index} / {CLAIM_COPY.label}
+              <span
+                aria-hidden
+                className="pointer-events-none select-none font-display text-[72px] leading-none tracking-[-0.04em] text-canvas/[0.16] sm:text-[104px]"
+              >
+                {CLAIM_COPY.index}
               </span>
             </motion.div>
 

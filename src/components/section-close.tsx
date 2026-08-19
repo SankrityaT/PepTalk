@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { SectionHead } from "@/components/section-head";
 import { motion, useInView } from "motion/react";
 import { PepTalkMark } from "./logo-marks";
 
@@ -32,12 +33,7 @@ export function SectionClose() {
           animate={seen ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: EASE }}
         >
-          <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
-            06 — your turn
-          </p>
-          <h2 className="mt-4 max-w-3xl text-[34px] leading-[1.08] font-medium tracking-[-0.02em] text-chalk sm:text-[46px]">
-            Open it on the World Cup final.
-          </h2>
+          <SectionHead n="06">Open it on the World Cup final.</SectionHead>
           <p className="mt-5 max-w-xl text-[16px] leading-relaxed text-warm-2">
             Same build, same data, nothing staged. Point it at your own team by
             editing one file.

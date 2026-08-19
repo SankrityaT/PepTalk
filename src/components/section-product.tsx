@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { SectionHead } from "@/components/section-head";
 import { motion, useInView } from "motion/react";
 
 /**
@@ -197,12 +198,7 @@ export function SectionProduct() {
     <section id="the-session" className="relative scroll-mt-20 bg-canvas px-5 py-28 sm:px-8 lg:py-40">
       <div className="mx-auto w-full max-w-6xl">
         <Reveal>
-          <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
-            03 — the session
-          </p>
-          <h2 className="mt-4 max-w-3xl text-[34px] leading-[1.08] font-medium tracking-[-0.02em] text-chalk sm:text-[46px]">
-            A coach sits down. The tape is already read.
-          </h2>
+          <SectionHead n="03">A coach sits down. The tape is already read.</SectionHead>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             Not an upload form. Pep has been through the match, found the
             moments worth stopping on, and cut them from the broadcast. The
@@ -269,12 +265,7 @@ export function SectionMemory() {
     <section className="relative bg-canvas px-5 pt-28 pb-10 sm:px-8 lg:pt-40 lg:pb-16">
       <div className="mx-auto w-full max-w-6xl">
         <Reveal>
-          <p className="font-mono text-[11px] tracking-[0.16em] text-accent uppercase">
-            04 — the memory
-          </p>
-          <h2 className="mt-4 max-w-3xl text-[34px] leading-[1.08] font-medium tracking-[-0.02em] text-chalk sm:text-[46px]">
-            Turn it off and watch what he loses.
-          </h2>
+          <SectionHead n="04">Turn it off and watch what he loses.</SectionHead>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             The same question, the same model, the same match. With the graph
             connected he answers from 2,096 dated facts across 353 sides. Without
