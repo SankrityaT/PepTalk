@@ -208,16 +208,35 @@ class Graph:
             #
             # Node properties stay for what genuinely belongs to the fixture:
             # date, competition, scoreline.
+            # Two statements, and the split is the whole point.
+            #
+            # An edge does not upsert: re-ingesting gave Argentina 44 PLAYED
+            # edges for 22 matches and /api/matches served every fixture twice.
+            # The obvious fix, swapping CREATE for MERGE on the same pattern,
+            # made it 66. MERGE matches on the *entire* pattern, and by then
+            # `enrich_scores` had added stage, season, ft_home and ht_deficit
+            # to these Match nodes. Properties the pattern does not mention are
+            # enough to stop it matching, so every run built a third edge.
+            #
+            # So identity first, then values. MERGE on ids alone always finds
+            # what is there, and SET writes the measurements over whatever was
+            # there before.
             self.run(
-                "CREATE (t:Team {id: $tid, name: $name})-[:PLAYED "
-                "{possession_share_pct: $poss, press_height: $press, "
-                "defensive_action_height: $dah, team_width: $width, "
-                "pass_forward_ratio: $pfr, shots: $shots, xg: $xg}]->"
-                "(mt:Match {id: $mid, statsbomb_id: $sbid, date_ord: $dord, "
-                "date: $date, competition: $comp, label: $label, "
-                "possession_share_pct: $poss, press_height: $press, "
-                "defensive_action_height: $dah, team_width: $width, "
-                "pass_forward_ratio: $pfr, shots: $shots, xg: $xg, source: 'event_data'})",
+                "MERGE (t:Team {id: $tid})-[:PLAYED]->(mt:Match {id: $mid})",
+                tid=team_id, mid=MATCH_ID_BASE + m.match_id,
+            )
+            self.run(
+                "MATCH (t:Team {id: $tid})-[r:PLAYED]->(mt:Match {id: $mid}) "
+                "SET t.name = $name, "
+                "r.possession_share_pct = $poss, r.press_height = $press, "
+                "r.defensive_action_height = $dah, r.team_width = $width, "
+                "r.pass_forward_ratio = $pfr, r.shots = $shots, r.xg = $xg, "
+                "mt.statsbomb_id = $sbid, mt.date_ord = $dord, mt.date = $date, "
+                "mt.competition = $comp, mt.label = $label, "
+                "mt.possession_share_pct = $poss, mt.press_height = $press, "
+                "mt.defensive_action_height = $dah, mt.team_width = $width, "
+                "mt.pass_forward_ratio = $pfr, mt.shots = $shots, mt.xg = $xg, "
+                "mt.source = 'event_data'",
                 tid=team_id, name=team, mid=MATCH_ID_BASE + m.match_id,
                 sbid=m.match_id, dord=date_ord(m.date), date=m.date,
                 comp=m.competition, label=m.label,
@@ -580,7 +599,8 @@ class Graph:
             if not state:
                 continue
             self.run(
-                "CREATE (t:Team {id: $tid, name: $name})-[:PLAYED]->"
+                # MERGE for the same reason as the event-data path above.
+                "MERGE (t:Team {id: $tid, name: $name})-[:PLAYED]->"
                 "(m:Match {id: $mid, cv_key: $key, date: $date, date_ord: $dord, "
                 "competition: $comp, label: $label, source: 'cv', "
                 "line_height_cv: $lh, team_width_cv: $tw, shape_depth_cv: $sd, "
