@@ -58,6 +58,26 @@ const EDGE_TONE: Record<string, { rgb: string; alpha: number; width: number }> =
   OBSERVED_IN: { rgb: CHALK, alpha: 0.05, width: 0.5 },
 };
 
+/**
+ * Every node with footage behind it.
+ *
+ * Thirteen of them: the final, and a ball each for the twelve players who have
+ * one cut. Enough that memories can surface from all over the cloud rather
+ * than from one corner of it.
+ */
+const WITH_FOOTAGE = DATA.nodes.filter((n) => n.clip);
+
+/** How long one surfaced memory lives, in milliseconds. */
+const FLARE_IN = 700;
+const FLARE_HOLD = 5200;
+const FLARE_OUT = 900;
+const FLARE_LIFE = FLARE_IN + FLARE_HOLD + FLARE_OUT;
+
+/** At most this many at once. Three is a sky; six is a video wall. */
+const FLARE_MAX = 2;
+
+type Flare = { key: number; node: RawNode };
+
 const KIND_LABEL: Record<string, string> = {
   team: "the side",
   match: "a match played",
@@ -75,6 +95,7 @@ export function KnowledgeGraph() {
   const [picked, setPicked] = useState<RawNode | null>(null);
   const [filter, setFilter] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [flares, setFlares] = useState<Flare[]>([]);
 
   const byId = useMemo(() => new Map(DATA.nodes.map((n) => [n.id, n])), []);
   const sim = useMemo(() => createSim(DATA.nodes, DATA.edges), []);
@@ -89,6 +110,9 @@ export function KnowledgeGraph() {
   const pickedId = useRef<string | null>(null);
   const filterRef = useRef<string | null>(null);
   const queryRef = useRef("");
+  /** The live flare elements, so the frame loop can move them without React. */
+  const flareEls = useRef(new Map<number, HTMLDivElement | null>());
+  const flareBorn = useRef(new Map<number, number>());
 
   useEffect(() => {
     filterRef.current = filter;
@@ -217,15 +241,21 @@ export function KnowledgeGraph() {
       const alive =
         raw.kind === "team" ||
         raw.kind === "session" ||
+        !!raw.clip ||
         (raw.kind === "fact" && (raw.sub ?? "").includes("to present"));
       if (alive && !dim) {
-        const halo = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, r * 5.2);
-        halo.addColorStop(0, `rgba(${ACCENT}, ${0.20 * a})`);
+        // Nodes holding footage breathe, slightly out of phase with each
+        // other, so the cloud looks like it has things waiting in it.
+        const pulse = raw.clip
+          ? 1 + 0.55 * Math.sin(beat.current + d.n.x * 0.01)
+          : 1;
+        const halo = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, r * 5.2 * pulse);
+        halo.addColorStop(0, `rgba(${ACCENT}, ${0.20 * a * pulse})`);
         halo.addColorStop(1, "rgba(255, 87, 26, 0)");
         ctx.globalAlpha = 1;
         ctx.fillStyle = halo;
         ctx.beginPath();
-        ctx.arc(d.x, d.y, r * 5.2, 0, Math.PI * 2);
+        ctx.arc(d.x, d.y, r * 5.2 * (raw.clip ? 1.4 : 1), 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -321,6 +351,51 @@ export function KnowledgeGraph() {
   }, [byId, sim]);
 
   /**
+   * Memories surface on their own, and sink again.
+   *
+   * Nothing here is triggered by a click. A node with footage behind it will
+   * every so often bring it up, hold it for a few seconds and let it go, and
+   * then a different one somewhere else in the cloud does the same. The
+   * feeling wanted is the tesseract in Interstellar: you are looking at a
+   * structure, and moments from inside it keep catching the light.
+   *
+   * Only nodes currently facing the viewer are eligible. A memory fading up
+   * behind the cloud and showing through it looks like a bug rather than
+   * like depth.
+   */
+  useEffect(() => {
+    let n = 0;
+    const spawn = () => {
+      setFlares((live) => {
+        const now = performance.now();
+        const kept = live.filter((f) => now - (flareBorn.current.get(f.key) ?? now) < FLARE_LIFE);
+        if (kept.length >= FLARE_MAX) return kept;
+
+        const busy = new Set(kept.map((f) => f.node.id));
+        const eligible = WITH_FOOTAGE.filter((node) => {
+          if (busy.has(node.id)) return false;
+          const p = screen.current.get(node.id);
+          // Front half of the cloud, and comfortably inside the frame.
+          return !!p && p.z < 40 && p.x > 150 && p.y > 90;
+        });
+        if (!eligible.length) return kept;
+
+        const node = eligible[Math.floor(Math.random() * eligible.length)];
+        const key = ++n;
+        flareBorn.current.set(key, now);
+        return [...kept, { key, node }];
+      });
+    };
+
+    const first = setTimeout(spawn, 1800);
+    const every = setInterval(spawn, 2600);
+    return () => {
+      clearTimeout(first);
+      clearInterval(every);
+    };
+  }, []);
+
+  /**
    * One loop: settle, then keep simulating gently, spinning and drawing.
    *
    * The first two seconds run hot and decay, so the cloud visibly finds its
@@ -329,6 +404,8 @@ export function KnowledgeGraph() {
    * one moment where the layout explains itself.
    */
   const heat = useRef(1);
+  /** Drives the slow breath on nodes that hold footage. */
+  const beat = useRef(0);
   useEffect(() => {
     let raf = 0;
     let last = 0;
@@ -336,11 +413,42 @@ export function KnowledgeGraph() {
       const dt = last ? Math.min(64, t - last) : 16;
       last = t;
       heat.current = Math.max(0.055, heat.current * 0.985);
+      beat.current += dt * 0.0016;
       sim.tick(heat.current);
       if (view.current.spin && !drag.current) {
         view.current.yaw += 0.00013 * dt;
       }
       draw();
+
+      // Flares ride the cloud. Their position comes from the same projection
+      // the canvas just used, so a surfaced memory stays pinned to its node
+      // while the whole thing turns, and fades with its node's depth.
+      const now = performance.now();
+      for (const [key, el] of flareEls.current) {
+        if (!el) continue;
+        const born = flareBorn.current.get(key) ?? now;
+        const age = now - born;
+        const id = el.dataset.node ?? "";
+        const p = screen.current.get(id);
+        if (!p) continue;
+
+        const rise =
+          age < FLARE_IN
+            ? age / FLARE_IN
+            : age < FLARE_IN + FLARE_HOLD
+              ? 1
+              : Math.max(0, 1 - (age - FLARE_IN - FLARE_HOLD) / FLARE_OUT);
+        const eased = rise * rise * (3 - 2 * rise);
+        const depth = Math.max(0.35, Math.min(1, p.r));
+
+        el.style.opacity = String(eased * depth);
+        // Drifts up a little as it fades, which is what makes it read as
+        // surfacing rather than as a popup.
+        el.style.transform =
+          `translate3d(${p.x - 78}px, ${p.y - 62 - (1 - eased) * 14}px, 0)` +
+          ` scale(${(0.82 + 0.18 * eased) * depth})`;
+      }
+
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
@@ -477,6 +585,37 @@ export function KnowledgeGraph() {
           </div>
         )}
 
+        {/* Memories catching the light. Positioned by the frame loop, not by
+            React: they follow their node as the cloud turns, and a re-render
+            per frame to move two small boxes would be absurd. */}
+        {flares.map((f) => (
+          <div
+            key={f.key}
+            data-node={f.node.id}
+            ref={(el) => {
+              flareEls.current.set(f.key, el);
+            }}
+            className="pointer-events-none absolute top-0 left-0 w-[156px] origin-center will-change-transform"
+            style={{ opacity: 0 }}
+          >
+            <div className="overflow-hidden rounded-lg shadow-[0_0_40px_rgba(255,87,26,0.35)] ring-1 ring-accent/50">
+              <video
+                className="block w-full"
+                src={f.node.clip ?? undefined}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden
+              />
+            </div>
+            <p className="mt-1 truncate text-center font-mono text-[9px] tracking-[0.08em] text-accent/90 uppercase">
+              {f.node.label}
+            </p>
+          </div>
+        ))}
+
         {picked && <Detail node={picked} onClose={() => setPicked(null)} />}
       </div>
     </div>
@@ -525,7 +664,11 @@ function Detail({ node, onClose }: { node: RawNode; onClose: () => void }) {
         <img
           src={node.photo}
           alt={node.label}
-          className="block h-36 w-full object-cover object-top"
+          // These are press portraits, 492 by 640. A short landscape box with
+          // object-top crops them between the forehead and the nose, which is
+          // what this looked like. A 4:3 box loses far less, and the crop
+          // point sits below the top of the frame so the chin survives.
+          className="block aspect-[4/3] w-full object-cover object-[center_22%]"
           onError={(e) => {
             (e.currentTarget as HTMLImageElement).style.display = "none";
           }}
