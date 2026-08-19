@@ -252,6 +252,18 @@ function tracing(question: string, memory: boolean, r: Result | null): Step[] {
 const CACHE = new Map<string, Promise<Result>>();
 
 /**
+ * Drop the cached answers, for when the conversation changes underneath them.
+ *
+ * The key is question and memory mode, which is right within one thread and
+ * wrong across two: the same question asked in a new conversation has to reach
+ * the server again, both to be answered with that thread's history and to be
+ * written into it.
+ */
+export function forgetAnswers(): void {
+  CACHE.clear();
+}
+
+/**
  * The conversation this browser belongs to, kept across reloads.
  *
  * Cross-session continuity is only worth anything if the session outlives the
