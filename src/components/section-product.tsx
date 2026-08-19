@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { motion, useInView } from "motion/react";
 
@@ -92,6 +92,80 @@ function Frame({
   );
 }
 
+/**
+ * The session, running, rather than a photograph of it running.
+ *
+ * A still of this screen cannot show the thing that makes it a session: the
+ * tape plays, the pitch diagram draws the ball that was on against the ball
+ * that was played, and the thread grows a moment at a time. It was the one
+ * frame on the page where the medium was wrong for the subject.
+ *
+ * A video and not a GIF, which is what got asked for and would have been the
+ * worse answer. GIF is capped at 256 colours, which posterises a dark
+ * interface with an orange accent quite badly, and has no interframe
+ * compression worth the name: this clip as a GIF at anything near this
+ * resolution runs to tens of megabytes. Two muted autoplay loops, h264 for
+ * Safari and VP9 for the rest, come to three megabytes and look like the
+ * product.
+ *
+ * Nothing is fetched until it is nearly on screen. Three megabytes for a
+ * section most visitors scroll past is a bad trade, so the sources are only
+ * attached once the frame is within a viewport of being seen, and playback
+ * stops when it leaves. The poster is a real frame of the clip, so there is
+ * something correct in place from the first paint.
+ */
+function SessionLoop() {
+  const holder = useRef<HTMLSpanElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const [armed, setArmed] = useState(false);
+
+  useEffect(() => {
+    const el = holder.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setArmed(true);
+        const v = video.current;
+        if (!v) return;
+        // Decoding a 2160-wide clip off screen is wasted battery on a laptop
+        // and visible jank on a phone.
+        if (entry.isIntersecting) void v.play().catch(() => {});
+        else v.pause();
+      },
+      { rootMargin: "100% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <span
+      ref={holder}
+      className="relative block overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.08]"
+    >
+      <video
+        ref={video}
+        className="block w-full"
+        poster="/shots/session-loop.webp"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="none"
+        // No captions: there is no speech and no audio track at all, so a
+        // track element here would be furniture rather than an accommodation.
+        aria-label="The session running: the tape plays on the left with tracking on, and Pep works down the right one moment at a time"
+      >
+        {armed && <source src="/shots/session-loop.webm" type="video/webm" />}
+        {armed && <source src="/shots/session-loop.mp4" type="video/mp4" />}
+      </video>
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-canvas/80 to-transparent" />
+      <span className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-white/[0.04]" />
+    </span>
+  );
+}
+
 const CARDS: {
   eyebrow: string;
   title: string;
@@ -138,13 +212,7 @@ export function SectionProduct() {
         </Reveal>
 
         <Reveal delay={0.08} className="mt-12">
-          <Frame
-            src="/shots/session.webp"
-            alt="The session: the tape pinned on the left with tracking and chalk, Pep working down the right"
-            width={2132}
-            height={1600}
-            priority
-          />
+          <SessionLoop />
         </Reveal>
 
         <Reveal delay={0.12}>
