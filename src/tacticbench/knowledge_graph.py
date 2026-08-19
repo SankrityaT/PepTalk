@@ -58,7 +58,7 @@ def human(o: int | None) -> str:
         return ""
 
 
-def build(g: Graph, team: str, clips: dict[str, str]) -> dict:
+def build(g: Graph, team: str, clips: dict[str, str], player_clips: dict[str, str]) -> dict:
     tid = team_id(team)
     nodes: list[dict] = [{"id": f"t{tid}", "kind": "team", "label": team, "weight": 3.0}]
     edges: list[dict] = []
@@ -107,6 +107,10 @@ def build(g: Graph, team: str, clips: dict[str, str]) -> dict:
                 "sub": p.get("position") or "",
                 "weight": 1.6,
                 "photo": f"/players/{int(p.get('statsbomb_id') or 0)}.jpg",
+                # His own ball, if one was cut. Twelve of the squad have one,
+                # which is what lets the drawing surface footage from all over
+                # itself rather than from a single node.
+                "clip": player_clips.get((p.get("nickname") or p.get("name") or "").lower()),
             }
         ):
             edges.append({"s": f"t{tid}", "t": pid, "kind": "FIELDED"})
@@ -216,9 +220,20 @@ def main() -> None:
                 clips[str(ws.match_id)] = m["clip"]
                 break
 
+    # And a ball each, for the players who have one cut.
+    player_clips: dict[str, str] = {}
+    pc = UI / ws.key / "player-clips.json"
+    if pc.exists():
+        for r in json.loads(pc.read_text()).get("clips", []):
+            if not r.get("clip"):
+                continue
+            for key in (r.get("player"), r.get("surname"), r.get("name")):
+                if key:
+                    player_clips[str(key).lower()] = r["clip"]
+
     g = Graph()
     try:
-        blob = build(g, ws.team, clips)
+        blob = build(g, ws.team, clips, player_clips)
     finally:
         g.close()
 
