@@ -8,6 +8,7 @@ import { XtPitch } from "@/components/dash/xt-pitch";
 import { Roster } from "@/components/roster/roster";
 import { Session } from "@/components/session/session";
 import { Section, Sidebar } from "@/components/shell/sidebar";
+import { KnowledgeGraph } from "@/components/knowledge/knowledge-graph";
 import { FEATURED, HISTORY, MATCHES, TEAM, TOTALS, mean, series } from "@/content/dashboard";
 
 /**
@@ -35,7 +36,10 @@ export function Workspace({ onAddGame }: { onAddGame?: () => void }) {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [section]);
 
-  const full = section === "session";
+  // The graph wants the whole viewport for the same reason the session does:
+  // it is a canvas, and a canvas in a scrolling column gets whatever height is
+  // left over, which was about half of one.
+  const full = section === "session" || section === "memory";
 
   return (
     <div className="flex min-h-screen">
@@ -66,6 +70,7 @@ export function Workspace({ onAddGame }: { onAddGame?: () => void }) {
               <Session memory={memory} onMemory={setMemory} />
             )}
             {section === "games" && <Games />}
+            {section === "memory" && <KnowledgeGraph />}
             {section === "roster" && <Roster memory={memory} />}
           </motion.div>
         </AnimatePresence>
