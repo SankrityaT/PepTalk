@@ -171,6 +171,47 @@ consequence of retrieval not happening, not a line written for the occasion.
 Conversations are listed and openable in the interface, so none of the above has
 to be taken on trust.
 
+### Does it work on a second team?
+
+Everything above is Argentina, 22 matches. The same code, pointed at Barcelona,
+which is 531 matches across fifty years and a competition with no footage
+attached at all:
+
+```bash
+uv run python -m tacticbench.demo query Barcelona \
+  --dimension possession_share_pct --at 2011-06-01 2021-03-01
+```
+
+```
+--- timeline (each era, as HydraDB stores it) ---
+  1974-02-17 -> 2004-12-21  low        (8 matches)
+  2004-12-21 -> 2011-03-05  even       (163 matches)
+  2011-03-05 -> 2012-01-08  dominant   (27 matches)
+  2012-01-08 -> present     even       (333 matches)
+
+--- point-in-time: same question, two dates ---
+  2011-06-01: dominant  (valid 2011-03-05 -> 2012-01-08, 27 matches, median 67.0)
+       cited: Barcelona 1-0 Real Zaragoza  [La Liga]
+  2021-03-01: even      (valid 2012-01-08 -> present, 333 matches, median 63.0)
+       cited: Espanyol 1-1 Barcelona  [La Liga]
+
+--- WITHOUT HydraDB (flat lookup, no validity intervals) ---
+  'even' - 333 matches, presented with no sense that it ever stopped being true
+```
+
+Nothing about that run is configured for Barcelona. It is the same segmentation,
+the same banding, the same queries, given a different team's `PLAYED` edges.
+
+Two things worth drawing out. The 27 match window it isolated on its own is
+Guardiola's last season, and nobody told it about Guardiola: the input is
+possession percentages with dates. And the last block is the argument for the
+whole project, because a store without validity intervals has one answer to
+give and it is the wrong one on both dates.
+
+What does not carry across is the footage. Barcelona has no broadcast in this
+repo, so there are no clips, no tracking and no chalk, and the interface's tape
+would be empty. The memory layer generalises; the video half needs a video.
+
 ### Constraints we found by probing a live node
 
 HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
