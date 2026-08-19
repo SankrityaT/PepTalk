@@ -800,6 +800,46 @@ class Graph:
             prev_turn_id=(session_id * 1000 + prev) if prev is not None else None,
         )
 
+    def sessions_for(self, team_id: int, limit: int = 20) -> list[dict]:
+        """This coach's conversations, most recent first.
+
+        One row per session rather than per turn, so the interface can offer
+        the threads themselves. Without this the memory is real and invisible:
+        a coach could only reach the conversation the browser happened to be
+        holding, and starting a new one meant clearing storage by hand.
+
+        The opening question is carried along as the title, because a thread
+        called "session 20684859" tells nobody anything. It is the coach's own
+        first line, which is how he will remember what the conversation was
+        about.
+        """
+        rows = self.run(
+            "MATCH (t:Team)-[:HAS_SESSION]->(s:Session) WHERE t.id = $tid "
+            "RETURN s.id AS id, s.started_ord AS started_ord, s.last_ord AS last_ord "
+            "ORDER BY s.last_ord DESC LIMIT $limit",
+            tid=team_id, limit=limit,
+        )
+
+        out = []
+        for r in rows:
+            sid = int(r["id"]) - SESSION_ID_BASE
+            turns = self.session_turns(sid, limit=200)
+            if not turns:
+                # A session with no turns is one that was opened and never
+                # used. Offering it as a thread would be offering a blank.
+                continue
+            opening = next((t["text"] for t in turns if t["role"] == "coach"), "")
+            out.append(
+                {
+                    "session_id": sid,
+                    "title": opening[:80] or "untitled",
+                    "turns": len(turns),
+                    "started_ord": int(r["started_ord"]),
+                    "last_ord": int(r["last_ord"]),
+                }
+            )
+        return out
+
     def session_turns(self, session_id: int, limit: int = 50) -> list[dict]:
         rows = self.run(
             "MATCH (s:Session {id: $sid})-[:HAS_TURN]->(t:Turn) "

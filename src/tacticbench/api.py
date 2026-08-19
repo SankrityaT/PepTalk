@@ -21,7 +21,7 @@ from . import workspace
 from .ask import answer
 from .coach import DIMENSION_LABELS, MIN_EVIDENCE, advise, format_advice, recall
 from .demo import team_id
-from .graph import PLAYER_ID_BASE, Graph
+from .graph import PLAYER_ID_BASE, TURN_ID_BASE, Graph
 from .players import PLAYER_DIMENSIONS
 
 #: Where the interface serves its static files from. Calibration frames are
@@ -523,6 +523,45 @@ def ask_endpoint(q: Question):
         # A model that will not answer is a failure to report, never something
         # to paper over with a canned line that reads like a real answer.
         raise HTTPException(502, f"model unavailable: {exc}") from exc
+
+
+@app.get("/api/sessions")
+def sessions_endpoint(ws_key: str | None = None):
+    """The coach's conversations, so the interface can offer the threads.
+
+    Cross session continuity that a coach cannot see is a claim rather than a
+    feature. This is what lets him open Tuesday's thread on Friday, and start a
+    new one without clearing browser storage by hand.
+    """
+    ws = workspace.load(ws_key)
+    g = _graph()
+    try:
+        return {"sessions": g.sessions_for(team_id(ws.team))}
+    finally:
+        g.close()
+
+
+@app.get("/api/sessions/{session_id}")
+def session_endpoint(session_id: int):
+    """One thread, with the facts each answer cited.
+
+    Turns come back with their citations attached rather than as bare text,
+    because the point of storing the conversation in the same graph as the
+    football is that a line Pep wrote last week still reaches the fact it was
+    written from.
+    """
+    g = _graph()
+    try:
+        turns = g.session_turns(session_id, limit=200)
+        return {
+            "session_id": session_id,
+            "turns": [
+                {**t, "cites": g.turn_citations(int(t["id"]) - TURN_ID_BASE)}
+                for t in turns
+            ],
+        }
+    finally:
+        g.close()
 
 
 @app.get("/api/squad/{team}")
