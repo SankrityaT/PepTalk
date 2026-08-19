@@ -17,7 +17,19 @@ export function SmoothScroll() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    const lenis = new Lenis({
+      duration: 1.1,
+      smoothWheel: true,
+      // Lenis takes the scroll position over, which quietly breaks every
+      // same-page link on the site: "the product" in the header did nothing
+      // at all, because the browser's own hash jump is a scroll and Lenis owns
+      // scrolling now. This hands anchors back to it.
+      //
+      // No offset: Lenis does honour `scroll-mt`, and adding one on top of it
+      // stacked the two and dropped the target 152px down the page instead of
+      // the 80 the class asks for.
+      anchors: true,
+    });
 
     let frame = 0;
     const raf = (time: number) => {
