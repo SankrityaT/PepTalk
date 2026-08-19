@@ -106,7 +106,7 @@ re-ingest write bug.
 
 ### Deployed project link
 
-https://peptalk-steel.vercel.app
+https://peptalk-ai.vercel.app
 
 State plainly that the deployed build cannot answer questions, because
 retrieval needs a HydraDB node and that runs locally. It says so itself rather
@@ -153,7 +153,8 @@ them. If time is short, cut the tape walkthrough, not those.
       out. Broken links are the commonest way to lose.
 - [ ] Re-run `uv run pytest -q` and the evals; put the real numbers in the form
 - [ ] Confirm the licence still reads as MIT on the GitHub sidebar
-- [ ] `peptalk-ai.vercel.app` is a pinned alias and goes stale on every push.
-      Submit `peptalk-steel.vercel.app`, which follows production, or promote
-      the other to a project domain first.
+- [ ] `peptalk-ai.vercel.app` is the project's primary domain, so it follows
+      production on its own and `peptalk-steel` redirects to it. It got there
+      by renaming the project to free the name and then adding it in Settings;
+      a manual alias, which is what it was before, does not follow anything.
 - [ ] Team members and contributions filled in
