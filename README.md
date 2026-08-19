@@ -44,11 +44,19 @@ Nobody told it about Guardiola.
 | **StatsBomb open data** | 3,961 matches of events: every pass, carry and shot with x/y coordinates | free, public |
 | StatsBomb 360 | freeze frames: where all 22 players stood at an event | Euro 2020 onward only |
 | StatsBomb lineups | player ids, shirt numbers, positions | |
-| **Broadcast footage** | the 2022 World Cup final, cut into 7 clips | gitignored, never redistributed |
+| **Broadcast footage** | the 2022 World Cup final, cut into 7 clips | seconds-long excerpts, committed; the match itself never is |
 | **Wikimedia Commons** | 12 player photographs | CC BY-SA / CC BY, credited in `public/players/CREDITS.md` |
 
 Everything measured comes from the first three. The footage is what you look at;
 it is not where the numbers come from.
+
+On the footage specifically: the seven cuts the session walks through are in
+the repository, because a deployed build without them shows a coach a black
+rectangle with chalk floating on it, and that misrepresents the product more
+than a few seconds of excerpt does. They are cuts around a single pass and the
+match cannot be reassembled from them. The twelve per-player clips are not
+committed, and the interface says so where they would have been rather than
+leaving a blank.
 
 ---
 

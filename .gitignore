@@ -44,10 +44,29 @@ next-env.d.ts
 .playwright-mcp/
 .render/
 
-# Match footage. Not ours to redistribute — the tape is fetched locally and
-# stays out of the repo. See README for how to supply your own clip.
+# Match footage. The full broadcast is not ours to redistribute and never
+# goes in here.
+#
+# The seven clips the session itself walks through are the exception, and the
+# reasoning is worth writing down rather than leaving as an inconsistency. A
+# deployed build with no footage shows a coach a black rectangle with chalk
+# floating on it, which misrepresents the product more than a short excerpt
+# does. These are seconds-long cuts around a single pass, kept for
+# demonstration; the match they came from is not here and cannot be
+# reassembled from them.
+#
+# The twelve per-player clips stay out. They are not on the path a visitor
+# walks, the interface says plainly that they run locally, and thirty
+# megabytes is not worth spending to avoid a sentence.
 /public/tape/
-/public/clips/
+/public/clips/*
+!/public/clips/008_25.mp4
+!/public/clips/031_25.mp4
+!/public/clips/063_07.mp4
+!/public/clips/072_21.mp4
+!/public/clips/goal_079_24.mp4
+!/public/clips/goal_080_59.mp4
+!/public/clips/goal_117_05.mp4
 # Stills cut from the broadcast for calibration. Frames of the footage are the
 # footage, and the whole project keeps it out of the repository. Only the
 # homography derived from them is committed.
