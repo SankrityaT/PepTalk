@@ -13,6 +13,8 @@ import { MomentFrame } from "@/components/report/moment-frame";
 import { Answer } from "@/components/session/answer";
 import { Evidence } from "@/components/session/evidence";
 import { useStickToBottom } from "@/components/session/stick-to-bottom";
+import { ThreadPicker } from "@/components/session/threads";
+import { forgetAnswers } from "@/components/session/answer";
 import { TapePlayer } from "@/components/tape/tape-player";
 import {
   BEATS,
@@ -458,7 +460,7 @@ export function Session({
       </div>
 
       {/* ── Pep. A thread. ───────────────────────────────────────────── */}
-      <div className="flex min-h-0 flex-1 flex-col rounded-xl bg-surface/40 ring-1 ring-white/[0.05]">
+      <div className="relative flex min-h-0 flex-1 flex-col rounded-xl bg-surface/40 ring-1 ring-white/[0.05]">
         <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3">
           <span className="flex items-center gap-2">
             <PepTalkMark size={18} className="text-chalk" />
@@ -471,8 +473,25 @@ export function Session({
               </span>
             )}
           </span>
-          <span className="font-mono text-[10px] tabular-nums text-muted-2">
-            {Math.min(at + 1, BEATS.length)} / {BEATS.length}
+          <span className="flex items-center gap-1">
+            <ThreadPicker
+              onSwitch={() => {
+                // A new conversation starts the session over, so the coach is
+                // not left reading Tuesday's beats under Friday's thread id.
+                // The answer cache is keyed by question and memory mode, not
+                // by session. Without clearing it, asking the same thing in a
+                // new conversation returns the old promise and never reaches
+                // the server, so nothing is written to the new thread and the
+                // continuity it exists to show does not happen.
+                forgetAnswers();
+                setAt(0);
+                setPlaying(true);
+                setAsked([]);
+              }}
+            />
+            <span className="font-mono text-[10px] tabular-nums text-muted-2">
+              {Math.min(at + 1, BEATS.length)} / {BEATS.length}
+            </span>
           </span>
         </div>
 
