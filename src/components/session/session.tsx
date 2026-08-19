@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Choice } from "@/components/brief/atoms/choice";
 import { PromptBar } from "@/components/brief/atoms/prompt-bar";
@@ -12,8 +12,17 @@ import { PepTalkMark } from "@/components/logo-marks";
 import { MomentFrame } from "@/components/report/moment-frame";
 import { Answer } from "@/components/session/answer";
 import { Evidence } from "@/components/session/evidence";
+import { useStickToBottom } from "@/components/session/stick-to-bottom";
 import { TapePlayer } from "@/components/tape/tape-player";
-import { BEATS, Beat, COMMANDS, SCALE, SOURCES, SUGGESTIONS, clipFor } from "@/content/session";
+import {
+  BEATS,
+  Beat,
+  COMMANDS,
+  SCALE,
+  SOURCES,
+  SUGGESTIONS,
+  clipFor,
+} from "@/content/session";
 import { CLIP_MOMENTS } from "@/content/clip";
 import { MEASURES, SQUAD, photoFor } from "@/content/roster";
 import { MOMENTS } from "@/content/pep";
@@ -108,10 +117,14 @@ function BeatBody({
             <span className="font-mono text-[11px] tabular-nums text-accent">
               {m.match_clock}
             </span>
-            <span className="text-[13px] font-medium text-chalk">{m.surname}</span>
+            <span className="text-[13px] font-medium text-chalk">
+              {m.surname}
+            </span>
             <span
               className={`rounded px-1.5 py-0.5 font-mono text-[9px] tracking-[0.1em] uppercase ${
-                them ? "bg-white/[0.09] text-chalk-3" : "bg-accent/15 text-accent"
+                them
+                  ? "bg-white/[0.09] text-chalk-3"
+                  : "bg-accent/15 text-accent"
               }`}
             >
               {them ? "you defended" : "you attacked"}
@@ -129,7 +142,9 @@ function BeatBody({
         </p>
 
         <p className="mt-2.5 font-mono text-[10px] leading-relaxed text-muted">
-          {memory ? m.numbers : "threat and completion come from models fitted across the graph"}
+          {memory
+            ? m.numbers
+            : "threat and completion come from models fitted across the graph"}
         </p>
       </div>
     );
@@ -185,7 +200,9 @@ function BeatBody({
                 {moves.map((p, i) => (
                   <span key={i} className="flex items-center gap-1.5">
                     {i > 0 && (
-                      <span className="font-mono text-[10px] text-muted-2">&rarr;</span>
+                      <span className="font-mono text-[10px] text-muted-2">
+                        &rarr;
+                      </span>
                     )}
                     <span className="rounded bg-accent/12 px-1.5 py-0.5 font-mono text-[10px] text-accent">
                       {p.player ? p.player.split(" ").slice(-1)[0] : p.type}
@@ -221,7 +238,9 @@ const THIS_MATCH: Record<string, string | number> = {
 };
 
 /** What one player's card shows, in the words retrieval uses. */
-function measurementsFor(p: (typeof SQUAD)[number]): Record<string, string | number> {
+function measurementsFor(
+  p: (typeof SQUAD)[number],
+): Record<string, string | number> {
   const out: Record<string, string | number> = {
     player: p.nickname ?? p.name,
     position: p.position,
@@ -244,10 +263,11 @@ export function Session({
   const graphUp = useGraphUp();
   const setMemory = onMemory;
   const [asked, setAsked] = useState<string[]>([]);
-  const [asking, setAsking] = useState<Record<string, string | number>>(THIS_MATCH);
+  const [asking, setAsking] =
+    useState<Record<string, string | number>>(THIS_MATCH);
   const [attached, setAttached] = useState<string[]>([]);
   const [playing, setPlaying] = useState(true);
-  const tail = useRef<HTMLDivElement>(null);
+  const { viewport, content, pinned, missed, follow } = useStickToBottom();
 
   const shown = BEATS.slice(0, at + 1);
   const current = BEATS[at];
@@ -278,7 +298,9 @@ export function Session({
         : [];
 
   const chalkTeam =
-    clip?.beat.kind === "moment" && clip.beat.moment.side === "defending" ? 0 : 1;
+    clip?.beat.kind === "moment" && clip.beat.moment.side === "defending"
+      ? 0
+      : 1;
 
   // The board holds the same way the tape does. Clearing it on a beat that
   // has no diagram left the column half empty, and an empty panel beside a
@@ -294,9 +316,18 @@ export function Session({
     return null;
   })();
 
+  // Asking a question is always deliberate, so it returns to the bottom even
+  // if the coach had scrolled up.
+  //
+  // Beat changes deliberately do *not*. Most of them come from the dwell
+  // timers rather than from anyone pressing anything, and forcing the scroll
+  // on those reintroduced the exact bug this replaced: scroll up to re-read
+  // the De Paul numbers, and four seconds later the next beat drags you back
+  // down. Following within a beat is the observer's job, and it follows only
+  // when the coach is already at the bottom.
   useEffect(() => {
-    tail.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [at, asked.length]);
+    if (asked.length) follow();
+  }, [asked.length, follow]);
 
   const advance = () => setAt((i) => Math.min(BEATS.length - 1, i + 1));
 
@@ -308,7 +339,11 @@ export function Session({
     if (!playing || atEnd || current.kind === "ask") return;
     if (current.kind === "moment" || current.kind === "goal") return;
     const dwell =
-      current.kind === "evidence" ? 7000 : current.kind === "trace" ? 5200 : 3400;
+      current.kind === "evidence"
+        ? 7000
+        : current.kind === "trace"
+          ? 5200
+          : 3400;
     const t = setTimeout(advance, dwell);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -350,7 +385,9 @@ export function Session({
             autoPlay={clip.primed && playing}
             playing={clip.primed ? playing : false}
             onPlayingChange={clip.primed ? setPlaying : undefined}
-            onReachedStop={clip.primed ? () => setReached((n) => n + 1) : undefined}
+            onReachedStop={
+              clip.primed ? () => setReached((n) => n + 1) : undefined
+            }
           />
         ) : (
           <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-surface ring-1 ring-white/[0.06]">
@@ -411,11 +448,13 @@ export function Session({
                   {board.freeze?.length ?? 0} players, where they stood
                 </span>
               </div>
-              <MomentFrame moment={board} className="mx-auto h-full min-h-0 w-auto" />
+              <MomentFrame
+                moment={board}
+                className="mx-auto h-full min-h-0 w-auto"
+              />
             </motion.div>
           )}
         </AnimatePresence>
-
       </div>
 
       {/* ── Pep. A thread. ───────────────────────────────────────────── */}
@@ -437,88 +476,111 @@ export function Session({
           </span>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
-          <div className="flex flex-col gap-3.5">
-            {shown.map((b, i) => {
-              const live = i === at;
-              if (b.kind === "trace") {
+        {/* Wrapped so the button below can sit at the foot of the scrolling
+            area itself. Anchoring it to the column instead meant guessing the
+            height of the controls, which changes with whether the suggestion
+            chips are up, and the first attempt landed on top of them. */}
+        <div className="relative flex min-h-0 flex-1 flex-col">
+          {/* Scrolling up detaches the follow so the thread can be read while it
+            is still being written; this says so, and puts it back. Shown only
+            when something actually arrived while they were away, because a
+            button that appears whenever anyone scrolls is noise. */}
+          {!pinned && missed && (
+            <button
+              onClick={follow}
+              className="absolute bottom-3 left-1/2 z-20 -translate-x-1/2 rounded-full bg-accent px-3 py-1.5 font-mono text-[10px] tracking-[0.08em] text-canvas shadow-lg transition-all hover:brightness-110"
+            >
+              &darr; Pep kept going
+            </button>
+          )}
+
+          <div ref={viewport} className="flex-1 overflow-y-auto px-4 py-4">
+            <div ref={content} className="flex flex-col gap-3.5">
+              {shown.map((b, i) => {
+                const live = i === at;
+                if (b.kind === "trace") {
+                  return (
+                    <Turn key={b.id} showWho={i === 0}>
+                      <Trace
+                        steps={b.steps}
+                        footer={b.footer}
+                        title="Working through it"
+                        doneTitle="Worked through it"
+                      />
+                    </Turn>
+                  );
+                }
+                if (b.kind === "evidence") {
+                  return (
+                    <Turn key={b.id} showWho={false}>
+                      <Evidence card={b.card} memory={memory} />
+                    </Turn>
+                  );
+                }
+                if (b.kind === "ask") {
+                  return (
+                    <Turn key={b.id} showWho={false}>
+                      <Choice
+                        question={b.question}
+                        options={b.options}
+                        onPick={(k) => {
+                          if (k === "yes") advance();
+                          else setPlaying(false);
+                        }}
+                      />
+                    </Turn>
+                  );
+                }
                 return (
                   <Turn key={b.id} showWho={i === 0}>
-                    <Trace
-                      steps={b.steps}
-                      footer={b.footer}
-                      title="Working through it"
-                      doneTitle="Worked through it"
-                    />
+                    <BeatBody beat={b} live={live} memory={memory} />
                   </Turn>
                 );
-              }
-              if (b.kind === "evidence") {
-                return (
-                  <Turn key={b.id} showWho={false}>
-                    <Evidence card={b.card} memory={memory} />
-                  </Turn>
-                );
-              }
-              if (b.kind === "ask") {
-                return (
-                  <Turn key={b.id} showWho={false}>
-                    <Choice
-                      question={b.question}
-                      options={b.options}
-                      onPick={(k) => {
-                        if (k === "yes") advance();
-                        else setPlaying(false);
-                      }}
-                    />
-                  </Turn>
-                );
-              }
-              return (
-                <Turn key={b.id} showWho={i === 0}>
-                  <BeatBody beat={b} live={live} memory={memory} />
-                </Turn>
-              );
-            })}
+              })}
 
-            {/* Attaching footage is a real path and a partly manual one. Say
+              {/* Attaching footage is a real path and a partly manual one. Say
                 which half runs where rather than showing a spinner that is
                 not attached to anything. */}
-            {attached.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
-                  {attached.join(", ")}
-                </p>
-                <Turn showWho={false}>
-                  <p className="text-[14px] leading-relaxed text-warm">
-                    {attached.length === 1 ? "That file goes" : "Those files go"} through the same
-                    pipeline this session came out of: detection and kit clustering per frame, the
-                    broadcast clock read off the overlay to line video time up with match time, then
-                    the moments and the chalk. It runs as a command in this build, not an upload, so
-                    it is <span className="font-mono text-[12.5px] text-chalk">peptalk analyse</span>{" "}
-                    on your machine and the next session opens on it.
+              {attached.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
+                    {attached.join(", ")}
                   </p>
-                </Turn>
-              </div>
-            )}
+                  <Turn showWho={false}>
+                    <p className="text-[14px] leading-relaxed text-warm">
+                      {attached.length === 1
+                        ? "That file goes"
+                        : "Those files go"}{" "}
+                      through the same pipeline this session came out of:
+                      detection and kit clustering per frame, the broadcast
+                      clock read off the overlay to line video time up with
+                      match time, then the moments and the chalk. It runs as a
+                      command in this build, not an upload, so it is{" "}
+                      <span className="font-mono text-[12.5px] text-chalk">
+                        peptalk analyse
+                      </span>{" "}
+                      on your machine and the next session opens on it.
+                    </p>
+                  </Turn>
+                </div>
+              )}
 
-            {asked.map((q) => (
-              <div key={q} className="flex flex-col gap-2">
-                <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
-                  {q}
-                </p>
-                <Turn showWho={false}>
-                  <Answer
-                    key={`${q}::${memory}`}
-                    question={q}
-                    memory={memory}
-                    match={asking}
-                  />
-                </Turn>
-              </div>
-            ))}
-
-            <div ref={tail} />
+              {asked.map((q) => (
+                <div key={q} className="flex flex-col gap-2">
+                  <p className="self-end rounded-2xl rounded-br-md bg-surface-raised px-3.5 py-2.5 text-[14px] text-chalk">
+                    {q}
+                  </p>
+                  <Turn showWho={false}>
+                    <Answer
+                      key={`${q}::${memory}`}
+                      question={q}
+                      memory={memory}
+                      match={asking}
+                    />
+                  </Turn>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -526,7 +588,11 @@ export function Session({
         <div className="border-t border-white/[0.06] px-4 py-3">
           <div className="mb-2.5 flex items-center gap-2">
             <button
-              onClick={advance}
+              onClick={() => {
+                // By hand, unlike the dwell timers, so this one follows.
+                follow();
+                advance();
+              }}
               disabled={atEnd}
               className="rounded-lg bg-accent px-3 py-1.5 text-[12px] font-medium text-canvas transition-all enabled:hover:brightness-110 disabled:bg-white/[0.06] disabled:text-muted-2"
             >
@@ -557,12 +623,15 @@ export function Session({
               const named = SQUAD.find((p) =>
                 q.toLowerCase().includes(p.short.toLowerCase()),
               );
-              if (named) setAsking({ ...THIS_MATCH, ...measurementsFor(named) });
+              if (named)
+                setAsking({ ...THIS_MATCH, ...measurementsFor(named) });
               else setAsking(THIS_MATCH);
               // A command is a jump, not a question. Anything Pep would have
               // to answer in prose about a beat that exists is better served
               // by putting the coach on that beat.
-              const cmd = COMMANDS.find((c) => q.toLowerCase().startsWith(`/${c.label}`));
+              const cmd = COMMANDS.find((c) =>
+                q.toLowerCase().startsWith(`/${c.label}`),
+              );
               if (cmd) {
                 const to = BEATS.findIndex((b) => b.id === cmd.to);
                 if (to >= 0) {
@@ -581,7 +650,9 @@ export function Session({
               const rows = SQUAD.map((p) => ({
                 key: `player-${p.key}`,
                 label: p.short,
-                avatar: photoFor(p) ? `/players/${photoFor(p)!.path}` : undefined,
+                avatar: photoFor(p)
+                  ? `/players/${photoFor(p)!.path}`
+                  : undefined,
                 hint: `${p.position
                   .split(" ")
                   .map((w) => w[0])
