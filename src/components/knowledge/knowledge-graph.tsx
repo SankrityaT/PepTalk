@@ -608,6 +608,12 @@ export function KnowledgeGraph() {
                 playsInline
                 preload="metadata"
                 aria-hidden
+                // A deployed build has no clips, so a flare there would be a
+                // black rectangle drifting through the graph. Better to let
+                // the memory simply not surface than to surface an empty one.
+                onError={() =>
+                  setFlares((live) => live.filter((x) => x.key !== f.key))
+                }
               />
             </div>
             <p className="mt-1 truncate text-center font-mono text-[9px] tracking-[0.08em] text-accent/90 uppercase">
@@ -630,6 +636,8 @@ export function KnowledgeGraph() {
  * it: the video is a property of a node, so it should come out of the node.
  */
 function Detail({ node, onClose }: { node: RawNode; onClose: () => void }) {
+  const [clipGone, setClipGone] = useState(false);
+
   return (
     <div className="absolute top-3 right-3 w-[19rem] overflow-hidden rounded-xl bg-surface/95 ring-1 ring-white/12 backdrop-blur">
       <div className="flex items-start justify-between gap-3 border-b border-white/[0.07] px-3 py-2.5">
@@ -647,7 +655,7 @@ function Detail({ node, onClose }: { node: RawNode; onClose: () => void }) {
         </button>
       </div>
 
-      {node.clip && (
+      {node.clip && !clipGone && (
         <video
           className="block w-full"
           src={node.clip}
@@ -656,7 +664,16 @@ function Detail({ node, onClose }: { node: RawNode; onClose: () => void }) {
           loop
           playsInline
           aria-label={`Footage from ${node.label}`}
+          onError={() => setClipGone(true)}
         />
+      )}
+
+      {node.clip && clipGone && (
+        <p className="border-y border-white/[0.06] bg-black/40 px-3 py-2.5 font-mono text-[10px] leading-relaxed text-muted">
+          <span className="text-accent">footage runs locally.</span> the
+          broadcast is not ours to redistribute, so the clips stay out of this
+          build.
+        </p>
       )}
 
       {node.photo && node.kind === "player" && (
