@@ -1,215 +1,174 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useSyncExternalStore } from "react";
+import Image from "next/image";
+import { motion, useInView } from "motion/react";
+import { MomentPitch } from "@/components/report/moment-pitch";
+import { XtPitch } from "@/components/dash/xt-pitch";
 import { SectionHead } from "@/components/section-head";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { MOMENTS } from "@/content/pep";
 
 /**
  * Section 05: how the pieces join.
  *
- * The temptation with an architecture section is four labelled boxes and three
- * arrows, which tells a judge the names of the parts and nothing about whether
- * they actually meet. The interesting claim here is not that the project has
- * computer vision and a graph and a model in it. It is that three systems that
- * know nothing about each other can be made to agree about one instant of one
- * football match, and that the agreement is what makes the answer trustworthy.
+ * The first version was five stages of prose with a monospaced readout panel
+ * beside each one, and the panels were the problem. They were styled like
+ * interface, so they read as screenshots of a screen that does not exist. On a
+ * page whose entire argument is that its pictures are real, inventing UI to
+ * illustrate a paragraph was the one unforgivable thing to do.
  *
- * So this follows a single pass through all of them. De Paul, eight minutes and
- * twenty five seconds into the World Cup final, a ball rolled to the byline
- * when there was one into the box. The event feed knows where it went, the
- * threat model knows what it was worth, the broadcast clock knows which second
- * of video to cut, the tracker knows who was in frame, the graph knows whether
- * this is normal for him, and the model gets all of it and is not allowed to
- * add anything.
+ * It shows the actual things now. The frame on the left is the running tape
+ * with real detections on it. The board on the right is `MomentPitch`, the same
+ * component the session draws, handed the same De Paul moment out of the same
+ * snapshot. The grid below is `XtPitch`, which is the threat model itself and
+ * responds to a cursor.
  *
- * Every figure below is read off that moment or off the running system. The
- * one time this page would be unforgivable for inventing a number is the
- * section explaining why it does not.
+ * Those two pictures side by side are the project in one line: the same second
+ * of football, once as pixels and once as coordinates. Nothing joins them but
+ * the clock, and saying that is more honest than drawing an arrow between two
+ * boxes labelled CV and graph.
  */
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-type Stage = {
-  n: string;
-  kicker: string;
-  title: string;
-  body: string;
-  /** The actual data at this point in the pass, as the system holds it. */
-  readout: { k: string; v: string }[];
-};
+/** The ball rolled to the byline eight minutes in, with one into the box on. */
+const DE_PAUL = MOMENTS.find((m) => m.minute === 8) ?? MOMENTS[0] ?? null;
 
-const STAGES: Stage[] = [
-  {
-    n: "01",
-    kicker: "the feed",
-    title: "Where the ball went",
-    body: "StatsBomb records every touch of 3,961 matches with coordinates. On its own that is a log: it says what happened and nothing about whether it was the right thing to do.",
-    readout: [
-      { k: "event", v: "pass · Rodrigo De Paul · 08:25" },
-      { k: "from", v: "[95.2, 65.6]" },
-      { k: "to", v: "[107.9, 72.9]  right, by the byline" },
-    ],
-  },
-  {
-    n: "02",
-    kicker: "the measurement",
-    title: "What else was on",
-    body: "A threat model fitted on 6,082,779 actions grades every square of the pitch, and a completion model grades every option he had against the defenders standing in the lane. The ball into the box was worth six and a half times the one he played and was no less likely to arrive.",
-    readout: [
-      { k: "played", v: "0.023 xT   ·   83% likely" },
-      { k: "best available", v: "0.150 xT   ·   85% likely   into the box" },
-      { k: "flagged", v: "803 passes had a better option, 8 were material" },
-    ],
-  },
-  {
-    n: "03",
-    kicker: "the footage",
-    title: "The same instant, on video",
-    body: "A broadcast clock does not agree with a match clock: there are adverts, replays and a half time. One offset per period, read off the overlay, turns 08:25 into a second of video, and the clip is cut to land on the pass rather than near it. YOLO11m finds the players in the frames and their kit colours are clustered per frame, because a stadium changes colour as the light goes.",
-    readout: [
-      { k: "clip", v: "008_25.mp4   ·   pass at 6.0s" },
-      { k: "alignment", v: "one offset per period, four periods" },
-      { k: "tracking", v: "YOLO11m boxes · per-frame kit clustering" },
-    ],
-  },
-  {
-    n: "04",
-    kicker: "the memory",
-    title: "Whether this is normal for him",
-    body: "One pass is an anecdote. HydraDB holds what he and 352 other sides have done, and every fact carries the dates it was true and an edge to whatever replaced it. That is the difference between a store that can answer about 2011 and one that averages 2011 with 2021 and describes neither.",
-    readout: [
-      { k: "facts", v: "2,096 · each with a validity interval" },
-      { k: "supersessions", v: "651 edges to the claim that replaced it" },
-      { k: "citations", v: "17,533 back to the matches observed" },
-    ],
-  },
-  {
-    n: "05",
-    kicker: "the sentence",
-    title: "What to do about it",
-    body: "Claude gets the facts and their ids and writes the read. It is an assistant coach, so the judgement is its job: why this keeps happening, what it costs, what to work on. The numbers are not its job, and it may not produce one that is not in front of it.",
-    readout: [
-      { k: "contract", v: "facts cited · judgement its own" },
-      { k: "checked by", v: "grounded · cited · supported · resolution · abstention" },
-      { k: "result", v: "48 of 48" },
-    ],
-  },
-];
-
-function Row({ s, i }: { s: Stage; i: number }) {
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true, margin: "-18% 0px" });
-
+  const seen = useInView(ref, { once: true, margin: "-12% 0px" });
   return (
     <motion.div
       ref={ref}
       initial={{ opacity: 0, y: 22 }}
       animate={seen ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: EASE }}
-      className="relative grid gap-6 pb-16 lg:grid-cols-[1fr_1fr] lg:gap-12 lg:pb-24"
+      transition={{ duration: 0.7, delay, ease: EASE }}
+      className={className}
     >
-      {/* The marker sits on the spine. */}
-      <span
-        aria-hidden
-        className="absolute -left-[33px] top-1.5 hidden size-[9px] rounded-full bg-accent ring-4 ring-canvas lg:block"
-      />
-
-      <div>
-        <p className="font-mono text-[10px] tracking-[0.16em] text-muted-2 uppercase">
-          {s.n} · {s.kicker}
-        </p>
-        <h3 className="mt-3 text-[22px] leading-tight font-medium text-chalk sm:text-[25px]">
-          {s.title}
-        </h3>
-        <p className="mt-3 max-w-md text-[14px] leading-relaxed text-muted">{s.body}</p>
-      </div>
-
-      {/* The data itself, in the shape the system holds it. Monospaced because
-          it is a readout and not a caption. */}
-      <div className="rounded-xl bg-surface/70 p-4 ring-1 ring-white/[0.06] lg:mt-7">
-        <dl className="space-y-2.5">
-          {s.readout.map((r) => (
-            <div key={r.k} className="grid grid-cols-[104px_1fr] gap-3">
-              <dt className="font-mono text-[10px] leading-[1.6] tracking-[0.06em] text-muted-2 uppercase">
-                {r.k}
-              </dt>
-              <dd
-                className={`font-mono text-[11.5px] leading-[1.6] ${
-                  i === 4 ? "text-accent/90" : "text-warm-2"
-                }`}
-              >
-                {r.v}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      {children}
     </motion.div>
   );
 }
 
+/**
+ * The board, drawn after hydration rather than during it.
+ *
+ * `MomentPitch` animates `pathLength` on its arrows, and motion writes the
+ * dash attributes that implement that only on the client. The server sends the
+ * paths without them, so React reports a hydration mismatch on a component
+ * whose markup is in fact correct. It has never come up before because this
+ * board only ever rendered inside the session, which the landing page does not
+ * server-render.
+ *
+ * Gating on mount is the honest fix rather than suppressing the warning: the
+ * board is an animated illustration, so there is nothing in it that wants to
+ * be in the server's HTML. The reserved box stops the section reflowing when
+ * it arrives.
+ */
+const NEVER_CHANGES = () => () => {};
+
+function BoardAfterMount() {
+  // The canonical "have we hydrated yet" read. Setting state in an effect does
+  // the same job and is a synchronous setState on mount, which is the thing
+  // React now asks you not to do; this returns false to the server renderer
+  // and true to the browser with no render cascade.
+  const ready = useSyncExternalStore(
+    NEVER_CHANGES,
+    () => true,
+    () => false,
+  );
+
+  return (
+    <div className="aspect-[120/80] w-full overflow-hidden rounded-xl bg-pitch ring-1 ring-white/[0.08]">
+      {ready && <MomentPitch moment={DE_PAUL} />}
+    </div>
+  );
+}
+
+/** A label under a picture, which is all the words a picture should need. */
+function Caption({ k, children }: { k: string; children: React.ReactNode }) {
+  return (
+    <p className="mt-3 text-[13px] leading-relaxed text-muted">
+      <span className="text-warm-2">{k}</span> {children}
+    </p>
+  );
+}
+
 export function SectionPipeline() {
-  const ref = useRef<HTMLDivElement>(null);
-  const seen = useInView(ref, { once: true, margin: "-15% 0px" });
-
-  // The spine draws as the section passes, so the eye is pulled down it rather
-  // than to five separate cards.
-  const track = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: track,
-    offset: ["start 0.8", "end 0.65"],
-  });
-  const height = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
     <section className="relative bg-canvas px-5 py-28 sm:px-8 lg:py-36">
       <div className="mx-auto w-full max-w-6xl">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={seen ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: EASE }}
-        >
-          <SectionHead n="05">One pass, through every part of it.</SectionHead>
+        <Reveal>
+          <SectionHead n="05">One second, in two languages.</SectionHead>
           <p className="mt-5 max-w-2xl text-[16px] leading-relaxed text-warm-2">
             Eight minutes into the final, De Paul rolled it to the byline with a
-            ball into the box available. Four systems that know nothing about
-            each other have to agree about that one second before Pep is allowed
-            to say a word about it.
+            ball into the box on. Here is that instant as the video sees it, and
+            as the graph sees it.
           </p>
-        </motion.div>
+        </Reveal>
 
-        <div ref={track} className="relative mt-14 lg:mt-20 lg:pl-10">
-          {/* The spine. Static rail, accent fill that follows the scroll. */}
-          <span
-            aria-hidden
-            className="absolute top-2 bottom-16 left-0 hidden w-px bg-white/[0.09] lg:block"
-          />
-          <motion.span
-            aria-hidden
-            style={{ height }}
-            className="absolute top-2 left-0 hidden w-px bg-accent/70 lg:block"
-          />
+        <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
+          <Reveal>
+            {/* Held to the pitch's own 120x80 so the two panels are the same
+                height and their captions sit on one line. */}
+            <div className="aspect-[120/80] overflow-hidden rounded-xl bg-surface ring-1 ring-white/[0.08]">
+              <Image
+                src="/shots/tracked.webp"
+                alt="A frame of the broadcast with every player boxed by the detector, the receiver circled in space and the defensive line drawn across"
+                width={1280}
+                height={816}
+                unoptimized
+                className="block h-full w-full object-cover"
+              />
+            </div>
+            <Caption k="In pixels.">
+              YOLO11m finds the players. Kit colours are clustered frame by
+              frame, because a stadium changes colour as the light goes.
+            </Caption>
+          </Reveal>
 
-          {STAGES.map((s, i) => (
-            <Row key={s.n} s={s} i={i} />
-          ))}
+          <Reveal delay={0.08}>
+            <BoardAfterMount />
+            <Caption k="In coordinates.">
+              The ball he played in chalk, the ball that was on in orange. Six
+              times the threat, and no less likely to arrive.
+            </Caption>
+          </Reveal>
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: EASE }}
-          className="max-w-3xl border-t border-white/[0.07] pt-8 text-[14px] leading-relaxed text-muted lg:ml-10"
-        >
-          The joins are the work. An event feed with no video cannot show a coach
-          what it means, footage with no measurement cannot say which ten seconds
-          matter, and a model with neither will write something fluent and
-          wrong. What makes the answer worth reading is that the clip, the
-          number and the sentence are all describing the same instant, and every
-          one of them can be traced back to where it came from.
-        </motion.p>
+        <Reveal delay={0.1}>
+          <p className="mt-10 max-w-3xl border-t border-white/[0.07] pt-8 text-[15px] leading-relaxed text-warm-2">
+            Nothing joins those two pictures except the clock. A broadcast clock
+            does not agree with a match clock, so one offset per period is read
+            off the overlay, and that single measurement is what lets a number
+            computed from event data point at a second of video.
+          </p>
+        </Reveal>
+
+        {/* The model that decides "a better ball was on" is a real thing, and
+            it responds to a cursor rather than sitting in a caption. */}
+        <Reveal delay={0.06} className="mt-12">
+          <div className="rounded-xl bg-surface p-5 ring-1 ring-white/[0.06] lg:p-6">
+            <XtPitch />
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <p className="mt-10 max-w-3xl text-[15px] leading-relaxed text-warm-2">
+            Then HydraDB decides whether it matters. One pass is an anecdote, so
+            the moment is held against what this player and 352 other sides have
+            done, every fact carrying the dates it was true and an edge to
+            whatever replaced it.
+          </p>
+        </Reveal>
       </div>
     </section>
   );
