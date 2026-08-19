@@ -8,7 +8,7 @@ import { XtPitch } from "@/components/dash/xt-pitch";
 import { Roster } from "@/components/roster/roster";
 import { Session } from "@/components/session/session";
 import { Section, Sidebar } from "@/components/shell/sidebar";
-import { FEATURED, MATCHES, TEAM, TOTALS, mean, series } from "@/content/dashboard";
+import { FEATURED, HISTORY, MATCHES, TEAM, TOTALS, mean, series } from "@/content/dashboard";
 
 /**
  * The workspace.
@@ -106,7 +106,62 @@ function Games() {
         ))}
       </div>
 
-      <p className="mt-5 max-w-3xl text-[12px] leading-relaxed text-muted-2">
+      {/* The whole record, because "22 games on record" above seven cards is a
+          number nobody can check, and this build has no graph behind it to go
+          and look. The seven with tape are marked; the rest are what the norms
+          are built from. */}
+      {HISTORY.length > 0 && (
+        <div className="mt-10">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="text-[15px] font-medium text-chalk">
+              Everything in the graph
+            </h2>
+            <span className="font-mono text-[11px] text-muted-2">
+              {HISTORY.length} matches &middot; {HISTORY[HISTORY.length - 1]?.date.slice(0, 4)} to{" "}
+              {HISTORY[0]?.date.slice(0, 4)}
+            </span>
+          </div>
+
+          <div className="mt-3 overflow-hidden rounded-xl ring-1 ring-white/[0.06]">
+            {HISTORY.map((h, i) => (
+              <div
+                key={h.id}
+                className={`grid grid-cols-[74px_1fr_auto] items-center gap-3 px-3 py-2 sm:grid-cols-[86px_1fr_60px_54px_auto] ${
+                  i % 2 ? "bg-white/[0.015]" : ""
+                }`}
+              >
+                <span className="font-mono text-[10px] tabular-nums text-muted-2">
+                  {h.date}
+                </span>
+                <span className="truncate text-[13px] text-warm">{h.label}</span>
+                <span className="hidden font-mono text-[10px] tabular-nums text-muted sm:block">
+                  {h.poss.toFixed(0)}%
+                </span>
+                <span className="hidden font-mono text-[10px] tabular-nums text-muted sm:block">
+                  {h.xg.toFixed(2)} xG
+                </span>
+                {h.analysed ? (
+                  <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] text-accent uppercase">
+                    tape
+                  </span>
+                ) : (
+                  <span className="font-mono text-[9px] tracking-[0.08em] text-muted-2 uppercase">
+                    norm
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-3 max-w-3xl text-[12px] leading-relaxed text-muted-2">
+            Seven were taken apart end to end, with footage cut and moments
+            flagged. The rest is what every norm on this page is measured
+            against, which is the point of holding them.
+          </p>
+        </div>
+      )}
+
+      <p className="mt-8 max-w-3xl text-[12px] leading-relaxed text-muted-2">
         Scorelines are the real result, shootouts included. The{" "}
         <em className="not-italic text-muted">models</em> exclude penalties,
         because eight of them would swamp a match&rsquo;s chance count and say
