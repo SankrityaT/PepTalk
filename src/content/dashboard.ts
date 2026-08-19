@@ -52,6 +52,35 @@ export const CAMPAIGN = dash.campaign;
 export const MATCHES = dash.matches as MatchRow[];
 
 /**
+ * Every match the graph holds for this side, newest first.
+ *
+ * The season screen used to say "22 games on record" above seven cards, which
+ * is a number nobody can check, and the deployed build has no HydraDB behind
+ * it to go and look. So the record is in the file.
+ *
+ * `analysed` marks the seven that were taken apart properly, with footage cut
+ * and moments flagged. The other fifteen are what the norms are built from.
+ * Showing them undifferentiated would imply there is tape for all of them.
+ */
+export type HistoryRow = {
+  id: number;
+  date: string;
+  label: string;
+  comp: string;
+  stage: string;
+  season: string;
+  poss: number;
+  press: number;
+  xg: number;
+  shots: number;
+  width: number;
+  pfr: number;
+  analysed: boolean;
+};
+
+export const HISTORY = (dash.history ?? []) as HistoryRow[];
+
+/**
  * `matches` is this campaign; `in_graph` is every game this side has ever
  * played that we hold. They are different numbers on purpose — the feed is
  * what a coach is working on, the graph is what Pep compares it against.
