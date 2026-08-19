@@ -432,12 +432,7 @@ def added():
 
 def active_key() -> str:
     """Which workspace the interface is currently showing."""
-    pointer = ROOT / "src" / "content" / "snapshots" / ".active"
-    try:
-        key = pointer.read_text().strip()
-    except OSError:
-        return workspace.DEFAULT
-    return key or workspace.DEFAULT
+    return workspace.showing() or workspace.DEFAULT
 
 
 @router.post("/api/games/{key}/activate")

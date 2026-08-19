@@ -1,9 +1,11 @@
-# Pep Talk — an assistant coach that remembers
+# Pep Talk
+
+**An assistant coach that remembers.**
 
 **Hack Hydra 2026 · Track 03, Memory + Context Retrieval**
 
 A coach sits down with their match tape. Pep has already watched it, found the
-moments worth stopping on, and can answer questions about any of them — grounded
+moments worth stopping on, and can answer questions about any of them, grounded
 in what this side and these players have actually done across every game it
 holds.
 
@@ -39,7 +41,7 @@ Nobody told it about Guardiola.
 
 | Source | What it gives us | Note |
 |---|---|---|
-| **StatsBomb open data** | 3,961 matches of events — every pass, carry and shot with x/y coordinates | free, public |
+| **StatsBomb open data** | 3,961 matches of events: every pass, carry and shot with x/y coordinates | free, public |
 | StatsBomb 360 | freeze frames: where all 22 players stood at an event | Euro 2020 onward only |
 | StatsBomb lineups | player ids, shirt numbers, positions | |
 | **Broadcast footage** | the 2022 World Cup final, cut into 7 clips | gitignored, never redistributed |
@@ -73,10 +75,10 @@ usually a model recalling what it knows about famous players.
 
 Claude is given a **numbered list of retrieved facts and nothing else**. Then:
 
-- **Facts** — every number, date, norm, comparison and trend must come from that
+- **Facts.** Every number, date, norm, comparison and trend must come from that
   list and carry the id it came from. Quote figures exactly; no rounding, no
   arithmetic. Nothing it knows about these players from anywhere else exists.
-- **Judgement** — what the facts mean, why it might be happening, and what to do
+- **Judgement.** What the facts mean, why it might be happening, and what to do
   about it on the training pitch is *its job*. It is an assistant coach, not a
   database. Football reasoning about space, pressure and shape is welcome.
 
@@ -102,8 +104,8 @@ Every bracket is a real HydraDB node id.
 Object-store-native graph database, Cypher over Bolt. What we hold:
 
 ```
-354 teams · 3,961 matches · 24 players
-1,973 facts · 631 supersessions · 17,520 evidence edges
+353 teams · 3,961 matches · 44 players
+2,096 facts · 651 supersessions · 17,533 evidence edges
 ```
 
 ```
@@ -124,7 +126,7 @@ Three queries carry the product:
 | `flat_lookup(id, dim)` | What would a store **without dates** have said? |
 
 That last one is the memory switch. Turning memory off runs `flat_lookup`
-instead — the single most-evidenced claim, no validity window — which is what a
+instead: the single most-evidenced claim, with no validity window, which is what a
 vector index would surface. Argentina and Barcelona come back identical on all
 five dimensions.
 
@@ -132,10 +134,10 @@ five dimensions.
 
 HydraDB v0.1.0 speaks a subset of OpenCypher. These shaped the code:
 
-- `CREATE` accepts **relationship paths only** — every node is born as one end
-  of an edge.
+- `CREATE` accepts **relationship paths only**, so every node is born as one
+  end of an edge.
 - `UNWIND` batches **cannot carry labels**, so writes are one statement per row.
-- `IS NULL` is rejected — an open interval uses an `OPEN_ENDED` sentinel and
+- `IS NULL` is rejected, so an open interval uses an `OPEN_ENDED` sentinel and
   every temporal predicate is `<=` / `>`.
 - One statement per request; no multi-stage `WITH` pipelines.
 - **Nodes upsert by id but relationships do not.** Found by running an ingest
@@ -191,7 +193,7 @@ every pass  →  what was played vs every option that was open
 ```
 
 The gate matters more than the engine. Without it the median flagged pass has a
-threat gap of 0.0085 — under one percent of a goal. Telling a coach that a
+threat gap of 0.0085, under one percent of a goal. Telling a coach that a
 sideways ball "should have been played forward" at that magnitude is noise
 dressed as insight, and it is wrong about football besides: circulating the ball
 is how you move an opponent. **A moment must be a ball that would have made a
@@ -219,7 +221,7 @@ frame  →  YOLO11m finds players  →  k-means on kit colour splits the teams
 ```
 
 **What we cannot do: say which box is which player.** That needs a pitch-to-image
-homography, which does not converge for us (21–44% of players explained against
+homography, which does not converge for us (21% to 44% of players explained against
 a 45% bar). So no name is ever drawn on a box.
 
 Which means the honest description of this system is:
@@ -240,7 +242,7 @@ question
 
 Memory off skips the fact queries entirely. Everything measured off the match in
 front of it still reaches the model, because none of that needed a graph. What
-disappears is the norms, the dates and the peers — and it says so in its own
+disappears is the norms, the dates and the peers, and it says so in its own
 words:
 
 > I can tell you the pressing height sat at 51.67 **[4]**, but I have no
@@ -263,12 +265,15 @@ over eight questions in both memory modes:
 | `abstention` | history claimed with memory off |
 
 ```
-grounded 32/32 · cited 32/32 · supported 32/32
-resolution 16/16 · abstention 16/16
+grounded 16/16 · cited 16/16 · supported 16/16
+resolution 8/8 · abstention 8/8
 ```
 
+Eight questions in both memory modes. `resolution` and `abstention` only apply
+to one mode each, which is why their denominators are half.
+
 **An eval that passes everything is indistinguishable from one that measures
-nothing**, so 22 unit tests feed each check a planted violation and require it to
+nothing**, so 26 unit tests feed each check a planted violation and require it to
 catch: an invented number, correct-but-forbidden arithmetic, a citation to
 nothing, the wrong player, asserted habituality.
 
@@ -277,7 +282,7 @@ below the norm" from 57.18 and 51.67 has the arithmetic right and still fails,
 because a coach cannot check a figure that appears in no fact.
 
 ```bash
-TACTICBENCH_BACKEND=cli uv run python -m tacticbench.evals --repeats 3
+TACTICBENCH_BACKEND=cli uv run python -m tacticbench.evals
 ```
 
 ---
@@ -448,23 +453,71 @@ src/
 
 ## Running it
 
+Nothing here is committed that can be rebuilt. `results/` and `.cache/` are
+ignored, so a fresh clone starts from an empty graph and builds everything
+below from StatsBomb's public data, which downloads itself on first use.
+
+**1. Dependencies**
+
 ```bash
-# 1. HydraDB on bolt://127.0.0.1:7687
-# 2. the graph
-uv run python -m tacticbench.ingest_all        # teams, matches, team facts
-uv run python -m tacticbench.players           # player nodes and player facts
+uv sync
+pnpm install
+```
+
+**2. HydraDB, on `bolt://127.0.0.1:7687`**
+
+```bash
+mkdir -p hydradb-data/store
+docker run --rm --user "$(id -u):$(id -g)" \
+  -p 7687:7687 -p 8443:8443 -p 9090:9090 \
+  -v "$PWD/hydradb-data:/data" \
+  -e CLOUD_PROVIDER=local -e LOCAL_PATH=/data/store \
+  -e GRAPH_NAMESPACE=default -e GRAPH_ID=default \
+  -e GRAPH_CELL_ID=cell-0 -e GRAPH_CELLS=cell-0 -e GRAPH_NODE_ID=node-0 \
+  -e GRAPH_BOLT_NODE_ADDRESSES=node-0=127.0.0.1:7687 \
+  -e GRAPH_ADVERTISED_BOLT_ADDR=127.0.0.1:7687 \
+  -e GRAPH_DATA_CACHE_DIR=/data/cache \
+  -e GRAPH_AUTH_TOKEN_FILE=/data/auth-token \
+  -e GRAPH_ALLOW_PLAINTEXT=true -e RUST_MIN_STACK=33554432 \
+  ghcr.io/hydra-db/hydradb:latest
+```
+
+`LOCAL_PATH` has to exist first, and `--user` is required: the image runs as
+UID 10001 and cannot otherwise write a host-owned bind mount.
+
+**3. Build the graph.** In this order, because each step reads the last one's
+output. The first two are the slow ones: the threat model fits over six million
+actions and the series pass walks all 3,961 matches, so between them expect
+somewhere around half an hour on a laptop, most of it the first download.
+
+```bash
+uv run python -m tacticbench.xt build             # the threat model
+uv run python -m tacticbench.ingest_all series    # per-team match histories
+uv run python -m tacticbench.ingest_all graph     # teams, matches, team facts
+uv run python -m tacticbench.ingest_all enrich    # scorelines and halftime state
+uv run python -m tacticbench.players              # player nodes and player facts
 uv run python -m tacticbench.roster --matches campaign
-uv run python -m tacticbench.scout             # the next fixture
+uv run python -m tacticbench.scout                # the next fixture
+```
 
-# 3. the service that answers questions
+Every one of those is idempotent. Running it twice leaves the graph in the
+state it would be in had it run once, which is less obvious than it sounds and
+is why `clear_team_facts` exists.
+
+**4. Run it**
+
+```bash
 TACTICBENCH_BACKEND=cli uv run uvicorn tacticbench.api:app --port 8000
-
-# 4. the interface
 pnpm dev
 ```
 
 `TACTICBENCH_BACKEND=cli` runs prompts through the Claude CLI, so no API key is
 needed. Set `ANTHROPIC_API_KEY` and drop it to use the API instead.
+
+The footage is the one thing that cannot be scripted. Broadcast clips are not
+ours to redistribute, so `public/clips/` is ignored and the tape has to be
+supplied locally; see **Making it your team** below for the workspace field
+that points at it. Everything else on the interface works without it.
 
 **The deployed build cannot answer questions.** Retrieval needs HydraDB and that
 runs locally. It says so rather than falling back to something canned.
@@ -484,7 +537,7 @@ Workspace(
 ```
 
 Select it with `PEPTALK_WORKSPACE=your-team`. Every menu, count and label in the
-interface is derived from the data that workspace holds — "7 clips cut from this
+interface is derived from the data that workspace holds: "7 clips cut from this
 game", "531 of theirs in the graph", the squad list, the commands. A second
 workspace gets its own by having different data, not by editing components.
 

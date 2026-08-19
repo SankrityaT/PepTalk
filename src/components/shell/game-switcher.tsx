@@ -9,10 +9,11 @@ import { type AddedGame, activate, added } from "@/lib/games";
 /**
  * Which game the interface is showing, and how to change it.
  *
- * A coach who adds a match should land on it, and still be able to get back
- * to anything else they have added — including the built-in World Cup game,
- * which stops being "the app" the moment they have one of their own and
- * becomes one entry in this list.
+ * A coach who adds a match lands on it, and can still get back to anything
+ * else — including the built-in World Cup game, which is what a fresh start
+ * always opens on and what everyone sees before they have uploaded anything.
+ * Switching is for the session; it does not change which game the app opens
+ * on next time.
  *
  * Switching reloads the page on purpose. TypeScript imports are static, so
  * the interface reads one directory, `snapshots/active`, and the server

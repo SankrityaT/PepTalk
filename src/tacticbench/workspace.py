@@ -1,7 +1,9 @@
 """One workspace: whose team this is, and where the footage comes from.
 
     uv run python -m tacticbench.workspace              # show the active one
-    PEPTALK_WORKSPACE=isl uv run python -m tacticbench.bootstrap
+
+Which one is active follows the site: adding a game switches to it, and every
+command here follows without being told, so there is nothing to export.
 
 Every pipeline in this repo was written against one match of one team, and the
 ids for it leaked into eight modules. That is fine for proving a thing works
@@ -47,6 +49,26 @@ WORKSPACES = ROOT / "workspaces"
 #: Which workspace to load. A directory name under `workspaces/`.
 ENV_VAR = "PEPTALK_WORKSPACE"
 DEFAULT = "wc2022"
+
+#: Written by `activate()` when a game is added or switched to. This is which
+#: game the running interface is *showing*, which is not the same question as
+#: which game a command should act on — a rebuild names its target, and the
+#: default is the built-in example.
+POINTER = ROOT / "src" / "content" / "snapshots" / ".active"
+
+
+def showing() -> str | None:
+    """The workspace the interface is currently displaying, if any.
+
+    Read by commands that need to act on what the coach is looking at rather
+    than on a named target. Deliberately not part of `load()`'s fallback
+    chain: a pipeline that quietly followed the last thing clicked would
+    rebuild a different game than the one asked for.
+    """
+    try:
+        return POINTER.read_text().strip() or None
+    except OSError:
+        return None
 
 
 @dataclass
@@ -168,9 +190,14 @@ class Workspace:
 def load(key: str | None = None) -> Workspace:
     """The active workspace.
 
-    Falls back to the built-in one so a fresh clone runs without configuration,
-    which is the difference between a demo somebody can try and a demo they
-    have to be talked through.
+    An explicit key, then `$PEPTALK_WORKSPACE`, then the built-in example, so
+    a fresh clone runs without configuration — the difference between a demo
+    somebody can try and a demo they have to be talked through.
+
+    Note what is *not* in that chain: whichever game the interface happens to
+    be showing. Adding a game switches the display to it, but a rebuild run
+    afterwards should still act on the game it was told to, not on the last
+    thing that was clicked.
     """
     key = key or os.environ.get(ENV_VAR) or DEFAULT
     path = WORKSPACES / key / "workspace.json"

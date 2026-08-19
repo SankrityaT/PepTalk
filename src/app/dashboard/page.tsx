@@ -241,7 +241,17 @@ export default function ReportPage() {
               <Watching
                 jobId={job}
                 onDone={(key) => {
-                  if (key) setGameKey(key);
+                  // Straight to the dashboard, showing the game they just
+                  // added. The pipeline has already pointed `snapshots/active`
+                  // at it — that is the last thing it does — but those imports
+                  // are static, so only a full document load reads the new
+                  // files. `router.push` would keep the current bundle and
+                  // render the previous game's data under the new game's name.
+                  // Same reload the game switcher does, for the same reason.
+                  if (key) {
+                    window.location.reload();
+                    return;
+                  }
                   setSelected(null);
                   setStage("report");
                 }}

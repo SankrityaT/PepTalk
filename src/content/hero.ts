@@ -186,15 +186,15 @@ export const TACTICAL_STATES: TacticalState[] = [
 ];
 
 export const HERO_COPY = {
-  // The eyebrow names the moment the product acts. The name is already in
-  // the nav wordmark and the HydraDB credit is a chip beside it, so this
-  // line is free to do the work neither of those can: tell a coach when
-  // this thing is for, before they read anything else.
-  eyebrow: "Halftime / 15 minutes / one decision",
-  headline: "The assistant coach that remembers what your opponent used to be.",
-  sub: "Tactical memory for lower-division football. Every claim about a team is stored with the dates it was true, so asking about 2011 and asking about 2021 return two different, correct answers.",
-  primaryCta: { label: "See the time-travel query", href: "#time-travel" },
-  secondaryCta: { label: "GitHub", href: "https://github.com" },
+  eyebrow: "Match tape / already watched",
+  // Short, because a hero is a claim and not an explanation. The version this
+  // replaces ran to fourteen words and three sentences under it, which is a
+  // paragraph wearing a headline's clothes. Everything it said is still on the
+  // page; it is just further down, where a reader has agreed to read.
+  headline: "The assistant coach that remembers.",
+  sub: "He watches the game before you sit down. Every number he gives you carries the date it was true.",
+  primaryCta: { label: "Open the session", href: "/dashboard" },
+  secondaryCta: { label: "GitHub", href: "https://github.com/SankrityaT/PepTalk" },
 } as const;
 
 /** True when every state on the page traces to the harness. */
@@ -221,6 +221,11 @@ export const CLAIM_COPY = {
   subjectB: "Barcelona 2021",
   tail: "are the same team.",
   punchline: "HydraDB doesn't.",
+  // The old line spent three clauses on what similarity gets wrong and never
+  // said what replaces it, which leaves the punchline unearned. Two sentences:
+  // the failure, then the fix.
   footnote:
-    "Similarity retrieval finds the nearest neighbour. It has no way to know a fact expired, so it answers with an average across eras that describes neither, and it answers confidently.",
+    "Similarity finds the nearest neighbour. It cannot tell that a fact expired, so it averages the eras and describes neither.",
+  answer:
+    "Every fact here carries the dates it was true and a link to whatever replaced it. Ask about 2011 and about 2021 and you get two answers, both correct.",
 } as const;

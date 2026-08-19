@@ -202,3 +202,41 @@ def test_asserted_habituality_is_still_caught():
     assert not abstention(result("His block has been higher than this all season.", memory=False)).passed
     assert not abstention(result("They typically press higher.", memory=False)).passed
     assert not abstention(result("That is below his average.", memory=False)).passed
+
+
+class TestAbstentionGoverning:
+    """`whether` scopes over a history word the way a negation does.
+
+    The answer that forced this said outright that it had no baseline, then
+    closed with "if you want a real answer on whether the press was as high as
+    normal, I need the season averages". That sentence contains no negation, so
+    the rule read "normal" as a claim about how Argentina usually press. It is
+    a request for the data, which is the behaviour the check is meant to reward.
+    """
+
+    def _off(self, answer: str) -> bool:
+        from tacticbench.evals import abstention
+
+        return abstention({"memory": False, "answer": answer}).passed
+
+    def test_the_answer_that_forced_this(self):
+        assert self._off(
+            "I can tell you our pressing height was 51.67 [4], but I have no "
+            "baseline in front of me. If you want a real answer on whether the "
+            "press was as high as normal, I need the season averages."
+        )
+
+    def test_if_alone_does_not_excuse_a_claim(self):
+        """The hole that including `if` would have opened."""
+        assert not self._off(
+            "If we press higher next week, he usually drops off the front line."
+        )
+
+    def test_a_plain_claim_still_fails(self):
+        assert not self._off("He usually presses higher than this.")
+
+    def test_whether_does_not_excuse_a_later_sentence(self):
+        """Governing is per sentence, so the next one is judged on its own."""
+        assert not self._off(
+            "I cannot say whether that is unusual. He typically presses higher."
+        )

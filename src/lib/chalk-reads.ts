@@ -30,6 +30,49 @@ export function foot(p: TrackedPlayer): { x: number; y: number } {
  * be read off y alone. We use the horizontal extreme instead: the side of the
  * frame the team is defending. `defendingLeft` says which.
  */
+/**
+ * How separated the two teams are along the frame's x axis.
+ *
+ * A defensive line is a claim about shape, and shape only exists when the two
+ * sides occupy different parts of the pitch. At a corner they do not: everyone
+ * is inside one penalty box, and the mean-x comparison `defendingLeft` makes
+ * still returns an answer — a confident one, drawn through whoever happens to
+ * be leftmost. On the LAFC reel that put "defensive line" across four
+ * attackers standing on the halfway line waiting to counter.
+ *
+ * So the separation is measured and the line is withheld when it is not there.
+ * Returns the gap between the team means as a fraction of the frame width.
+ */
+export function teamSeparation(players: TrackedPlayer[], team: number): number {
+  const own = players.filter((p) => p.team === team).map(foot);
+  const opp = players.filter((p) => p.team !== team).map(foot);
+  if (!own.length || !opp.length) return 0;
+  const mo = own.reduce((s, p) => s + p.x, 0) / own.length;
+  const mp = opp.reduce((s, p) => s + p.x, 0) / opp.length;
+  return Math.abs(mo - mp);
+}
+
+/**
+ * Below this the two teams are mixed together and no line is drawn.
+ *
+ * A tenth of the frame is a low bar deliberately: it keeps ordinary open play
+ * and rejects the set piece, where the sides are stacked on top of each other.
+ */
+export const MIN_SEPARATION = 0.1;
+
+/**
+ * The defensive line: a line through the two or three deepest players of a
+ * team, where "deep" is toward their own goal.
+ *
+ * In frame space, further down the image is nearer the camera, so depth cannot
+ * be read off y alone. We use the horizontal extreme instead: the side of the
+ * frame the team is defending. `defendingLeft` says which.
+ *
+ * Returns null when the shot cannot support the claim — too few players, or
+ * the two teams too mixed to tell which way anyone is facing. Drawing nothing
+ * is the same rule the boxes follow, and for the same reason: a mark on the
+ * video is read as a finding, so a wrong one costs more than a missing one.
+ */
 export function defensiveLine(
   players: TrackedPlayer[],
   team: number,
@@ -37,10 +80,18 @@ export function defensiveLine(
 ): Mark | null {
   const own = players.filter((p) => p.team === team).map(foot);
   if (own.length < 3) return null;
+  if (teamSeparation(players, team) < MIN_SEPARATION) return null;
 
   const sorted = [...own].sort((a, b) => (defendingLeft ? a.x - b.x : b.x - a.x));
   const back = sorted.slice(0, 3);
   if (back.length < 2) return null;
+
+  // A line through players scattered across the frame is not a line. The back
+  // three of a real defensive shape sit within a band; a corner's "deepest
+  // three" can span the whole picture, which is the other way this mark went
+  // wrong before the separation check existed.
+  const spread = Math.max(...back.map((p) => p.x)) - Math.min(...back.map((p) => p.x));
+  if (spread > 0.55) return null;
 
   // Least-squares fit through the back three, drawn across their own extent
   // rather than the whole frame: a line spanning the full width would imply

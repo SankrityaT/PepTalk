@@ -1,8 +1,9 @@
 import { ChalkFilters } from "@/components/chalk-filters";
 import { Hero } from "@/components/hero";
 import { SectionClaim } from "@/components/section-claim";
-import { SectionHowItWorks } from "@/components/section-how-it-works";
-import { SectionTimeTravel } from "@/components/section-time-travel";
+import { SectionClose } from "@/components/section-close";
+import { SectionMemory, SectionProduct } from "@/components/section-product";
+import { SectionPipeline } from "@/components/section-pipeline";
 import { SmoothScroll } from "@/components/smooth-scroll";
 
 export default function Home() {
@@ -12,8 +13,10 @@ export default function Home() {
       <ChalkFilters />
       <Hero />
       <SectionClaim />
-      <SectionTimeTravel />
-      <SectionHowItWorks />
+      <SectionProduct />
+      <SectionMemory />
+      <SectionPipeline />
+      <SectionClose />
     </main>
   );
 }

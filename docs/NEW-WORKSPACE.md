@@ -8,7 +8,7 @@ a JSON file, and the code reads it:
 
 ```bash
 uv run python -m tacticbench.workspace          # what is active
-PEPTALK_WORKSPACE=mls23 uv run python -m tacticbench.bootstrap
+PEPTALK_WORKSPACE=mls23 uv run python -m tacticbench.pass_options <match_id>
 ```
 
 ---
@@ -132,19 +132,31 @@ no window.
 
 ```bash
 uv pip install yt-dlp                       # once
-PEPTALK_WORKSPACE=mls23 uv run python -m tacticbench.bootstrap
+export PEPTALK_WORKSPACE=mls23
+
+uv run python -m tacticbench.pass_options <match_id>   # what else was on
+uv run python -m tacticbench.conceded                  # how the goals went in
+uv run python -m tacticbench.fetch_clips               # a clip per flagged moment
+uv run python -m tacticbench.build_clips               # track them, write snapshots
+
 pnpm dev                                    # /dashboard
 ```
 
-`bootstrap` cuts the tape window, cuts a clip per flagged moment, tracks each
-one, and writes the snapshots the interface reads. Every cut is verified by
-reading its clock back off the first frame, so a bad offset fails loudly here
-rather than in the demo.
+`fetch_clips` cuts a window per flagged moment against the offsets above and
+reads the clock back off the first frame of each, so a bad offset fails loudly
+here rather than in the demo. `build_clips` tracks what came back and writes
+the snapshots the interface reads.
+
+There is no single command that does all four. Running them as a unit is the
+obvious next thing to build, and the interesting part is not the sequencing but
+what happens on a re-run: everything downstream of a re-ingest has to be
+replaced rather than appended to, for the reason `Graph.clear_team_facts`
+exists.
 
 Then confirm nothing regressed:
 
 ```bash
-uv run pytest -q                            # 217
+uv run pytest -q
 uv run python -m tacticbench.verify         # exits non-zero on failure
 ```
 

@@ -33,60 +33,29 @@ ROOT = Path(__file__).resolve().parents[2]
 PUBLIC_CLIPS = ROOT / "public" / "clips"
 
 
-#: Words that belong to the name after them rather than standing alone.
-#: "De Paul" shortened to "Paul", or "Kolo Muani" to "Muani", is the most
-#: visible mistake this page can make, so the particle is named explicitly
-#: rather than guessed from length — "Alba" is also four letters and is a
-#: surname in its own right.
-PARTICLES = {
-    "de", "del", "de la", "da", "das", "do", "dos", "van", "van der", "van den",
-    "von", "der", "den", "di", "du", "le", "la", "el", "al", "bin", "ben",
-    "mac", "mc", "o", "st", "ter", "ten", "kolo",
-}
+#: Re-exported from `pep`, which owns them, because `roster` imports them from
+#: here. One definition rather than two tables that can drift apart — which is
+#: what happened before, and it disagreed on exactly the ambiguous case both
+#: were written to settle.
+from .pep import CONNECTIVES, PARTICLES  # noqa: E402,F401
 
-#: Connectives inside a Catalan or Spanish full name: "Busquets i Burgos".
-CONNECTIVES = {"i", "y", "e"}
+__all__ = ["CONNECTIVES", "PARTICLES", "surname", "write_all", "activate"]
 
 
 def surname(name: str) -> str:
     """What a coach would actually call this player.
 
-    Two conventions collide here. A particle binds forward ("De Paul", "Van
-    Dijk"), while a Spanish or Portuguese full name carries both parents'
-    surnames, so the *last* word is the mother's and not what anyone says:
-    "Lionel Andrés Messi Cuccittini" is Messi, "Jordi Alba Ramos" is Alba.
-
-    StatsBomb's `player_nickname` settles this wherever it is populated; this
-    is the fallback for the competitions where it is not.
+    One implementation, in `pep.short_name`. This was a second copy of the same
+    rules, written before that one existed, and the two disagreed on the case
+    they both had to guess at: three tokens with no particle. Mine read the
+    middle token as a first surname, which is right for "Jordi Alba Ramos" and
+    wrong for "Damián Emiliano Martínez" and "Nicolás Hernán Otamendi" — two
+    names in the demo squad against one. Theirs takes the last token there and
+    documents why, so theirs is the one that survives.
     """
-    parts = (name or "").split()
-    if len(parts) < 2:
-        return name.strip() if name else ""
+    from .pep import short_name
 
-    lower = [p.lower() for p in parts]
-
-    # "Busquets i Burgos" — the connective marks the preceding word as the name.
-    for i, w in enumerate(lower[1:-1], start=1):
-        if w in CONNECTIVES:
-            return parts[i - 1]
-
-    # A particle binds to what follows it: "De Paul", "Kolo Muani".
-    if len(parts) >= 3 and lower[-2] in PARTICLES:
-        return f"{parts[-2]} {parts[-1]}"
-    if len(parts) >= 4 and lower[-3] in PARTICLES:
-        return f"{parts[-3]} {parts[-2]}"
-
-    # Four or more parts and no particle: a double surname, so the first of
-    # the two is the one that is used.
-    if len(parts) >= 4:
-        return parts[-2]
-
-    # Three parts is ambiguous ("Jordi Alba Ramos" vs "Robert Lewandowski").
-    # Spanish double surnames dominate the competitions this falls back on.
-    if len(parts) == 3:
-        return parts[-2]
-
-    return parts[-1]
+    return short_name(name)
 
 
 def write_all(
@@ -158,9 +127,10 @@ def activate(key: str) -> int:
         return 0
     shutil.rmtree(dest, ignore_errors=True)
     shutil.copytree(src, dest)
-    # Remember the choice. `scripts/use-workspace.mjs` runs before every dev
-    # and build and would otherwise reset to the committed example, throwing
-    # away the game a coach just added on the next restart.
+    # Record what `active/` now holds, so the switcher can tick the game the
+    # coach is actually looking at. This is a description of the current
+    # state, not a preference that outlives it: a restart re-opens the
+    # built-in example, which is the front door for everybody.
     (snaps / ".active").write_text(key + "\n")
     return len(list(dest.iterdir()))
 
@@ -326,6 +296,13 @@ def clip_moments(
             "name": surname(m.get("player", "")),
             "surname": surname(m.get("player", "")),
             "match_clock": f"{minute}:{second:02d}",
+            # Always present, even when there is no footage for this moment.
+            # A reader asking for `moment.frames.length` should not have to
+            # know whether this particular pass happened to fall inside the
+            # video somebody uploaded — and on a highlights reel most of them
+            # do not, which is the normal case, not the edge one.
+            "frames": [],
+            "detections": 0,
         }
         if clip:
             # Namespaced by workspace. The committed example owns
@@ -478,6 +455,13 @@ def publish_clips(clips: list[dict], key: str) -> int:
     Into `public/clips/<workspace>/`, so an added game cannot overwrite the
     committed example's footage. Not redistributed — the directory is
     gitignored — this is a local copy for the running interface.
+
+    Footage from an earlier run of the same workspace is removed rather than
+    left in place. Cuts are named for the moment they show, so a rebuild that
+    finds a different set of moments leaves the old files behind under names
+    the new snapshot never mentions — until some later run keys one of them and
+    serves footage cut for a moment that is no longer the one being discussed.
+    A published clip should only ever be one this run stands behind.
     """
     import shutil
 
@@ -485,6 +469,10 @@ def publish_clips(clips: list[dict], key: str) -> int:
         return 0
     dest_dir = PUBLIC_CLIPS / key
     dest_dir.mkdir(parents=True, exist_ok=True)
+    keep = {Path(c["file"]).name for c in clips}
+    for old_file in dest_dir.glob("*.mp4"):
+        if old_file.name not in keep:
+            old_file.unlink(missing_ok=True)
     n = 0
     for c in clips:
         src = Path(c["file"])

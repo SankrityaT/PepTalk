@@ -120,3 +120,57 @@ class TestFormatAdvice:
             },
         )
         assert "UNCITED" in format_advice(a)
+
+
+class TestShortName:
+    """Every name in the demo squad, plus the shapes that broke earlier versions.
+
+    The full names are StatsBomb's, taken from the ingested roster, so these
+    are the strings the fallback actually sees rather than invented examples.
+    """
+
+    def test_the_squad_as_statsbomb_records_them(self):
+        from tacticbench.pep import short_name
+
+        for full, want in [
+            # A middle name, not a second surname. The rule that fixed Messi
+            # renders these as "Hernán", "Gabriel" and "Emiliano" if it is
+            # allowed to reach three-token names.
+            ("Nicolás Hernán Otamendi", "Otamendi"),
+            ("Cristian Gabriel Romero", "Romero"),
+            ("Damián Emiliano Martínez", "Martínez"),
+            ("Julián Álvarez", "Álvarez"),
+            # Two surnames: the last word is the mother's and nobody says it.
+            ("Lionel Andrés Messi Cuccittini", "Messi"),
+            # A particle takes what follows it.
+            ("Rodrigo De Paul", "De Paul"),
+            ("Alexis Mac Allister", "Mac Allister"),
+            ("Randal Kolo Muani", "Kolo Muani"),
+            ("Ángel Fabián Di María Hernández", "Di María"),
+            ("Virgil van Dijk", "van Dijk"),
+            # The connective names the word in front of it.
+            ("Sergio Busquets i Burgos", "Busquets"),
+            # Nothing to shorten.
+            ("Ronaldinho", "Ronaldinho"),
+            ("Adrien Rabiot", "Rabiot"),
+        ]:
+            assert short_name(full) == want, f"{full!r} -> {short_name(full)!r}"
+
+    def test_describe_carries_the_second(self):
+        """Without it the clip is cut at the top of the minute.
+
+        `fetch_clips.plan` reads the second with a zero default, so a missing
+        one does not raise. It just moves the cut, by up to 59 seconds.
+        """
+        from tacticbench.pep import describe
+
+        leg = {"x": 60.0, "y": 40.0, "xt_gain": 0.01, "completion": 0.9,
+               "defenders_in_lane": 0, "distance": 12.0}
+        best = {**leg, "x": 95.0, "y": 30.0, "xt_gain": 0.09, "completion": 0.6,
+                "defenders_in_lane": 1, "distance": 31.0}
+        moment = {"minute": 62, "second": 41, "player": "Rodrigo De Paul",
+                  "team": "Argentina", "played": leg, "best": best}
+
+        assert describe(moment)["second"] == 41
+        # Absent rather than wrong when the source has none.
+        assert describe({k: v for k, v in moment.items() if k != "second"})["second"] == 0

@@ -411,79 +411,53 @@ class TestFixturesOffered:
         assert len(games._fixtures()) == 1
 
 
-class TestReelMode:
-    """A highlights reel is footage of the match, just not alignable to it.
+class TestShortFootage:
+    """Footage that is not a full match gets no clips, and says so.
 
-    Aligning it by the match clock yields nothing — every window falls past
-    the end of a seven minute file — so moments get excerpts instead, and the
-    excerpt is labelled rather than passed off as the pass itself.
+    There was a "reel mode" that divided a highlights package evenly and gave
+    each moment a slice. It was withdrawn: measured against the LAFC reel the
+    overlay reads 08:12 at thirty seconds, 51:04 at ninety and 93:07 at four
+    and a half minutes, so an even spread is right only by luck. It put a wide
+    establishing shot under "Vela, 5:05".
     """
 
-    def _moments(self):
-        return [
-            {"minute": 9, "second": 49, "player": "A B"},
-            {"minute": 20, "second": 30, "player": "C D"},
-            {"minute": 77, "second": 19, "player": "E F"},
-        ]
-
-    def test_every_moment_gets_a_window(self, monkeypatch, tmp_path):
+    def test_a_reel_yields_no_clips(self, monkeypatch, tmp_path):
         from tacticbench import bootstrap
 
-        cut = []
-        monkeypatch.setattr(
-            bootstrap.fetch_clips,
-            "cut_window",
-            lambda src, s, e, dest, force=False: (cut.append((s, e)), dest)[1],
+        video = tmp_path / "reel.mp4"
+        video.write_bytes(b"x")
+        monkeypatch.setattr(bootstrap.fetch_clips, "_duration", lambda p: 300.0)
+        got = bootstrap.cut_clips(
+            ws(key="r", video_path=str(video)),
+            [{"minute": 9, "second": 49, "player": "A B"}],
         )
-        out = bootstrap.cut_reel(
-            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
-        )
-        assert len(out) == 3
-        assert all(c["excerpt"] for c in out)
+        assert got == []
 
-    def test_windows_do_not_overlap_and_stay_inside_the_file(
-        self, monkeypatch, tmp_path
-    ):
+    def test_a_full_broadcast_still_cuts(self, monkeypatch, tmp_path):
+        """The guard must not swallow the case it was never about."""
         from tacticbench import bootstrap
 
+        video = tmp_path / "match.mp4"
+        video.write_bytes(b"x")
+        monkeypatch.setattr(bootstrap.fetch_clips, "_duration", lambda p: 2 * 60 * 60)
         monkeypatch.setattr(
             bootstrap.fetch_clips,
             "cut_window",
             lambda src, s, e, dest, force=False: dest,
         )
-        out = bootstrap.cut_reel(
-            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
-        )
-        for c in out:
-            assert 0.0 <= c["start"] < c["end"] <= 300.0
-        for a, b in zip(out, out[1:]):
-            assert a["end"] <= b["start"] + 0.01
-
-    def test_moments_stay_in_match_order(self, monkeypatch, tmp_path):
-        """The reel runs forwards, so the excerpts should too."""
-        from tacticbench import bootstrap
-
         monkeypatch.setattr(
-            bootstrap.fetch_clips,
-            "cut_window",
-            lambda src, s, e, dest, force=False: dest,
+            bootstrap.fetch_clips.WS, "offsets_for_match", lambda match_id=None: {1: 96.0}
         )
-        out = bootstrap.cut_reel(
-            ws(key="r", video_path=str(tmp_path / "reel.mp4")), self._moments(), 300.0
+        got = bootstrap.cut_clips(
+            ws(key="b", video_path=str(video), period_offset={1: 96.0}),
+            [{"minute": 9, "second": 49, "player": "A B"}],
         )
-        assert [c["match_s"] for c in out] == sorted(c["match_s"] for c in out)
+        assert len(got) == 1
 
-    def test_no_moments_means_no_clips(self, tmp_path):
-        from tacticbench import bootstrap
-
-        assert bootstrap.cut_reel(ws(key="r"), [], 300.0) == []
-
-    def test_a_full_broadcast_is_not_treated_as_a_reel(self):
-        """Two hours of footage aligns by the clock, as it always did."""
+    def test_the_threshold_is_between_a_reel_and_a_match(self):
         from tacticbench.bootstrap import REEL_MAX_S
 
-        assert REEL_MAX_S < 2 * 60 * 60
-        assert 7 * 60 < REEL_MAX_S
+        assert 7 * 60 < REEL_MAX_S < 2 * 60 * 60
 
 
 class TestMomentSeconds:
@@ -579,11 +553,18 @@ class TestSnapshots:
             ("Randal Kolo Muani", "Kolo Muani"),
             ("Virgil van Dijk", "van Dijk"),
             ("Ángel Di María", "Di María"),
-            # Spanish and Portuguese double surnames: the LAST word is the
-            # mother's name and not what anyone calls the player.
+            # Four tokens: a given name, a middle name and two surnames, so
+            # the first of the pair is the one used.
             ("Lionel Andrés Messi Cuccittini", "Messi"),
-            ("Jordi Alba Ramos", "Alba"),
             ("Randall Enrique Leal Arley", "Leal"),
+            # Three is ambiguous between a double surname ("Alba Ramos") and an
+            # ordinary middle name ("Emiliano Martínez"), and the middle name
+            # wins three to nothing in the squads shipped here. Taking the last
+            # token gets Martínez and Otamendi right and Alba wrong; a nickname
+            # settles it wherever StatsBomb populates one.
+            ("Jordi Alba Ramos", "Ramos"),
+            ("Damián Emiliano Martínez", "Martínez"),
+            ("Nicolás Hernán Otamendi", "Otamendi"),
             # A Catalan connective marks the name before it.
             ("Sergio Busquets i Burgos", "Busquets"),
             # Ordinary two-part names are untouched.
@@ -681,12 +662,24 @@ class TestLoadSeries:
     nothing back. Barcelona's 531 matches live only in `all_series.json`.
     """
 
-    def test_a_team_with_no_history_starts_empty(self, tmp_path, monkeypatch):
-        """Adding a game for an unseen side is normal, not an error."""
+    def test_an_unseen_side_raises_by_default(self, tmp_path, monkeypatch):
+        """A norm built from an empty series is a confident wrong answer.
+
+        So the caller has to say it expects nothing rather than being handed
+        an empty list it might segment eras from.
+        """
         from tacticbench import graph
 
         monkeypatch.setattr(graph, "RESULTS", tmp_path)
-        assert graph.load_series("Nobody FC") == []
+        with pytest.raises(FileNotFoundError):
+            graph.load_series("Nobody FC")
+
+    def test_adding_a_first_game_asks_for_the_empty_case(self, tmp_path, monkeypatch):
+        """`bootstrap` passes missing_ok: a side nobody has ingested is normal."""
+        from tacticbench import graph
+
+        monkeypatch.setattr(graph, "RESULTS", tmp_path)
+        assert graph.load_series("Nobody FC", missing_ok=True) == []
 
     def test_per_team_file_is_read(self, tmp_path, monkeypatch):
         from tacticbench import graph
@@ -729,7 +722,7 @@ class TestLoadSeries:
             )
         )
         assert len(graph.load_series("Barcelona")) == 3
-        assert graph.load_series("Nobody FC") == []
+        assert graph.load_series("Nobody FC", missing_ok=True) == []
 
 
 class TestWorkspacePaths:
@@ -829,3 +822,187 @@ class TestIngestReplacesByDefault:
 
         Graph.ingest_team(FakeGraph(), "Argentina", 1, [], {}, replace=False)
         assert calls["cleared"] == 0
+
+
+class TestMomentsWithoutFootage:
+    """A moment the video does not cover still has to render.
+
+    On a highlights reel most moments are not in the footage at all — 21 of 26
+    on the reel this was written against. The interface reads `frames.length`
+    to decide how much tracking it has, so a moment missing the key entirely
+    took the whole dashboard down with it rather than quietly showing no boxes.
+    """
+
+    def test_every_moment_carries_frames_with_no_clips(self):
+        pep = {
+            "moments": [
+                {"minute": 5, "second": 5, "team": "LAFC", "missed": 0.2},
+                {"minute": 88, "second": 0, "team": "LAFC", "missed": 0.1},
+            ]
+        }
+        rows = snapshots.clip_moments(ws(key="lafc", team="LAFC"), pep, clips=[], tracks={})
+        rows = rows.get("moments") if isinstance(rows, dict) else rows
+        assert len(rows) == 2
+        for row in rows:
+            assert row["frames"] == []
+            assert row["detections"] == 0
+            # No footage means no clip to point at, rather than a dead link.
+            assert "clip" not in row
+
+    def test_a_tracked_moment_still_gets_its_frames(self):
+        """The default must not shadow real tracking."""
+        pep = {"moments": [{"minute": 13, "second": 2, "team": "LAFC", "missed": 0.3}]}
+        clips = [{"key": "013_02", "file": "/tmp/lafc_013_02.mp4", "start": 1.0, "end": 9.0}]
+        tracks = {"013_02": {"frames": [{"t": 0.0}, {"t": 1.5}], "detections": 7}}
+        rows = snapshots.clip_moments(ws(key="lafc", team="LAFC"), pep, clips, tracks)
+        rows = rows.get("moments") if isinstance(rows, dict) else rows
+        assert len(rows[0]["frames"]) == 2
+        assert rows[0]["detections"] == 7
+
+
+class TestPublishingClips:
+    """What is published is what this run stands behind, and nothing else."""
+
+    def test_footage_from_an_earlier_run_is_removed(self, tmp_path, monkeypatch):
+        published = tmp_path / "clips"
+        monkeypatch.setattr(snapshots, "PUBLIC_CLIPS", published)
+        stale = published / "lafc"
+        stale.mkdir(parents=True)
+        # Cut for a moment an earlier run found and this one did not.
+        (stale / "lafc_095_11.mp4").write_bytes(b"old")
+
+        src = tmp_path / "lafc_013_02.mp4"
+        src.write_bytes(b"new")
+        n = snapshots.publish_clips([{"key": "013_02", "file": str(src)}], "lafc")
+
+        assert n == 1
+        assert {p.name for p in stale.glob("*.mp4")} == {"lafc_013_02.mp4"}
+
+
+class TestTrackedFrameFloor:
+    """How few players a frame may hold and still be worth drawing.
+
+    The floor used to be eight, which meant a camera tight on the build-up to
+    a pass produced no boxes at all: on the 13:02 clip that silently discarded
+    31 of 50 frames — every one of them real football — and the overlay stayed
+    blank until the shot went wide, then snapped on. Two kits can be told apart
+    from about four players, so four is the floor.
+    """
+
+    def test_the_floor_admits_a_tight_camera(self):
+        from tacticbench.cv_video import MIN_TRACKED
+
+        assert MIN_TRACKED <= 4, "a six-player frame is football, not noise"
+
+    def test_team_clustering_agrees_with_the_floor(self):
+        """A frame kept by the tracker must not be blanked by the clusterer.
+
+        These are two separate gates on the same frames. When they disagree the
+        tracker keeps a frame and the clusterer labels every box `OTHER`, which
+        is dropped downstream — so the frame survives with nothing drawn on it,
+        the most confusing of the three outcomes.
+        """
+        import inspect
+
+        from tacticbench.cv import assign_teams_per_frame
+        from tacticbench.cv_video import MIN_TRACKED
+
+        floor = inspect.signature(assign_teams_per_frame).parameters["min_players"].default
+        assert floor <= MIN_TRACKED
+
+    def test_a_small_frame_still_gets_teams(self):
+        import numpy as np
+
+        from tacticbench.cv import OTHER, assign_teams_per_frame
+
+        # Five players: three in a light kit, two in a dark one.
+        colours = np.array(
+            [[210.0, 210.0, 210.0], [205.0, 208.0, 212.0], [212.0, 205.0, 209.0],
+             [30.0, 32.0, 35.0], [28.0, 30.0, 33.0]]
+        )
+        labels = assign_teams_per_frame([colours])[0]
+        assert len(labels) == 5
+        assert not (labels == OTHER).all(), "a five-player frame was blanked"
+        assert set(labels.tolist()) >= {0, 1}, "both kits should be found"
+
+
+class TestWhichGameOpens:
+    """Argentina on open; an upload switches; the sidebar switches back.
+
+    The built-in World Cup game is the front door. It is the only game that
+    exists before anyone has uploaded anything, and it is what a first-time
+    visitor is meant to meet. Adding a match moves the interface to it and the
+    switcher moves back, but neither changes what a fresh start shows.
+    """
+
+    def test_loading_a_workspace_ignores_what_is_on_screen(self, monkeypatch, tmp_path):
+        """A rebuild acts on what it was told, not on the last thing clicked.
+
+        These are two different questions, and a version that answered them
+        with one value made whichever game had been opened last into the
+        default target for every later command.
+        """
+        from tacticbench import workspace as ws_mod
+
+        pointer = tmp_path / ".active"
+        pointer.write_text("some-uploaded-game\n")
+        monkeypatch.setattr(ws_mod, "POINTER", pointer)
+        monkeypatch.delenv(ws_mod.ENV_VAR, raising=False)
+
+        assert ws_mod.showing() == "some-uploaded-game"
+        assert ws_mod.load().key == ws_mod.DEFAULT
+
+    def test_an_explicit_key_still_wins(self, monkeypatch, tmp_path):
+        from tacticbench import workspace as ws_mod
+
+        pointer = tmp_path / ".active"
+        pointer.write_text("some-uploaded-game\n")
+        monkeypatch.setattr(ws_mod, "POINTER", pointer)
+        monkeypatch.setenv(ws_mod.ENV_VAR, ws_mod.DEFAULT)
+        assert ws_mod.load().key == ws_mod.DEFAULT
+
+    def test_no_pointer_is_not_an_error(self, monkeypatch, tmp_path):
+        """A fresh clone has never activated anything."""
+        from tacticbench import workspace as ws_mod
+
+        monkeypatch.setattr(ws_mod, "POINTER", tmp_path / "nothing-here")
+        assert ws_mod.showing() is None
+        monkeypatch.delenv(ws_mod.ENV_VAR, raising=False)
+        assert ws_mod.load().key == ws_mod.DEFAULT
+
+    def test_the_start_script_opens_on_the_example(self):
+        """The dev/build entry point must not consult the pointer at all."""
+        script = Path("scripts/use-workspace.mjs").read_text()
+        assert "wc2022" in script
+        assert "lastUsed" not in script, "a restart must not reopen the last game"
+
+
+class TestLandingAfterAddingAGame:
+    """Finishing the pipeline puts the coach on their new game's dashboard.
+
+    They uploaded a match to see it analysed. A summary screen in between is
+    one more click before the thing they asked for, and the dashboard is where
+    every other game is read.
+    """
+
+    def test_the_pipeline_activates_before_it_reports_ready(self):
+        """Order matters: the redirect is only correct if `active/` is already
+        pointed at the new game when the job says it is finished."""
+        src = Path("src/tacticbench/bootstrap.py").read_text()
+        activate_at = src.index("snapshots.activate(ws.key)")
+        returns_at = src.index('return {\n        "workspace": ws.key', activate_at - 4000)
+        assert activate_at < returns_at
+
+    def test_finishing_sends_the_coach_to_the_dashboard(self):
+        page = Path("src/app/dashboard/page.tsx").read_text()
+        # Just the onDone handler, not the JSX around it.
+        at = page.index("<Watching")
+        block = page[at : page.index("onFailed={setError}", at)]
+        assert "window.location.reload()" in block, (
+            "a finished upload must land on the dashboard, not a summary screen"
+        )
+        # Deliberately a full document load, not a client-side push: the
+        # snapshots are static imports, so a push would keep the current
+        # bundle and render the previous game's data under the new game's
+        # name. Asserting the absence of `router.push` is not possible here —
+        # the comment in the source explaining that choice contains the words.

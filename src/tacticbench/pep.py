@@ -74,25 +74,77 @@ PITCH_X = 120.0
 PITCH_Y = 80.0
 
 
-#: Tokens that belong to the surname rather than preceding it. Anything short
-#: sitting second-to-last is almost always part of the family name in the
-#: languages football is played in — "De Paul", "Mac Allister", "Kolo Muani",
-#: "Van Dijk" — whereas a middle name is typically longer ("Aurelien Djani
-#: Tchouameni" -> "Tchouameni").
-SURNAME_JOIN_MAX = 4
+#: Tokens that bind forward into the surname: "De Paul", "Van Dijk", "Mac
+#: Allister", "Kolo Muani". Listed rather than inferred from length, which is
+#: what the first version of this did and what got it wrong.
+PARTICLES = {
+    "de", "del", "da", "das", "do", "dos", "van", "von", "der", "den",
+    "di", "du", "le", "la", "el", "al", "bin", "ben", "mac", "mc", "o",
+    "st", "ter", "ten", "kolo",
+}
+
+#: The connective in a Catalan or Spanish full name: "Busquets i Burgos".
+#: Whatever sits in front of it is the name that gets used.
+CONNECTIVES = {"i", "y", "e"}
 
 
 def short_name(full: str) -> str:
     """The name a coach would say out loud.
 
-    One implementation, in `snapshots`. This used to be a second heuristic on
-    token length, which got the World Cup squad right and then rendered Messi
-    as "Cuccittini" and Busquets as "i Burgos" the moment a league with
-    Spanish double surnames arrived.
-    """
-    from .snapshots import surname
+    Two naming conventions collide here and they pull in opposite directions.
+    A particle binds *forward*, so the surname runs to the end of the string:
+    Rodrigo De Paul is De Paul. A Spanish or Portuguese full name carries both
+    parents' surnames, so the last word is the mother's and nobody says it:
+    Lionel Andrés Messi Cuccittini is Messi, Jordi Alba Ramos is Alba.
 
-    return surname(full)
+    This used to be a single rule on token length, which read anything short in
+    the second-to-last slot as part of the surname. That got the World Cup
+    squad right, because their broadcast names are short, and it was wrong the
+    moment it saw a full name: Messi came out as "Cuccittini" and Busquets as
+    "i Burgos". Nothing in the demo shows it today, since every flagged moment
+    happens to belong to a player StatsBomb gives a nickname for. Adding a game
+    from a league without those nicknames is what surfaces it.
+
+    A nickname settles the question wherever StatsBomb populates one, and
+    `roster.display_surname` prefers it. This is the fallback for where it
+    does not.
+    """
+    parts = full.strip().split()
+    if len(parts) < 2:
+        return full.strip()
+
+    lower = [p.lower() for p in parts]
+
+    # The connective marks the word in front of it as the name.
+    for i, word in enumerate(lower[1:-1], start=1):
+        if word in CONNECTIVES:
+            return parts[i - 1]
+
+    # A particle takes everything after it with it.
+    if len(parts) >= 3 and lower[-2] in PARTICLES:
+        return f"{parts[-2]} {parts[-1]}"
+    if len(parts) >= 4 and lower[-3] in PARTICLES:
+        return f"{parts[-3]} {parts[-2]}"
+
+    # Four or more tokens with no particle is a given name, a middle name and
+    # two surnames, so the first of the pair is the one used: "Lionel Andrés
+    # Messi Cuccittini" is Messi.
+    #
+    # Three is deliberately not treated the same way, though it is the same
+    # shape one token shorter. It is ambiguous between a double surname
+    # ("Jordi Alba Ramos" is Alba) and an ordinary middle name ("Damián
+    # Emiliano Martínez" is Martínez), and in this squad the middle name wins
+    # three to nothing: reading the second-to-last token would render Otamendi
+    # as "Hernán", Romero as "Gabriel" and Martínez as "Emiliano".
+    #
+    # The rule is Spanish. Portuguese orders the two surnames the other way
+    # round, so "Carlos Alberto Santos Silva" is Silva and this returns Santos.
+    # Left as it is because the nickname covers the leagues where that matters
+    # and guessing per-name nationality to fix it would be worse.
+    if len(parts) >= 4:
+        return parts[-2]
+
+    return parts[-1]
 
 
 def zone(x: float, y: float) -> str:
@@ -130,10 +182,12 @@ def describe(moment: dict) -> dict:
     ratio = (b["xt_gain"] / p["xt_gain"]) if p["xt_gain"] > 0.001 else None
     return {
         "minute": moment["minute"],
-        # Carried through, because the clip window is cut from it. Dropping it
-        # rounds every moment to the top of its minute, which puts the cut up
-        # to 59 seconds from the pass it claims to show — the exact failure
-        # the offsets exist to avoid.
+        # Carried through because the clip window is cut from it. `fetch_clips`
+        # reads it as `m.get("second") or 0`, which tolerates absence rather
+        # than failing on it, so dropping it here does not error: it silently
+        # rounds every moment to the top of its minute and cuts the tape up to
+        # 59 seconds from the pass it claims to show. That is the exact failure
+        # the broadcast-clock offsets exist to prevent.
         "second": moment.get("second") or 0,
         "player": moment["player"],
         "name": short_name(moment["player"] or ""),

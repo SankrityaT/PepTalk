@@ -11,24 +11,28 @@
  * every merge between the two collided on all twelve of them. Namespacing by
  * key means two people can work on two teams and never touch each other's data.
  *
- * **Which workspace, in order of precedence.** The env var wins when it is
- * set, then whatever was added or selected last, then the built-in example.
- * That middle step is the important one: adding a game writes the pointer, so
- * the next `pnpm dev` opens on the coach's own match rather than resetting to
- * Argentina. Before it existed, every restart silently threw away the game
- * they had just added, and the only way back was an env var — which is a
- * developer's workaround, not a product.
+ * **Which workspace.** The built-in World Cup game, unless an env var says
+ * otherwise. Opening the dashboard always shows Argentina, because that is
+ * the game a first-time visitor is meant to meet — it is the demo, and it is
+ * the only one that exists before anybody has uploaded anything.
  *
- *   node scripts/use-workspace.mjs                  # last used, or the example
+ * Adding a game switches to it, and the sidebar switches back. Both of those
+ * happen at runtime through `activate()`, which rewrites `active/` while the
+ * app is running. Neither belongs here: this script sets the starting state,
+ * and the starting state is the example. A previous version let the pointer
+ * decide, so a restart re-opened whatever had been looked at last — which
+ * quietly made one coach's uploaded match the front door of the whole app.
+ *
+ *   node scripts/use-workspace.mjs                  # the built-in example
  *   PEPTALK_WORKSPACE=mls23 node scripts/use-workspace.mjs
  */
 import {
   cpSync,
   existsSync,
   mkdirSync,
-  readFileSync,
   readdirSync,
   rmSync,
+  writeFileSync,
 } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,20 +40,10 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const snapshots = join(root, "src", "content", "snapshots");
 
-/** Written by `tacticbench.snapshots.activate` when a game is added. */
-const POINTER = join(snapshots, ".active");
+/** The game every fresh open lands on. */
 const FALLBACK = "wc2022";
 
-function lastUsed() {
-  try {
-    const key = readFileSync(POINTER, "utf8").trim();
-    return key && existsSync(join(snapshots, key)) ? key : null;
-  } catch {
-    return null;
-  }
-}
-
-const key = process.env.PEPTALK_WORKSPACE || lastUsed() || FALLBACK;
+const key = process.env.PEPTALK_WORKSPACE || FALLBACK;
 const from = join(snapshots, key);
 const to = join(snapshots, "active");
 
@@ -70,4 +64,8 @@ if (!existsSync(from)) {
 rmSync(to, { recursive: true, force: true });
 mkdirSync(to, { recursive: true });
 cpSync(from, to, { recursive: true });
+// Say what `active/` now holds. The switcher reads this to tick the current
+// game, and a stale value left over from a previous session would show the
+// coach one game while highlighting another.
+writeFileSync(join(snapshots, ".active"), `${key}\n`);
 console.log(`snapshots: ${key} -> active (${readdirSync(to).length} files)`);

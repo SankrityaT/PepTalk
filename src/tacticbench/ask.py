@@ -75,6 +75,10 @@ Also:
 - If the list has no norms, say plainly that you can describe this match but not
   whether any of it is usual. Then answer the parts you can answer.
 - Two to four sentences. A coach is standing up. No preamble, no bullet points.
+- Bold the two or three things that matter most with **double asterisks**: the
+  name to act on, the figure that makes the case. Bold sparingly. If half the
+  answer is bold then none of it is, and a coach skimming learns nothing.
+- No other formatting. No headings, no lists, no code fences.
 - Never use an em dash or an en dash.
 """
 

@@ -128,7 +128,10 @@ def grounded(result: dict) -> Check:
     subtraction is correct.
     """
     haystack = " ".join(f["text"] for f in result["retrieved"])
-    prose = re.sub(r"\[\d+\]", "", result["answer"])
+    # Emphasis comes off before the numbers are read: "**0.8**" is the same
+    # claim as "0.8", and leaving the asterisks on would fail a grounded answer
+    # for being formatted.
+    prose = re.sub(r"\*\*", "", re.sub(r"\[\d+\]", "", result["answer"]))
     missing = [n for n in numbers_in(prose) if n not in haystack]
     return Check(
         "grounded",
@@ -201,6 +204,24 @@ def abstention(result: dict) -> Check:
     # A fixed character window was the first attempt and was simply wrong, since
     # a negation sixty-one characters back governs the sentence just as much as
     # one sixty back.
+    #
+    # `whether` governs in the same way, and for the same reason. An embedded
+    # question does not assert its content: "if you want a real answer on
+    # whether the press was as high as normal, I need the averages" is a
+    # refusal, and it contains no negation anywhere. A word after `whether` is
+    # by construction being asked about rather than claimed, so this stays a
+    # strict rule rather than a lenient one.
+    #
+    # `if` is deliberately not included, though it opens the same sentence
+    # above. It is far too common a word and it does not carry the same
+    # guarantee: "if we press higher next week, he usually drops off" asserts
+    # the habit outright, and excusing it would be exactly the hole this check
+    # exists to close.
+    GOVERNS = re.compile(
+        r"\b(cannot|can't|could not|couldn't|no|not|without|unable|nothing"
+        r"|whether)\b",
+        re.I,
+    )
     text = result["answer"]
     hits = []
     for m in HISTORY_WORDS.finditer(text):
@@ -209,7 +230,7 @@ def abstention(result: dict) -> Check:
             default=0,
         )
         before = text[start : m.start()]
-        if re.search(r"\b(cannot|can't|could not|couldn't|no|not|without|unable|nothing)\b", before, re.I):
+        if GOVERNS.search(before):
             continue
         hits.append(m.group(0))
     return Check(

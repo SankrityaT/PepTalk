@@ -325,7 +325,7 @@ def run_pipeline(
 
 
 def assign_teams_per_frame(
-    per_frame: list[np.ndarray], min_players: int = 8, seed: int = 0
+    per_frame: list[np.ndarray], min_players: int = 4, seed: int = 0
 ) -> list[np.ndarray]:
     """Cluster kits within each frame rather than across the whole clip.
 
@@ -337,6 +337,13 @@ def assign_teams_per_frame(
 
     Clustering per frame removes the problem at the root, because exposure is
     constant within one frame.
+
+    `min_players` is the floor for trying at all. It used to be eight, which
+    quietly meant a frame shot tight on a handful of players got every box
+    labelled `OTHER` and therefore dropped: the overlay went blank exactly
+    during the build-up a coach is watching. Two kits separate from about four
+    bodies, so four is the honest floor; below it the clustering would be
+    inventing a boundary rather than finding one.
 
     The brightness ordering is what keeps frames comparable: cluster indices
     from k-means are arbitrary and would otherwise swap teams between frames.
@@ -353,7 +360,9 @@ def assign_teams_per_frame(
             out.append(np.full(n, OTHER, dtype=int))
             continue
 
-        # Three groups per frame: two kits plus officials and keepers.
+        # Three groups per frame: two kits plus officials and keepers. The
+        # third only exists once the frame is crowded enough to have found
+        # one; on a tight camera it steals from a real kit instead.
         k = 3 if n >= 12 else 2
         fit = KMeans(n_clusters=k, n_init=10, random_state=seed).fit(colours)
         sizes = np.bincount(fit.labels_, minlength=k)

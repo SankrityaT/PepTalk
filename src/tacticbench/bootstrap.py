@@ -1,6 +1,7 @@
 """Run one game end to end: data, moments, graph, footage, snapshots.
 
-    PEPTALK_WORKSPACE=mls23 uv run python -m tacticbench.bootstrap
+    uv run python -m tacticbench.bootstrap              # the active game
+    uv run python -m tacticbench.bootstrap -w mls23     # a specific one
 
 The single command behind "add a game". Everything it does already existed in
 pieces; what was missing was the thing that runs them in order and reports
@@ -450,7 +451,15 @@ def _write_graph(
                 label=label,
                 metrics=metrics[side],
             )
-            series = [m for m in load_series(side) if m.match_id != ws.match_id]
+            # `missing_ok`, because adding the first game for a side nobody has
+            # ingested is the normal case here rather than an error. Everywhere
+            # that builds a norm wants the raise instead: a norm computed from
+            # an empty series is a confident wrong answer, not an empty one.
+            series = [
+                m
+                for m in load_series(side, missing_ok=True)
+                if m.match_id != ws.match_id
+            ]
             series.append(row)
             series.sort(key=lambda m: m.date)
             save_series(side, series)
@@ -489,63 +498,22 @@ def _halftime(match_id: int) -> tuple[int, int]:
 
 
 #: A full match runs ~2 hours of recording. Anything under this is not a
-#: broadcast; it is a highlights reel or a single passage, and the offset model
-#: does not describe it — highlights jump, so no constant maps match time into
-#: them.
+#: broadcast, and footage that is not a broadcast gets no clips at all.
+#:
+#: There was a "reel mode" here that divided a highlights package evenly and
+#: gave each moment a slice, labelled an excerpt. It was withdrawn because the
+#: label did not make it honest. Measured against the LAFC reel: the overlay
+#: reads 08:12 thirty seconds in, 51:04 at ninety seconds and 93:07 at four
+#: and a half minutes. A package jumps, so an even spread is right only by
+#: luck — it put a wide establishing shot under "Vela, 5:05" and a corner in
+#: the 90th minute under a first-half moment.
+#:
+#: A clip carrying a player's name and a match clock is a claim about what the
+#: coach is watching. Getting that wrong is worse than showing nothing, because
+#: the freeze frame beside it is real and lends the wrong footage its credit.
+#: The report keeps every moment, every number and the chalk; it just does not
+#: pretend to have the tape.
 REEL_MAX_S = 45 * 60
-
-
-def cut_reel(ws: Workspace, moments: list[dict], duration: float) -> list[dict]:
-    """Clips from a short reel, when there is no match clock to align to.
-
-    A highlights package is still footage of this match, and a coach wants to
-    see it next to the analysis. What it is not is a continuous recording, so
-    a moment at match-minute 77 cannot be located in it.
-
-    So the claim is weakened rather than faked. The reel is divided evenly and
-    each moment gets a window, in order, with the pass placed at the centre.
-    The interface labels these as an excerpt rather than as the moment itself,
-    because that is what they are. Better an honest excerpt beside the numbers
-    than a diagram alone — and far better than a confident cut that is really
-    a different passage.
-    """
-    ordered = sorted(moments, key=lambda m: (m["minute"], m.get("second") or 0))
-    if not ordered or duration <= 0:
-        return []
-
-    # One window per moment, evenly spaced, capped so a reel with many moments
-    # still yields watchable clips rather than one-second flickers.
-    span = duration / len(ordered)
-    length = max(4.0, min(fetch_clips.LEAD_S + fetch_clips.TAIL_S, span))
-
-    dest_dir = ws.dir / "clips"
-    out: list[dict] = []
-    for i, m in enumerate(ordered):
-        centre = span * i + span / 2
-        start = max(0.0, centre - length / 2)
-        end = min(duration, start + length)
-        if end - start < 2.0:
-            continue
-        minute, second = m["minute"], m.get("second") or 0
-        key = f"{minute:03d}_{second:02d}"
-        dest = dest_dir / f"{ws.key}_{key}.mp4"
-        if fetch_clips.cut_window(ws.source, start, end, dest) is None:
-            continue
-        out.append(
-            {
-                "key": key,
-                "period": 1 if minute < 45 else 2,
-                "match_s": minute * 60 + second,
-                "video_s": centre,
-                "start": start,
-                "end": end,
-                "offset_in_clip": round(centre - start, 2),
-                "file": str(dest),
-                # The honest part. The interface reads this and says so.
-                "excerpt": True,
-            }
-        )
-    return out
 
 
 #: How densely a clip is sampled. Every 6th frame at ~25fps is roughly four
@@ -592,6 +560,83 @@ def track_clips(clips: list[dict], device: str = "mps") -> dict[str, dict]:
     return out
 
 
+def cut_from_reel(ws: Workspace, moments: list[dict], duration: float) -> list[dict]:
+    """Clips from a highlights package, located by reading its own clock.
+
+    A package has no single offset because it jumps, so instead of arithmetic
+    it is read: sample the overlay across the file, keep the readings that
+    survive a sanity check, and map match time onto reel time through them.
+
+    A moment the package does not contain gets no clip. That is the common
+    case and it is the correct one — a highlights reel shows goals, and the
+    engine flags passes that were not played, so the two rarely coincide.
+    Every cut that is made is verified against the overlay before it is kept.
+    """
+    from .reel import drop_outliers, locate, read_clocks, verify
+
+    src = Path(ws.source)
+    readings = drop_outliers(read_clocks(src, duration))
+    if not readings:
+        print("    could not read a match clock anywhere in this footage")
+        return []
+
+    covered = _passages(readings)
+    print(f"    read {len(readings)} clock samples across {len(covered)} passages")
+
+    dest_dir = ws.dir / "clips"
+    out: list[dict] = []
+    missed = 0
+    for m in sorted(moments, key=lambda x: (x["minute"], x.get("second") or 0)):
+        minute, second = m["minute"], m.get("second") or 0
+        match_s = minute * 60 + second
+        pos = locate(readings, match_s)
+        if pos is None:
+            missed += 1
+            continue
+        start = max(0.0, pos - fetch_clips.LEAD_S)
+        end = min(duration, pos + fetch_clips.TAIL_S)
+        key = f"{minute:03d}_{second:02d}"
+        dest = dest_dir / f"{ws.key}_{key}.mp4"
+        if fetch_clips.cut_window(ws.source, start, end, dest) is None:
+            continue
+        # The safeguard: a cut that cannot be confirmed against the overlay is
+        # thrown away rather than shown under a claim it may not support.
+        if not verify(src, pos, match_s):
+            print(f"    {minute}:{second:02d} did not verify against the clock, dropped")
+            dest.unlink(missing_ok=True)
+            continue
+        out.append(
+            {
+                "key": key,
+                "period": 1 if minute < 45 else 2,
+                "match_s": match_s,
+                "video_s": pos,
+                "start": start,
+                "end": end,
+                "offset_in_clip": round(pos - start, 2),
+                "file": str(dest),
+            }
+        )
+
+    if missed:
+        print(f"    {missed} of {len(moments)} moments are not in this footage")
+    return out
+
+
+def _passages(readings) -> list[tuple[float, float]]:
+    """The continuous stretches of match time a package actually contains."""
+    if not readings:
+        return []
+    out, start, prev = [], readings[0].match_s, readings[0].match_s
+    for a, b in zip(readings, readings[1:]):
+        if b.match_s < a.match_s or (b.match_s - a.match_s) > 90:
+            out.append((start, prev))
+            start = b.match_s
+        prev = b.match_s
+    out.append((start, prev))
+    return out
+
+
 def cut_clips(ws: Workspace, moments: list[dict]) -> list[dict]:
     """A clip per flagged moment, cut from this workspace's footage.
 
@@ -603,13 +648,13 @@ def cut_clips(ws: Workspace, moments: list[dict]) -> list[dict]:
     if not ws.source:
         return []
 
-    # A short file is a reel, not a broadcast. Aligning it by the match clock
-    # produces nothing at all — every window falls past the end — so it gets
-    # excerpts instead, labelled as such.
+    # A short file is a reel, not a broadcast, and there is no honest way to
+    # locate a moment in one. See `REEL_MAX_S` for why the previous attempt was
+    # withdrawn.
     if ws.is_local:
         dur = fetch_clips._duration(Path(ws.source))
         if dur is not None and dur < REEL_MAX_S:
-            return cut_reel(ws, moments, dur)
+            return cut_from_reel(ws, moments, dur)
 
     windows = fetch_clips.plan(moments, ws.period_offset)
     dest_dir = ws.dir / "clips"

@@ -45,7 +45,7 @@ function frameAt(frames: Frame[], t: number): Frame | null {
 
 export function TapePlayer({
   src,
-  frames,
+  frames: tracked,
   /** Stop here, because this is the thing worth looking at. */
   stopAt,
   /**
@@ -69,7 +69,7 @@ export function TapePlayer({
   onPlayingChange,
 }: {
   src: string;
-  frames: Frame[];
+  frames?: Frame[];
   stopAt?: number;
   startAt?: number;
   stopLabel?: string;
@@ -86,6 +86,11 @@ export function TapePlayer({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const raf = useRef<number>(0);
+  // Defaulted, not assumed. A moment only carries tracking when a clip was
+  // cut and tracked for it, and a game where most moments have no footage —
+  // the normal case for a highlights reel — otherwise crashes the page on the
+  // first one without it.
+  const frames = tracked ?? [];
   const duration = frames.length ? frames[frames.length - 1].t : undefined;
 
   // Reset for a new clip during render rather than in an effect: an effect
