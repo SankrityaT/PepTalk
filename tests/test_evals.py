@@ -240,3 +240,66 @@ class TestAbstentionGoverning:
         assert not self._off(
             "I cannot say whether that is unusual. He typically presses higher."
         )
+
+
+class TestCitationShapes:
+    """The model groups citations, and every reader has to cope.
+
+    It writes [4] most of the time and [12, 11] when two facts support one
+    clause. The original parser matched only the first, so a grouped citation
+    read as no citation at all: the eval failed the answer for quoting a figure
+    with no id, and the turn written to the graph carried no CITES edges, which
+    made a properly grounded answer look ungrounded to everything downstream.
+    """
+
+    def test_ids_are_found_in_either_shape(self):
+        from tacticbench.ask import cited_ids
+
+        assert cited_ids("entries rose [4]") == {4}
+        assert cited_ids("entries rose [12][11]") == {11, 12}
+        assert cited_ids("entries rose [12, 11]") == {11, 12}
+        assert cited_ids("entries rose [12,11] and fell [3]") == {3, 11, 12}
+        assert cited_ids("no citation here") == set()
+
+    def test_stripping_leaves_the_prose(self):
+        from tacticbench.ask import strip_citations
+
+        assert strip_citations("rose to 4.28 [12, 11] from 1.2 [3]").strip() == (
+            "rose to 4.28  from 1.2"
+        )
+
+    def test_a_grouped_citation_counts_as_cited(self):
+        """The eval failure that surfaced this."""
+        from tacticbench.evals import cited
+
+        out = cited({
+            "answer": "His final third entries jumped from 1.2 to 4.28 per 90 [12, 11].",
+            "retrieved": [],
+        })
+        assert out.passed, out.detail
+
+    def test_a_number_with_no_citation_still_fails(self):
+        """The check must not have been loosened into uselessness."""
+        from tacticbench.evals import cited
+
+        out = cited({"answer": "His entries jumped to 4.28 per 90.", "retrieved": []})
+        assert not out.passed
+
+
+class TestAbstentionRequirement:
+    def _off(self, answer: str) -> bool:
+        from tacticbench.evals import abstention
+
+        return abstention({"memory": False, "answer": answer}).passed
+
+    def test_naming_what_is_missing_is_not_a_claim(self):
+        assert self._off(
+            "I have nothing on Messi individually. To answer properly I would "
+            "need his pressing data across several matches so we can see a trend."
+        )
+
+    def test_a_claim_with_a_caveat_after_it_still_fails(self):
+        """The ordering rule: the disclaimer has to govern, not trail."""
+        assert not self._off(
+            "He usually presses higher than this, but I would need more data."
+        )

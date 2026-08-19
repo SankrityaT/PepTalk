@@ -37,7 +37,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .ask import answer
+from .ask import CITATION, answer, cited_ids, strip_citations
 from .graph import Graph
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -131,7 +131,7 @@ def grounded(result: dict) -> Check:
     # Emphasis comes off before the numbers are read: "**0.8**" is the same
     # claim as "0.8", and leaving the asterisks on would fail a grounded answer
     # for being formatted.
-    prose = re.sub(r"\*\*", "", re.sub(r"\[\d+\]", "", result["answer"]))
+    prose = re.sub(r"\*\*", "", strip_citations(result["answer"]))
     missing = [n for n in numbers_in(prose) if n not in haystack]
     return Check(
         "grounded",
@@ -144,9 +144,9 @@ def cited(result: dict) -> Check:
     """Does every sentence carrying a number carry an id?"""
     loose = []
     for sentence in re.split(r"(?<=[.!?])\s+", result["answer"]):
-        if not numbers_in(re.sub(r"\[\d+\]", "", sentence)):
+        if not numbers_in(strip_citations(sentence)):
             continue
-        if not re.search(r"\[\d+\]", sentence):
+        if not CITATION.search(sentence):
             loose.append(sentence.strip()[:70])
     return Check("cited", not loose, "; ".join(loose))
 
@@ -154,7 +154,7 @@ def cited(result: dict) -> Check:
 def supported(result: dict) -> Check:
     """Every id the answer cites must be an id that was retrieved."""
     have = {f["id"] for f in result["retrieved"]}
-    used = {int(m) for m in re.findall(r"\[(\d+)\]", result["answer"])}
+    used = cited_ids(result["answer"])
     ghosts = sorted(used - have)
     return Check(
         "supported",
@@ -217,9 +217,15 @@ def abstention(result: dict) -> Check:
     # guarantee: "if we press higher next week, he usually drops off" asserts
     # the habit outright, and excusing it would be exactly the hole this check
     # exists to close.
+    # "would need" and "would have to" govern for the same reason `whether`
+    # does. "I would need his data across several matches so we can see a
+    # trend" names what is missing; it does not claim a trend exists. The
+    # ordering rule keeps this honest: the phrase has to appear *before* the
+    # history word, so "he usually presses higher, but I would need more data"
+    # still fails, which is right.
     GOVERNS = re.compile(
         r"\b(cannot|can't|could not|couldn't|no|not|without|unable|nothing"
-        r"|whether)\b",
+        r"|whether|would need|would have to|would want)\b",
         re.I,
     )
     text = result["answer"]

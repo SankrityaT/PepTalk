@@ -490,6 +490,11 @@ class Question(BaseModel):
     #: is looking at, and so it survives the memory switch.
     match: dict = {}
     workspace: str | None = None
+    #: The conversation this question belongs to. Sent by the interface and
+    #: kept across reloads, so a coach who comes back on Friday continues
+    #: Tuesday's thread instead of starting a new one. Absent means do not
+    #: remember this exchange, which is what the eval harness wants.
+    session_id: int | None = None
 
 
 @app.post("/api/ask")
@@ -510,7 +515,10 @@ def ask_endpoint(q: Question):
         g.close()
 
     try:
-        return answer(ws.team, q.question, at, memory=q.memory, match=q.match)
+        return answer(
+            ws.team, q.question, at,
+            memory=q.memory, match=q.match, session_id=q.session_id,
+        )
     except Exception as exc:  # noqa: BLE001
         # A model that will not answer is a failure to report, never something
         # to paper over with a canned line that reads like a real answer.

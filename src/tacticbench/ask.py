@@ -71,6 +71,20 @@ job. Football reasoning about space, pressure and shape is allowed and welcome.
 The line between them: a fact is something a coach could check, and judgement is
 something a coach could disagree with. Never dress one as the other.
 
+EARLIER IN THIS CONVERSATION. You may also be given what the two of you have
+already said, across this session and previous ones. Use it the way a coach
+expects an assistant to: do not re-explain something you covered last time, and
+say "you asked about this on Tuesday" when it is genuinely the same question
+coming back.
+
+It is a record of what was said, not a source of facts. A number is quotable
+only from the numbered list, even if you can see yourself saying it earlier.
+If a figure has moved since you last gave it, the list is right and the old
+turn is what you believed then.
+
+If there are no earlier turns, this is the first time you have spoken. Do not
+imply otherwise, and do not refer to conversations that are not in front of you.
+
 Also:
 - If the list has no norms, say plainly that you can describe this match but not
   whether any of it is usual. Then answer the parts you can answer.
@@ -81,6 +95,35 @@ Also:
 - No other formatting. No headings, no lists, no code fences.
 - Never use an em dash or an en dash.
 """
+
+#: A citation, in either shape the model writes them.
+#:
+#: The prompt asks for [4], and it mostly complies, but when two facts support
+#: one clause it reaches for [12, 11] instead of [12][11]. That was silently
+#: fatal rather than cosmetic: every reader of these ids used `\[(\d+)\]`,
+#: which does not match a grouped bracket at all, so an answer in that form
+#: parsed as having cited nothing. The eval failed it for quoting figures with
+#: no id, and worse, the turn written to the graph carried no CITES edges, so
+#: the answer looked ungrounded to everything downstream.
+#:
+#: Accepting both is better than insisting on one. The model is being asked to
+#: write like a coach, and punctuation inside a citation is not the place to
+#: hold the line.
+CITATION = re.compile(r"\[\s*\d+(?:\s*,\s*\d+)*\s*\]")
+
+
+def cited_ids(text: str) -> set[int]:
+    """Every fact id the answer points at, however it grouped them."""
+    out: set[int] = set()
+    for group in CITATION.findall(text):
+        out.update(int(n) for n in re.findall(r"\d+", group))
+    return out
+
+
+def strip_citations(text: str) -> str:
+    """The prose without the brackets, for reading the numbers in it."""
+    return CITATION.sub("", text)
+
 
 def shorten(key: str) -> str:
     """Trim the phrasing retrieval uses into something that fits on a chip."""
@@ -100,12 +143,18 @@ class Retrieved:
     facts: list[dict] = field(default_factory=list)
     player: dict | None = None
     memory: bool = True
+    #: Earlier turns with this coach, oldest first. Empty with memory off, and
+    #: empty on the first question of the first session.
+    conversation: list[dict] = field(default_factory=list)
 
     def numbered(self) -> list[dict]:
         return self.facts
 
     def payload(self) -> dict:
-        return {"facts": self.facts}
+        out: dict = {"facts": self.facts}
+        if self.conversation:
+            out["earlier_in_this_conversation"] = self.conversation
+        return out
 
 
 def resolve_player(g: Graph, team_id: int, question: str) -> dict | None:
@@ -145,6 +194,7 @@ def retrieve(
     at: int,
     memory: bool = True,
     match: dict | None = None,
+    session_id: int | None = None,
 ) -> Retrieved:
     """Everything the model is allowed to know, as a numbered list.
 
@@ -152,9 +202,25 @@ def retrieve(
     whether or not memory is on, because measuring this match never needed a
     graph, and pretending otherwise makes the switch look like an on/off for the
     whole assistant rather than for its memory.
+
+    Earlier turns are retrieved rather than replayed. The transcript is not
+    sent: a dozen prior exchanges come back from the graph, and the facts they
+    cited are still reachable by traversal from those turns. That is the
+    difference between a memory layer and a long context window, and it is the
+    reason a conversation can run for thirty sessions without the prompt
+    growing to match.
     """
     out = Retrieved(memory=memory)
     n = 1
+
+    # Conversation memory is memory. Turning the switch off has to lose the
+    # thread as well as the norms, or the demo overstates what the graph is
+    # responsible for.
+    if memory and session_id is not None:
+        out.conversation = [
+            {"role": t["role"], "text": t["text"], "when": human(int(t["ts_ord"]))}
+            for t in g.recall(team_id_for(team))
+        ]
 
     for key, value in (match or {}).items():
         out.facts.append(
@@ -276,11 +342,26 @@ def answer(
     memory: bool = True,
     match: dict | None = None,
     model: str = DEFAULT_MODEL,
+    session_id: int | None = None,
 ) -> dict:
-    """Retrieve, then generate. Returns the answer and what it was allowed to use."""
+    """Retrieve, then generate. Returns the answer and what it was allowed to use.
+
+    With a `session_id` the exchange is written back to the graph, which is
+    what makes the next session able to start where this one stopped. Both
+    turns go in, and Pep's carries `CITES` edges to the exact `Fact` nodes it
+    quoted, so "you asked about his final third entries last week, and here is
+    the number I gave you" is a traversal rather than a string search.
+
+    The citations point at the facts as they were *then*. A fact superseded
+    next month does not rewrite what Pep said today; the old turn still points
+    at the old fact, which is the honest record of what was believed at the
+    time.
+    """
     g = Graph()
     try:
-        got = retrieve(g, team, question, at, memory=memory, match=match)
+        got = retrieve(
+            g, team, question, at, memory=memory, match=match, session_id=session_id
+        )
     finally:
         g.close()
 
@@ -290,14 +371,32 @@ def answer(
     )
     text = _ask(prompt, got.payload(), model, max_tokens=400, system=PROSE_SYSTEM)
 
-    used = sorted({int(m) for m in re.findall(r"\[(\d+)\]", text)})
+    used = sorted(cited_ids(text))
+    cited = [f for f in got.facts if f["id"] in used]
+
+    if session_id is not None:
+        # Only facts that came out of the graph carry a node id. Anything
+        # measured off the match in front of the coach has none, and citing a
+        # node that does not exist would make the chip a decoration.
+        nodes = tuple(int(f["node"]) for f in cited if f.get("node") is not None)
+        g = Graph()
+        try:
+            g.append_turn(team_id_for(team), session_id, "coach", question, at)
+            g.append_turn(
+                team_id_for(team), session_id, "pep", text.strip(), at, cites=nodes
+            )
+        finally:
+            g.close()
+
     return {
         "question": question,
         "answer": text.strip(),
         "memory": memory,
         "retrieved": got.facts,
-        "cited": [f for f in got.facts if f["id"] in used],
+        "cited": cited,
         "player": got.player["nickname"] if got.player else None,
+        "remembered": session_id is not None,
+        "recalled": len(got.conversation),
     }
 
 

@@ -754,6 +754,52 @@ class Graph:
         )
         return tid
 
+    def append_turn(
+        self,
+        team_id: int,
+        session_id: int,
+        role: str,
+        text: str,
+        ts_ord: int,
+        cites: tuple[int, ...] = (),
+    ) -> int:
+        """Add the next turn to a session, allocating its id and position.
+
+        `add_turn` takes an id and a sequence number because the verifier wants
+        to write a scripted exchange with known ids. A live conversation has
+        neither to hand: it knows the session and the text and nothing else.
+        Making every caller count the turns first is how two of them end up
+        counting differently.
+
+        Sequence comes from what is already stored rather than from a counter
+        in the process, so a second browser tab, a restarted server and a
+        resumed session all continue the same thread instead of starting at
+        zero and overwriting it.
+
+        Turn ids are `session * 1000 + seq`, which keeps them unique across
+        sessions and stable under replay. A session that somehow ran past a
+        thousand turns would collide, so it stops appending rather than
+        silently writing over the start of the conversation.
+        """
+        self.start_session(team_id, session_id, ts_ord)
+
+        prior = self.session_turns(session_id, limit=1000)
+        seq = len(prior)
+        if seq >= 1000:
+            raise ValueError(f"session {session_id} is full at {seq} turns")
+        prev = max((int(t["seq"]) for t in prior), default=None)
+
+        return self.add_turn(
+            session_id=session_id,
+            turn_id=session_id * 1000 + seq,
+            seq=seq,
+            role=role,
+            text=text,
+            ts_ord=ts_ord,
+            cites=cites,
+            prev_turn_id=(session_id * 1000 + prev) if prev is not None else None,
+        )
+
     def session_turns(self, session_id: int, limit: int = 50) -> list[dict]:
         rows = self.run(
             "MATCH (s:Session {id: $sid})-[:HAS_TURN]->(t:Turn) "
@@ -782,11 +828,29 @@ class Graph:
         rows = self.run(
             "MATCH (t:Team {id: $tid})-[:HAS_SESSION]->(s:Session)-[:HAS_TURN]->(turn:Turn) "
             "RETURN turn.id AS id, turn.role AS role, turn.text AS text, "
-            "turn.ts_ord AS ts_ord, s.id AS session_id "
-            "ORDER BY turn.ts_ord DESC, turn.seq DESC LIMIT $limit",
-            tid=team_id, limit=limit,
+            "turn.ts_ord AS ts_ord, turn.seq AS seq, s.id AS session_id "
+            "ORDER BY turn.ts_ord DESC, turn.seq DESC LIMIT $over",
+            tid=team_id, over=limit * 4,
         )
-        return list(reversed([dict(r) for r in rows]))
+
+        # One row per turn, however many edges reach it.
+        #
+        # A turn is reached through HAS_TURN, and this graph still holds
+        # sessions written before that edge was a MERGE, so the same turn comes
+        # back three times over. Nothing writes duplicates now, but the reading
+        # side is the cheap place to be certain: a repeated turn otherwise eats
+        # the limit and pushes real history out of the recall, which fails by
+        # quietly forgetting rather than by erroring.
+        seen: set[int] = set()
+        unique: list[dict] = []
+        for r in rows:
+            if r["id"] in seen:
+                continue
+            seen.add(r["id"])
+            unique.append(dict(r))
+            if len(unique) >= limit:
+                break
+        return list(reversed(unique))
 
     def highlights(self, statsbomb_id: int) -> list[dict]:
         rows = self.run(
