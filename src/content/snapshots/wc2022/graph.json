@@ -189,7 +189,8 @@
    "label": "Lionel Messi",
    "sub": "Right Center Forward",
    "weight": 1.6,
-   "photo": "/players/5503.jpg"
+   "photo": "/players/5503.jpg",
+   "clip": "/clips/3857300_005_58.mp4"
   },
   {
    "id": "p6909",
@@ -197,7 +198,8 @@
    "label": "Emiliano Mart\u00ednez",
    "sub": "Goalkeeper",
    "weight": 1.6,
-   "photo": "/players/6909.jpg"
+   "photo": "/players/6909.jpg",
+   "clip": null
   },
   {
    "id": "p3090",
@@ -205,7 +207,8 @@
    "label": "Nicol\u00e1s Otamendi",
    "sub": "Left Back",
    "weight": 1.6,
-   "photo": "/players/3090.jpg"
+   "photo": "/players/3090.jpg",
+   "clip": null
   },
   {
    "id": "p5507",
@@ -213,7 +216,8 @@
    "label": "Nicol\u00e1s Tagliafico",
    "sub": "Left Back",
    "weight": 1.6,
-   "photo": "/players/5507.jpg"
+   "photo": "/players/5507.jpg",
+   "clip": "/clips/3857300_045_45.mp4"
   },
   {
    "id": "p7797",
@@ -221,7 +225,8 @@
    "label": "Rodrigo De Paul",
    "sub": "Right Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/7797.jpg"
+   "photo": "/players/7797.jpg",
+   "clip": "/clips/3857300_062_38.mp4"
   },
   {
    "id": "p20572",
@@ -229,7 +234,8 @@
    "label": "Cristian Romero",
    "sub": "Right Center Back",
    "weight": 1.6,
-   "photo": "/players/20572.jpg"
+   "photo": "/players/20572.jpg",
+   "clip": "/clips/3869321_025_13.mp4"
   },
   {
    "id": "p27886",
@@ -237,7 +243,8 @@
    "label": "Alexis MacAllister",
    "sub": "Left Midfield",
    "weight": 1.6,
-   "photo": "/players/27886.jpg"
+   "photo": "/players/27886.jpg",
+   "clip": "/clips/3869321_047_23.mp4"
   },
   {
    "id": "p38718",
@@ -245,7 +252,8 @@
    "label": "Enzo Fernandez",
    "sub": "Left Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/38718.jpg"
+   "photo": "/players/38718.jpg",
+   "clip": "/clips/3869321_006_28.mp4"
   },
   {
    "id": "p29201",
@@ -253,7 +261,8 @@
    "label": "Nahuel Molina",
    "sub": "Right Wing Back",
    "weight": 1.6,
-   "photo": "/players/29201.jpg"
+   "photo": "/players/29201.jpg",
+   "clip": "/clips/3857300_065_07.mp4"
   },
   {
    "id": "p2995",
@@ -261,7 +270,8 @@
    "label": "\u00c1ngel Di Mar\u00eda",
    "sub": "Right Midfield",
    "weight": 1.6,
-   "photo": "/players/2995.jpg"
+   "photo": "/players/2995.jpg",
+   "clip": "/clips/3869321_115_51.mp4"
   },
   {
    "id": "p29560",
@@ -269,7 +279,8 @@
    "label": "Juli\u00e1n \u00c1lvarez",
    "sub": "Left Center Forward",
    "weight": 1.6,
-   "photo": "/players/29560.jpg"
+   "photo": "/players/29560.jpg",
+   "clip": "/clips/3869321_080_08.mp4"
   },
   {
    "id": "p27768",
@@ -277,7 +288,8 @@
    "label": "Lisandro Mart\u00ednez",
    "sub": "Left Center Back",
    "weight": 1.6,
-   "photo": "/players/27768.jpg"
+   "photo": "/players/27768.jpg",
+   "clip": null
   },
   {
    "id": "p19597",
@@ -285,7 +297,8 @@
    "label": "Marcos Acu\u00f1a",
    "sub": "Left Back",
    "weight": 1.6,
-   "photo": "/players/19597.jpg"
+   "photo": "/players/19597.jpg",
+   "clip": "/clips/3869321_009_58.mp4"
   },
   {
    "id": "p11456",
@@ -293,7 +306,8 @@
    "label": "Lautaro Mart\u00ednez",
    "sub": "Center Forward",
    "weight": 1.6,
-   "photo": "/players/11456.jpg"
+   "photo": "/players/11456.jpg",
+   "clip": null
   },
   {
    "id": "p16308",
@@ -301,7 +315,8 @@
    "label": "Leandro Paredes",
    "sub": "Right Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/16308.jpg"
+   "photo": "/players/16308.jpg",
+   "clip": "/clips/3857300_019_56.mp4"
   },
   {
    "id": "p5506",
@@ -309,7 +324,8 @@
    "label": "Javier Mascherano",
    "sub": "Center Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/5506.jpg"
+   "photo": "/players/5506.jpg",
+   "clip": null
   },
   {
    "id": "p38641",
@@ -317,7 +333,8 @@
    "label": "Diego Armando Maradona",
    "sub": "Center Attacking Midfield",
    "weight": 1.6,
-   "photo": "/players/38641.jpg"
+   "photo": "/players/38641.jpg",
+   "clip": null
   },
   {
    "id": "p38654",
@@ -325,7 +342,8 @@
    "label": "Ricardo Giusti",
    "sub": "Right Midfield",
    "weight": 1.6,
-   "photo": "/players/38654.jpg"
+   "photo": "/players/38654.jpg",
+   "clip": null
   },
   {
    "id": "p38657",
@@ -333,7 +351,8 @@
    "label": "\u00d3scar Ruggeri",
    "sub": "Left Center Back",
    "weight": 1.6,
-   "photo": "/players/38657.jpg"
+   "photo": "/players/38657.jpg",
+   "clip": null
   },
   {
    "id": "p38661",
@@ -341,7 +360,8 @@
    "label": "Julio Olarticoechea",
    "sub": "Left Midfield",
    "weight": 1.6,
-   "photo": "/players/38661.jpg"
+   "photo": "/players/38661.jpg",
+   "clip": null
   },
   {
    "id": "p38646",
@@ -349,7 +369,8 @@
    "label": "Jorge Burruchaga",
    "sub": "Right Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/38646.jpg"
+   "photo": "/players/38646.jpg",
+   "clip": null
   },
   {
    "id": "p28263",
@@ -357,7 +378,8 @@
    "label": "Gonzalo Montiel",
    "sub": "Right Back",
    "weight": 1.6,
-   "photo": "/players/28263.jpg"
+   "photo": "/players/28263.jpg",
+   "clip": "/clips/3869321_114_39.mp4"
   },
   {
    "id": "p5742",
@@ -365,7 +387,8 @@
    "label": "Gabriel Mercado",
    "sub": "Right Back",
    "weight": 1.6,
-   "photo": "/players/5742.jpg"
+   "photo": "/players/5742.jpg",
+   "clip": null
   },
   {
    "id": "p38640",
@@ -373,7 +396,8 @@
    "label": "Nery Pumpido",
    "sub": "Goalkeeper",
    "weight": 1.6,
-   "photo": "/players/38640.jpg"
+   "photo": "/players/38640.jpg",
+   "clip": null
   },
   {
    "id": "p38642",
@@ -381,7 +405,8 @@
    "label": "Jos\u00e9 Luis Brown",
    "sub": "Center Back",
    "weight": 1.6,
-   "photo": "/players/38642.jpg"
+   "photo": "/players/38642.jpg",
+   "clip": null
   },
   {
    "id": "p38643",
@@ -389,7 +414,8 @@
    "label": "Jos\u00e9 Luis Cuciuffo",
    "sub": "Right Center Back",
    "weight": 1.6,
-   "photo": "/players/38643.jpg"
+   "photo": "/players/38643.jpg",
+   "clip": null
   },
   {
    "id": "p38644",
@@ -397,7 +423,8 @@
    "label": "H\u00e9ctor Enrique",
    "sub": "Left Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/38644.jpg"
+   "photo": "/players/38644.jpg",
+   "clip": null
   },
   {
    "id": "p38645",
@@ -405,7 +432,8 @@
    "label": "Sergio Batista",
    "sub": "Right Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/38645.jpg"
+   "photo": "/players/38645.jpg",
+   "clip": null
   },
   {
    "id": "p38647",
@@ -413,7 +441,8 @@
    "label": "Jorge Valdano",
    "sub": "Center Forward",
    "weight": 1.6,
-   "photo": "/players/38647.jpg"
+   "photo": "/players/38647.jpg",
+   "clip": null
   },
   {
    "id": "p20687",
@@ -421,7 +450,8 @@
    "label": "Nicol\u00e1s Gonz\u00e1lez",
    "sub": "Left Wing",
    "weight": 1.6,
-   "photo": "/players/20687.jpg"
+   "photo": "/players/20687.jpg",
+   "clip": null
   },
   {
    "id": "p3602",
@@ -429,7 +459,8 @@
    "label": "Marcos Rojo",
    "sub": "Left Center Back",
    "weight": 1.6,
-   "photo": "/players/3602.jpg"
+   "photo": "/players/3602.jpg",
+   "clip": null
   },
   {
    "id": "p5504",
@@ -437,7 +468,8 @@
    "label": "\u00c9ver Banega",
    "sub": "Left Center Midfield",
    "weight": 1.6,
-   "photo": "/players/5504.jpg"
+   "photo": "/players/5504.jpg",
+   "clip": null
   },
   {
    "id": "p5741",
@@ -445,7 +477,8 @@
    "label": "Enzo P\u00e9rez",
    "sub": "Right Center Midfield",
    "weight": 1.6,
-   "photo": "/players/5741.jpg"
+   "photo": "/players/5741.jpg",
+   "clip": null
   },
   {
    "id": "p6312",
@@ -453,7 +486,8 @@
    "label": "Franco Armani",
    "sub": "Goalkeeper",
    "weight": 1.6,
-   "photo": "/players/6312.jpg"
+   "photo": "/players/6312.jpg",
+   "clip": null
   },
   {
    "id": "p3659",
@@ -461,7 +495,8 @@
    "label": "Willy Caballero",
    "sub": "Goalkeeper",
    "weight": 1.6,
-   "photo": "/players/3659.jpg"
+   "photo": "/players/3659.jpg",
+   "clip": null
   },
   {
    "id": "p3237",
@@ -469,7 +504,8 @@
    "label": "Sergio Ag\u00fcero",
    "sub": "Right Center Midfield",
    "weight": 1.6,
-   "photo": "/players/3237.jpg"
+   "photo": "/players/3237.jpg",
+   "clip": null
   },
   {
    "id": "p5499",
@@ -477,7 +513,8 @@
    "label": "Maximiliano Meza",
    "sub": "Left Attacking Midfield",
    "weight": 1.6,
-   "photo": "/players/5499.jpg"
+   "photo": "/players/5499.jpg",
+   "clip": null
   },
   {
    "id": "p3313",
@@ -485,7 +522,8 @@
    "label": "Giovani Lo Celso",
    "sub": "Left Defensive Midfield",
    "weight": 1.6,
-   "photo": "/players/3313.jpg"
+   "photo": "/players/3313.jpg",
+   "clip": null
   },
   {
    "id": "p5513",
@@ -493,7 +531,8 @@
    "label": "Eduardo Salvio",
    "sub": "Right Midfield",
    "weight": 1.6,
-   "photo": "/players/5513.jpg"
+   "photo": "/players/5513.jpg",
+   "clip": null
   },
   {
    "id": "p5496",
@@ -501,7 +540,8 @@
    "label": "Cristian Pav\u00f3n",
    "sub": "Left Wing",
    "weight": 1.6,
-   "photo": "/players/5496.jpg"
+   "photo": "/players/5496.jpg",
+   "clip": null
   },
   {
    "id": "p5497",
@@ -509,7 +549,8 @@
    "label": "Gonzalo Higua\u00edn",
    "sub": "Left Center Forward",
    "weight": 1.6,
-   "photo": "/players/5497.jpg"
+   "photo": "/players/5497.jpg",
+   "clip": null
   },
   {
    "id": "p7161",
@@ -517,7 +558,8 @@
    "label": "Germ\u00e1n Pezzella",
    "sub": "Right Center Back",
    "weight": 1.6,
-   "photo": "/players/7161.jpg"
+   "photo": "/players/7161.jpg",
+   "clip": null
   },
   {
    "id": "p28268",
@@ -525,7 +567,8 @@
    "label": "Exequiel Palacios",
    "sub": "Left Center Midfield",
    "weight": 1.6,
-   "photo": "/players/28268.jpg"
+   "photo": "/players/28268.jpg",
+   "clip": null
   },
   {
    "id": "p7006",
@@ -533,7 +576,8 @@
    "label": "Papu G\u00f3mez",
    "sub": "Left Wing",
    "weight": 1.6,
-   "photo": "/players/7006.jpg"
+   "photo": "/players/7006.jpg",
+   "clip": null
   },
   {
    "id": "f356620000",
