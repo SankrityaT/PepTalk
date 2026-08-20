@@ -1,4 +1,4 @@
-# HydraDB — build context for Hack Hydra
+# HydraDB: build context for Hack Hydra
 
 Source: `github.com/hydra-db/hydradb` (cloned + read Aug 15 2026), `docs.hydradb.com`.
 
@@ -17,7 +17,7 @@ mutations, `graph-indexer` builds immutable traversal indexes in the background.
 > build with the **open-source repo**. Ask in Discord whether the managed API
 > counts; assume the OSS engine is what's judged.
 
-## Connecting — use the Neo4j driver
+## Connecting, use the Neo4j driver
 
 Bolt compatibility means no custom client:
 
@@ -50,11 +50,11 @@ docker run --rm --user "$(id -u):$(id -g)" \
   ghcr.io/hydra-db/hydradb:latest
 ```
 
-`LOCAL_PATH` must already exist. `--user` is required — the image runs as UID
+`LOCAL_PATH` must already exist. `--user` is required, the image runs as UID
 10001 and cannot write a host-owned bind mount otherwise. Apple Silicon is fine
 on releases after 0.1.0.
 
-## Cypher subset — the gotchas that shape the schema
+## Cypher subset, the gotchas that shape the schema
 
 Supported: `MATCH`, `OPTIONAL MATCH` (reads only), `WHERE`, `RETURN`, `CREATE`,
 `MERGE`, `SET`, `REMOVE`, `DELETE`, `UNWIND`, `UNION`, `CALL algo.*`.
@@ -66,7 +66,7 @@ Supported: `MATCH`, `OPTIONAL MATCH` (reads only), `WHERE`, `RETURN`, `CREATE`,
 | **`IS NULL` unsupported** | Cannot model "still true" as a null `valid_to`. **Use a numeric sentinel.** |
 | **`IN` unsupported** | No `WHERE id IN [...]`. Use `UNWIND` over a parameter list. |
 | `CONTAINS` / `ENDS WITH` unsupported | Only `STARTS WITH` for strings. |
-| `WITH` is pass-through only | No aliases, no filtering. **No multi-stage query pipelines** — do that in app code. |
+| `WITH` is pass-through only | No aliases, no filtering. **No multi-stage query pipelines**, do that in app code. |
 | Var-length paths need explicit max | `*1..3` fine; `*` and `*1..` rejected. |
 | Patterns are directed, one rel type each | Undirected rejected. Model both directions explicitly if needed. |
 | `MERGE` matches on `id` only | No `ON CREATE` / `ON MATCH`. |
@@ -92,7 +92,7 @@ Config keys: `sourceNode`, `targetNode`, `sourceLabel`, `sourceProperty`,
 **Batch writes** use `UNWIND` over a parameter holding a list of maps (not an
 inline list); every row must carry every field the statement reads.
 
-## Proposed schema — temporal tactical memory
+## Proposed schema, temporal tactical memory
 
 ```
 (:Team   {id, name})
@@ -122,7 +122,7 @@ WHERE f.dimension = $dim AND f.valid_from <= $at AND f.valid_to > $at
 RETURN f.value, f.valid_from, f.valid_to, f.observations
 ```
 
-Point-in-time query — same team, two different `$at` values, two different
+Point-in-time query, same team, two different `$at` values, two different
 scouting reports. That is the demo.
 
 ### Abstention as a first-class result
@@ -141,9 +141,9 @@ a prompt instruction.
 
 The rules require saying what the project loses without HydraDB. Build it as a UI switch:
 
-- **Without** — flat retrieval over the same facts, no validity intervals. Returns
+- **Without**, flat retrieval over the same facts, no validity intervals. Returns
   an average across eras, or the wrong-era answer, confidently.
-- **With** — dated, superseded-aware answer, plus the traversal path as citation,
+- **With**, dated, superseded-aware answer, plus the traversal path as citation,
   plus abstention when evidence is thin.
 
 Same question, two answers, side by side. That is the strongest 20 seconds of the
@@ -154,6 +154,6 @@ demo video.
 - Repo must be **public with an OSS license**; HydraDB itself is AGPL-3.0, but you
   connect over Bolt rather than linking, so pick your own license deliberately.
 - No participant-authored commits before **Aug 12 2026** (this repo's first commit
-  is Aug 15 — clean).
+  is Aug 15, clean).
 - AI coding assistants are explicitly allowed; credit them in the README.
 - Demo video **3 minutes max**, order: problem → project → demo → HydraDB.

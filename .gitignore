@@ -95,3 +95,15 @@ src/content/snapshots/active/
 !/public/clips/goal_079_24.mp4
 !/public/clips/goal_080_59.mp4
 !/public/clips/goal_117_05.mp4
+
+# Working notes, not the product.
+#
+# The submission draft and the video shot list are ours to write in and are
+# still being written in; a judge finding a form answer with "to fill in" next
+# to it learns something true and unhelpful. They stay on disk and out of the
+# repository.
+/docs/SUBMISSION.md
+/docs/VIDEO.md
+/docs/superpowers/
+AGENTS.md
+CLAUDE.md
