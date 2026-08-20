@@ -383,6 +383,27 @@ Nothing here is committed that can be rebuilt. `results/` and `.cache/` are
 ignored, so a fresh clone starts from an empty graph and builds everything
 below from StatsBomb's public data, which downloads itself on first use.
 
+**0. What you need**
+
+| | | |
+|---|---|---|
+| Python | 3.11 or newer | the graph, the models, the pipeline |
+| [uv](https://docs.astral.sh/uv/) | any recent | resolves and runs the Python side |
+| Node | 20 or newer | the interface |
+| pnpm | 9 or newer | `corepack enable` if you do not have it |
+| Docker | any recent | runs HydraDB locally |
+| ffmpeg | any recent | only if you are cutting your own clips |
+
+Optional, and the project runs without all three:
+
+| | |
+|---|---|
+| `ANTHROPIC_API_KEY` | only if you want the API instead of the Claude CLI |
+| `TACTICBENCH_BACKEND` | `cli` or `api`, defaults to `api` |
+| `PEPTALK_WORKSPACE` | which team to load, defaults to `wc2022` |
+| `PEPTALK_API` | where the interface looks for the graph service |
+| `ROBOFLOW_API_KEY` | only for the pitch keypoint experiments |
+
 **1. Dependencies**
 
 ```bash
@@ -499,3 +520,37 @@ used commercially.
 
 Player photographs from Wikimedia Commons under CC BY-SA 4.0 and CC BY 4.0,
 credited per player in `public/players/CREDITS.md`.
+
+### Third-party code and models
+
+| Used | For | Licence |
+|---|---|---|
+| [HydraDB](https://github.com/hydra-db/hydradb) | the memory graph | per its own repository |
+| [Ultralytics YOLO11m](https://github.com/ultralytics/ultralytics) | finding players in a frame | AGPL-3.0 |
+| [Roboflow `football-field-detection-f07vi/15`](https://universe.roboflow.com/) | pitch keypoints | per Roboflow Universe terms |
+| [neo4j Python driver](https://github.com/neo4j/neo4j-python-driver) | Bolt transport to HydraDB | Apache-2.0 |
+| [FastAPI](https://github.com/fastapi/fastapi) | the graph service | MIT |
+| [scikit-learn](https://scikit-learn.org/), [NumPy](https://numpy.org/) | the models | BSD-3-Clause |
+| [OpenCV](https://opencv.org/) | the vision work | Apache-2.0 |
+| [Next.js](https://nextjs.org/), [React](https://react.dev/) | the interface | MIT |
+| [Tailwind CSS](https://tailwindcss.com/), [Motion](https://motion.dev/), [Lenis](https://github.com/darkroomengineering/lenis) | styling and movement | MIT |
+| [Claude](https://www.anthropic.com/) | writes the answers, measures nothing | commercial API or CLI |
+
+YOLO11m is AGPL-3.0. It is invoked as a separate process over files rather than
+linked into this code, and no modified version of it is distributed here.
+Anyone shipping this commercially should read Ultralytics' terms rather than
+take that as advice.
+
+The full set of terms, including what the data licences do and do not permit,
+is in [`NOTICE.md`](NOTICE.md).
+
+---
+
+## Licence
+
+[MIT](LICENSE), for the source in this repository.
+
+That covers the code and nothing else. StatsBomb's data is under their own
+agreement, the broadcast excerpts are not ours to relicense, and the player
+photographs carry their own Creative Commons terms. `NOTICE.md` is the
+authority on all three.
