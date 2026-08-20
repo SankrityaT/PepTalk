@@ -539,14 +539,38 @@ class Graph:
         return [dict(r) for r in rows]
 
     def supersede_chain(self, fact_id: int, max_hops: int = 10) -> list[dict]:
-        """Traverse the overwrite chain forward from a fact."""
+        """Everything downstream of a fact, along the overwrite chain.
+
+        `algo.SSpaths` is HydraDB's bounded-paths-from-one-source procedure and
+        that is exactly this question. It returns every prefix, so a four era
+        chain comes back as three paths of one, two and three hops; the longest
+        is the whole story and the shorter ones are inside it.
+
+        This was a variable length `MATCH` and both work. The procedure is the
+        better citizen: the walk happens inside the engine against a pinned
+        storage snapshot rather than being assembled from a result set, and the
+        hop count arrives as `pathWeight` instead of being counted here.
+        """
         rows = self.run(
-            f"MATCH (a:Fact {{id: $fid}})-[:SUPERSEDED_BY*1..{max_hops}]->(b) "
-            "RETURN b.id AS id, b.band AS band, b.valid_from AS valid_from, "
-            "b.valid_to AS valid_to ORDER BY valid_from",
-            fid=fact_id,
+            "CALL algo.SSpaths({sourceNode: $fid, relTypes: ['SUPERSEDED_BY'], "
+            "relDirection: 'outgoing', maxLen: $max, pathCount: 50}) "
+            "YIELD path, pathWeight RETURN path, pathWeight",
+            fid=fact_id, max=max_hops,
         )
-        return [dict(r) for r in rows]
+        if not rows:
+            return []
+
+        longest = max(rows, key=lambda r: r["pathWeight"])
+        # The source is where the caller already is; the chain is what follows.
+        return [
+            {
+                "id": int(n.get("id") or 0),
+                "band": n.get("band"),
+                "valid_from": n.get("valid_from"),
+                "valid_to": n.get("valid_to"),
+            }
+            for n in list(longest["path"].nodes)[1:]
+        ]
 
     def path_between(self, start_fact: int, end_fact: int, max_hops: int = 10) -> list[dict]:
         """The same chain, computed by the engine rather than by us.
