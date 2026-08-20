@@ -548,6 +548,47 @@ class Graph:
         )
         return [dict(r) for r in rows]
 
+    def path_between(self, start_fact: int, end_fact: int, max_hops: int = 10) -> list[dict]:
+        """The same chain, computed by the engine rather than by us.
+
+        `algo.SPpaths` is HydraDB's own shortest-path procedure and this is the
+        query its documentation gives as the example, down to
+        `relTypes: ['SUPERSEDED_BY']`. That is not a coincidence: a chain of
+        claims overwriting each other is the shape the procedure is for, and it
+        happens to be the shape this project is built out of.
+
+        The variable-length `MATCH` above returns the same nodes and is the
+        right tool when all you want is "everything downstream of this". This
+        one answers a different question, which is how two specific facts are
+        connected, and it answers it inside the database. The hop count comes
+        back as `pathWeight` without us counting anything.
+
+        Returns the facts along the path, oldest first, or an empty list when
+        the two are not connected.
+        """
+        rows = self.run(
+            "CALL algo.SPpaths({sourceNode: $s, targetNode: $e, "
+            "relTypes: ['SUPERSEDED_BY'], relDirection: 'outgoing', "
+            "maxLen: $max, pathCount: 1}) "
+            "YIELD path, pathWeight RETURN path, pathWeight",
+            s=start_fact, e=end_fact, max=max_hops,
+        )
+        if not rows:
+            return []
+
+        out: list[dict] = []
+        for node in rows[0]["path"].nodes:
+            out.append(
+                {
+                    "id": int(node.get("id") or 0),
+                    "band": node.get("band"),
+                    "valid_from": node.get("valid_from"),
+                    "valid_to": node.get("valid_to"),
+                    "median_value": node.get("median_value"),
+                }
+            )
+        return out
+
     def evidence(self, team_id: int, dimension: str) -> int:
         """Total observations backing a dimension — drives abstention."""
         rows = self.run(

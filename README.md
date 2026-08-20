@@ -134,6 +134,27 @@ Three queries carry the product:
 | `fact_at(id, dim, date)` | What was true of them **on this date**? |
 | `timeline(id, dim)` | **When** did it change, and to what? |
 | `flat_lookup(id, dim)` | What would a store **without dates** have said? |
+| `path_between(a, b)` | **How** did this claim become that one? |
+
+That last one is `CALL algo.SPpaths`, HydraDB's own shortest path procedure,
+pointed at `relTypes: ['SUPERSEDED_BY']`. Their documentation gives almost
+exactly that call as its example, which is not a coincidence: a chain of claims
+overwriting each other is the shape the procedure is for, and it is the shape
+this project is built out of. The engine walks it and returns the hop count;
+we do not count anything.
+
+```
+$ uv run python -m tacticbench.demo query Barcelona --dimension possession_share_pct
+
+--- the same chain, via CALL algo.SPpaths ---
+  low  ->  even  ->  dominant  ->  even
+  3 hops, walked by the engine
+```
+
+The Cypher we issue, in full: `MATCH`, `MERGE`, `CREATE`, `SET`, `DELETE`,
+`DETACH DELETE`, `WHERE`, `RETURN`, `ORDER BY`, `LIMIT`, `UNWIND`, variable
+length `-[:SUPERSEDED_BY*1..n]->`, and `CALL algo.SPpaths`. Over Bolt, through
+the neo4j driver with bearer auth.
 
 That last one is the memory switch. Turning memory off runs `flat_lookup`
 instead: the single most-evidenced claim, with no validity window, which is what a

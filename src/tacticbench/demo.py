@@ -107,6 +107,17 @@ def cmd_query(args) -> None:
                     f"to {human(step['valid_to'])}"
                 )
 
+            # The same chain again, computed inside the database by HydraDB's
+            # own shortest-path procedure rather than by a traversal we wrote.
+            # Worth showing both: the first answers "everything downstream of
+            # here", this answers "how are these two connected", and the second
+            # is the question their path API exists for.
+            path = g.path_between(tl[0]["id"], tl[-1]["id"])
+            if len(path) > 1:
+                print("\n--- the same chain, via CALL algo.SPpaths ---")
+                print("  " + "  ->  ".join(f"{f['band']}" for f in path))
+                print(f"  {len(path) - 1} hops, walked by the engine")
+
         print("\n--- WITHOUT HydraDB (flat lookup, no validity intervals) ---")
         flat = g.flat_lookup(tid, dim)
         if flat:
