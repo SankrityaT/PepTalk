@@ -53,11 +53,26 @@ function stripIds(text: string): string {
   return text.replace(CITATION, "").replace(/\s+([.,;:])/g, "$1").trim();
 }
 
-/** Ordinals are proleptic Gregorian, the same clock the football facts use. */
+/**
+ * Ordinals are proleptic Gregorian, the same clock the football facts use.
+ *
+ * Anchored on the Unix epoch rather than on year one, which is where the first
+ * version went wrong: `Date.UTC(1, 0, 1)` is 1901, not 0001, because a
+ * two-digit year argument gets 1900 added to it. Every thread came out two
+ * days early, which is subtle enough to read as correct and wrong enough to
+ * contradict the answer sitting next to it.
+ *
+ * 719163 is Python's ordinal for 1970-01-01, so this is exact rather than
+ * approximately right.
+ */
+const EPOCH_ORDINAL = 719163;
+
 function human(ord: number): string {
-  const d = new Date(Date.UTC(1, 0, 1));
-  d.setUTCDate(d.getUTCDate() + (ord - 367));
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  return new Date((ord - EPOCH_ORDINAL) * 86_400_000).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
 }
 
 export function currentSession(): number | null {
