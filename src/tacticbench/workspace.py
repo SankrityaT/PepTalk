@@ -1,7 +1,9 @@
 """One workspace: whose team this is, and where the footage comes from.
 
     uv run python -m tacticbench.workspace              # show the active one
-    PEPTALK_WORKSPACE=isl uv run python -m tacticbench.bootstrap
+
+Which one is active follows the site: adding a game switches to it, and every
+command here follows without being told, so there is nothing to export.
 
 Every pipeline in this repo was written against one match of one team, and the
 ids for it leaked into eight modules. That is fine for proving a thing works
@@ -11,7 +13,8 @@ owns and the code reads.
 **What a new workspace needs.** Three things, and only the third is real work:
 
 1. `team` and `match_id`, both from StatsBomb open data.
-2. `video_id`, a recording of that match.
+2. `video_id` or `video_path`, a recording of that match — a YouTube id, or a
+   file already on disk. An upload produces the second.
 3. `period_offset`, the seconds between video time and match time, one per
    period. This is the only piece nobody can derive for you.
 
@@ -47,6 +50,26 @@ WORKSPACES = ROOT / "workspaces"
 ENV_VAR = "PEPTALK_WORKSPACE"
 DEFAULT = "wc2022"
 
+#: Written by `activate()` when a game is added or switched to. This is which
+#: game the running interface is *showing*, which is not the same question as
+#: which game a command should act on — a rebuild names its target, and the
+#: default is the built-in example.
+POINTER = ROOT / "src" / "content" / "snapshots" / ".active"
+
+
+def showing() -> str | None:
+    """The workspace the interface is currently displaying, if any.
+
+    Read by commands that need to act on what the coach is looking at rather
+    than on a named target. Deliberately not part of `load()`'s fallback
+    chain: a pipeline that quietly followed the last thing clicked would
+    rebuild a different game than the one asked for.
+    """
+    try:
+        return POINTER.read_text().strip() or None
+    except OSError:
+        return None
+
 
 @dataclass
 class Workspace:
@@ -71,6 +94,12 @@ class Workspace:
 
     #: A recording of the workspace match. Anything yt-dlp accepts.
     video_id: str = ""
+
+    #: A recording of the match already on disk, as an absolute path. This is
+    #: what an upload produces: a coach has the file, not a YouTube id. Set one
+    #: or the other, never both — `source` decides which, and prefers this one
+    #: because a local file is cheaper and cannot rot.
+    video_path: str = ""
 
     #: Recordings of the side's other matches, keyed by StatsBomb match id, as
     #: {"video_id": ..., "period_offset": {1: 96.0, 2: 599.0}}.
@@ -131,16 +160,44 @@ class Workspace:
         return f"https://www.youtube.com/watch?v={self.video_id}"
 
     @property
+    def source(self) -> str:
+        """Where the footage comes from: a local path, or a URL.
+
+        Callers that cut frames or clips branch on this rather than reaching for
+        `video_id` directly, so an uploaded file and a YouTube id travel the
+        same path. A local file wins when both are set: it is already on disk.
+        """
+        return self.video_path or (self.url if self.video_id else "")
+
+    @property
+    def is_local(self) -> bool:
+        return bool(self.video_path)
+
+    @property
     def dir(self) -> Path:
         return WORKSPACES / self.key
+
+    @property
+    def snapshots(self) -> Path:
+        """Where this workspace's generated snapshots land.
+
+        Per workspace rather than the committed `src/content/snapshots/`, so
+        adding a game never overwrites the one a fresh clone renders from.
+        """
+        return self.dir / "snapshots"
 
 
 def load(key: str | None = None) -> Workspace:
     """The active workspace.
 
-    Falls back to the built-in one so a fresh clone runs without configuration,
-    which is the difference between a demo somebody can try and a demo they
-    have to be talked through.
+    An explicit key, then `$PEPTALK_WORKSPACE`, then the built-in example, so
+    a fresh clone runs without configuration — the difference between a demo
+    somebody can try and a demo they have to be talked through.
+
+    Note what is *not* in that chain: whichever game the interface happens to
+    be showing. Adding a game switches the display to it, but a rebuild run
+    afterwards should still act on the game it was told to, not on the last
+    thing that was clicked.
     """
     key = key or os.environ.get(ENV_VAR) or DEFAULT
     path = WORKSPACES / key / "workspace.json"
@@ -241,7 +298,7 @@ def main() -> None:
     print(f"  team        {ws.team}")
     print(f"  match       {ws.label}  (statsbomb {ws.match_id})")
     print(f"  competition {ws.competition} {ws.season}")
-    print(f"  video       {ws.url or '(none)'}")
+    print(f"  video       {ws.source or '(none)'}")
     print(f"  offsets     {ws.period_offset or '(none set)'}")
     missing = [p for p in (1, 2) if p not in ws.period_offset]
     if missing:

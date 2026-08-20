@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Python's virtualenv. Installing the vision extras drops matplotlib and
+    // torch in here, and they ship their own bundled JavaScript — thousands
+    // of lines of somebody else's code that is not ours to lint and buries
+    // real findings when it is.
+    ".venv/**",
   ]),
 ]);
 

@@ -64,6 +64,15 @@ TEAM_NAMES = workspace.load().kits
 BEAT_S = 3.0
 
 
+def entries_for(raw: dict) -> dict:
+    """The feed for one already-loaded tracking payload.
+
+    Same work as `build`, without the file handling, so a caller that has just
+    tracked a clip in memory does not have to write it out and read it back.
+    """
+    return _build(raw)
+
+
 def build(tracking: Path, out_path: Path) -> dict:
     """A feed that streams alongside the video, in step with it.
 
@@ -76,7 +85,13 @@ def build(tracking: Path, out_path: Path) -> dict:
     Every number is read off the frame nearest that timestamp. Nothing is
     interpolated and nothing is claimed about tactics.
     """
-    raw = json.loads(tracking.read_text())
+    payload = _build(json.loads(tracking.read_text()))
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(payload, indent=1))
+    return payload
+
+
+def _build(raw: dict) -> dict:
     frames = raw["frames"]
     if not frames:
         raise ValueError("no tracked frames")
@@ -143,8 +158,6 @@ def build(tracking: Path, out_path: Path) -> dict:
         "frames_tracked": len(frames),
         "entries": entries,
     }
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(payload, indent=1))
     return payload
 
 

@@ -338,6 +338,42 @@ exact discriminator and id arithmetic is not: `team_id_for` returns up to 90,099
 while player facts start at 700,000,000, so a team whose crc32 landed near
 60,000 would have collided.
 
+### The one gap we hit: the footage has nowhere to live
+
+Adding a game is the feature that found this. A coach uploads a recording, the
+engine flags the moments, and each one is cut and tracked, which leaves us
+holding video. On this machine that is 157MB for two games, and a season of a
+real club is tens of gigabytes.
+
+HydraDB holds the *claims* about that footage exactly as it should. A
+`Highlight` carries its kind, its minute, its label and a `clip_url`, and it
+hangs off the `Match` it belongs to. What it cannot hold is the bytes the URL
+points at. So today the graph is authoritative about what happened and a
+directory on disk is authoritative about the video, and nothing keeps the two
+honest with each other: delete a clip and the node still points at it, move the
+checkout and every path breaks.
+
+**What would fix it.** An S3-compatible object store, MinIO being the obvious
+one, with the graph holding a content-addressed key instead of a filesystem
+path. Upload the clip, put its digest on the `Highlight`, and the pointer stops
+being a guess about where a file happens to sit. That is roughly a day of work
+and we know how to do it.
+
+**We did not do it, deliberately.** This is a HydraDB project, and bolting a
+second datastore onto it to solve a storage problem would make the interesting
+part, the temporal graph, share the stage with plumbing. The whole argument
+here is that `SUPERSEDED_BY` expresses something no other store can, and we
+would rather demonstrate that against one database than hedge across two.
+
+**And we think HydraDB should own this.** A memory graph for anything richer
+than text will keep running into the same wall: the facts are small and
+relational, the evidence behind them is large and binary, and splitting them
+across two systems costs you referential integrity at exactly the moment you
+want to trust a citation. A blob field, or a first-class content-addressed
+attachment that a node can point at and the database can garbage-collect, would
+close it. We would be glad to help build that, since the use case is sitting in
+this repo, with the file sizes measured and the failure mode written down.
+
 ---
 
 ## The flows
@@ -525,6 +561,8 @@ is why `clear_team_facts` exists.
 **4. Run it**
 
 ```bash
+uv pip install yt-dlp
+uv run python -m tacticbench.bootstrap        # cuts and tracks the footage
 TACTICBENCH_BACKEND=cli uv run uvicorn tacticbench.api:app --port 8000
 pnpm dev
 ```
@@ -539,6 +577,86 @@ that points at it. Everything else on the interface works without it.
 
 **The deployed build cannot answer questions.** Retrieval needs HydraDB and that
 runs locally. It says so rather than falling back to something canned.
+
+---
+
+## Adding a game
+
+A coach drops in a recording, names the fixture, lines the clock up, and gets a
+report. That needs the analysis service running alongside the interface:
+
+```bash
+uv run uvicorn tacticbench.api:app --port 8000   # in one terminal
+pnpm dev                                          # in another
+```
+
+Then **Add a game** on `/dashboard`. Four screens: the video, which fixture it
+is, two clock readings to align it, and the run. Every step in the progress
+list is the pipeline's own, reported as it happens.
+
+The game becomes the app. Adding one writes its own workspace, points the
+interface at it, and the dashboard, the tape and the memory cards are all that
+team from then on, including across restarts, so a coach never has to know a
+workspace exists. The built-in World Cup match is only what a fresh clone opens
+on before anything has been added.
+
+To check the whole path without clicking through it:
+
+```bash
+./scripts/check-add-a-game.sh   # 19 checks, ~3 min, needs HydraDB up
+```
+
+It runs a real MLS fixture end to end, confirms a match whose 360 feed does not
+join is refused rather than returning an empty report, re-adds the same game to
+prove facts are replaced rather than duplicated, and checks the Barcelona result
+still holds.
+
+**The video is not the detector, and the interface says so.** Moments come from
+StatsBomb 360 freeze frames, where all twenty-two players stood when the ball
+was struck, because that is what turns "he was open" into something showable.
+The footage is cut afterwards, at the seconds the engine flagged. So the
+fixture has to be one StatsBomb covers with 360; the picker offers only those,
+and a match without freeze frames is refused up front rather than producing an
+empty report. Detecting moments from pixels needs the pitch-to-image
+calibration that `calibrate.py` does not yet converge on.
+
+Everything a run produces lands in `workspaces/<key>/`, so adding a game never
+touches the committed snapshots a fresh clone renders from. The same work is
+available headless:
+
+```bash
+PEPTALK_WORKSPACE=<key> uv run python -m tacticbench.bootstrap
+```
+
+**Pointing this at another team** is a JSON file, not a patch:
+`docs/NEW-WORKSPACE.md`. Nothing is hardcoded to the World Cup; pick a
+competition with StatsBomb 360 data, write `workspaces/<key>/workspace.json`,
+and run `PEPTALK_WORKSPACE=<key> uv run python -m tacticbench.bootstrap`.
+
+**The repository ships no video.** Broadcast footage is not ours to
+redistribute, so `public/clips` and `public/tape` are gitignored and a fresh
+clone renders the dashboard with empty players. `bootstrap` rebuilds them from
+two public sources: a full match recording and StatsBomb open data. It takes a
+few minutes and needs no credentials.
+
+Alignment between video time and match time is read, not guessed. The
+broadcast carries a clock in its overlay, so reading it at two known points
+gives one offset per period, `+96s` for the first half and `+599s` for the
+second, the 503s between them being the half time break. Every cut is checked
+afterwards by reading its clock back off the first frame. Extra time has a
+second break before it, so that offset does not carry and extra-time moments
+are deliberately not cut: better no clip than the wrong passage.
+
+The dashboard opens as a brief rather than a set of tiles: Pep says what he
+went through, shows the clips, and asks whether to walk you through the
+moments one at a time. The footage on those walkthroughs is cut from a full
+match recording, aligned by reading the broadcast clock out of the overlay,
+and tracked in its own right, so the boxes and chalk on screen are computed
+from the frame rather than drawn over it.
+
+Snapshots under `src/content/snapshots/` are committed so the interface loads
+without the graph running. Every one of them is generated output, and the
+module that reads it says which command produced it.
 
 ---
 

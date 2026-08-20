@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import { PepTalkMark } from "@/components/logo-marks";
+import { GameSwitcher } from "@/components/shell/game-switcher";
 
 /**
  * Workspace navigation.
@@ -133,24 +133,9 @@ export function Sidebar({
     <>
       {/* ── Desktop rail ────────────────────────────────────────────────── */}
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-white/[0.07] p-2.5 lg:flex">
-        {/* Club */}
-        <button
-          type="button"
-          className="mb-2 flex w-full items-center gap-2.5 rounded-lg p-1.5 text-left transition-[background-color,transform] duration-100 hover:bg-white/[0.05] active:scale-[0.97]"
-        >
-          <PepTalkMark size={26} className="shrink-0 text-chalk" />
-          <span className="min-w-0 flex-1">
-            <span className="block truncate font-display text-[13px] leading-tight text-chalk">
-              Pep Talk
-            </span>
-            <span className="block truncate text-[11px] leading-tight text-muted-2">
-              {team} &middot; {squad}
-            </span>
-          </span>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-muted-2">
-            <path d="M7 15l5 5 5-5M7 9l5-5 5 5" />
-          </svg>
-        </button>
+        {/* Club, and the games behind it. The chevron was decoration until
+            a coach could have more than one game to switch between. */}
+        <GameSwitcher team={team} squad={squad} />
 
         {/* Search */}
         <label className="mb-1.5 flex h-8 items-center gap-2 rounded-lg bg-white/[0.04] px-2.5 ring-1 ring-white/[0.05] focus-within:ring-white/[0.12]">

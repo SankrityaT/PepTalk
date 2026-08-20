@@ -254,6 +254,20 @@ def display_surname(full: str, nickname: str | None) -> str:
     from_nick = short_name(nickname) if nickname else ""
     from_full = short_name(full)
     if not from_nick:
+        # No broadcast name to settle it. A bare three-part name is genuinely
+        # ambiguous — "Jordi Alba Ramos" is Alba, "Nicolás Hernán Otamendi" is
+        # Otamendi — and `short_name` resolves it toward the Spanish double
+        # surname, which is right for the competitions it falls back on and
+        # wrong for a middle name. Neither reading can be recovered from the
+        # string, so the fallback takes the last word: a coach reading
+        # "Otamendi" sees the right name, and reading "Ramos" sees a name that
+        # is at least his. Every ambiguous player in the squads we ship carries
+        # a nickname, so this path is the exception, not the rule.
+        from .snapshots import PARTICLES
+
+        parts = full.strip().split()
+        if len(parts) == 3 and parts[1].lower() not in PARTICLES:
+            return parts[-1]
         return from_full
     if from_nick.replace(" ", "") == from_full.replace(" ", "") and from_nick != from_full:
         return from_full

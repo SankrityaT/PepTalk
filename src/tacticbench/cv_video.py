@@ -32,6 +32,12 @@ from .cv import (
 )
 
 
+#: Fewest boxes a frame needs before it is worth keeping. Two kits can be
+#: separated from about four players; below that a "team" is one cluster of
+#: noise, and a wrong colour is worse than no box.
+MIN_TRACKED = 4
+
+
 def sample_frames(
     video: Path,
     every_n: int = 12,
@@ -81,7 +87,13 @@ def track(
         h, w = frame.shape[:2]
         r = model.predict(frame, classes=[0], conf=conf, device=device, verbose=False)[0]
         boxes = [b for b in r.boxes.xyxy.cpu().numpy().tolist() if plausible_player_box(b)]
-        if len(boxes) < 8:
+        # Enough bodies to tell two kits apart, not enough to require a wide
+        # shot. The old floor of eight silently dropped the whole build-up to
+        # a pass — on the 13:02 clip, 31 of 50 frames, every one of them real
+        # football at a tighter camera — so the overlay stayed blank until the
+        # shot went wide and then snapped on. Frames that are not football at
+        # all are already gone: `is_pitch_view` rejected them upstream.
+        if len(boxes) < MIN_TRACKED:
             continue
         tc = torso_colours(frame, boxes)
         players = []

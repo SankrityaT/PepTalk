@@ -312,6 +312,56 @@ def write_lines(moments: list[dict], model: str = DEFAULT_MODEL) -> list[dict]:
     return out
 
 
+def computed_lines(moments: list[dict]) -> list[dict]:
+    """The same rows, worded from the arithmetic rather than by the model.
+
+    `write_lines` needs ANTHROPIC_API_KEY. Without it the moments are still
+    real — every number here is computed locally — so rather than hand the
+    interface rows with no sentence in them, the sentence is assembled from
+    the figures. Flatter than Pep's voice, and it says so in the report.
+
+    Deliberately plain and never scolding, for the same reason the model is
+    told not to be: a coach who feels judged stops uploading.
+    """
+    out = []
+    for i, m in enumerate(moments):
+        f = describe(m)
+        f["id"] = i
+        times = f.get("times_better")
+        worth = (
+            f"worth {times:.0f} times more" if times and times >= 1.5 else "worth more"
+        )
+        # Volunteering the difficulty is what makes the easy cases believable.
+        # "Straightforward" is the strongest case, not a caveat, so it must not
+        # be introduced with "though" — that reads as an excuse for the player.
+        if f.get("no_riskier"):
+            caveat = " and no more likely to be cut out"
+        elif f["difficulty"] == "straightforward":
+            caveat = ", and it was there to be played"
+        else:
+            caveat = f" though it was a {f['difficulty']} ball"
+        out.append(
+            {
+                **f,
+                "line": (
+                    f"You had the ball {f['best_zone']} on, {worth} than the "
+                    f"one you played{caveat}."
+                ),
+                "numbers": (
+                    f"threat {f['played_value']:+.3f} → {f['best_value']:+.3f} · "
+                    f"{int(f['best_completion'] * 100)}% likely to arrive · "
+                    f"{f['best_defenders']} in the lane · {f['best_distance']} yds"
+                ),
+                "from": m.get("from", [0, 0]),
+                "played_to": [round(m["played"]["x"], 1), round(m["played"]["y"], 1)],
+                "best_to": [round(m["best"]["x"], 1), round(m["best"]["y"], 1)],
+                "freeze": m.get("freeze", []),
+                "missed": round(m["missed"], 4),
+            }
+        )
+    return out
+
+
 def build(match_id: int, top: int, out_path: Path, model: str) -> dict:
     analysis = analyse(match_id, top=top)
     moments = analysis["top_missed"]

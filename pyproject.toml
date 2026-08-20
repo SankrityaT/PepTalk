@@ -9,6 +9,9 @@ dependencies = [
     "neo4j>=6.2.0",
     "fastapi>=0.141.1",
     "uvicorn>=0.52.3",
+    # Uploads arrive as multipart form data. FastAPI raises at import time
+    # without it, so it is a hard dependency rather than an extra.
+    "python-multipart>=0.0.9",
     "numpy>=2.4.6",
     "opencv-python>=5.0.0.93",
     "scikit-learn>=1.9.0",

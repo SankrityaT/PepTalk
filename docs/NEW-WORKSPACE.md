@@ -156,7 +156,7 @@ exists.
 Then confirm nothing regressed:
 
 ```bash
-uv run pytest -q                            # 207
+uv run pytest -q
 uv run python -m tacticbench.verify         # exits non-zero on failure
 ```
 

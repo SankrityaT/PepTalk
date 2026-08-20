@@ -82,7 +82,7 @@ export type Theme = {
   moment_ids: number[];
 };
 
-type Snapshot = {
+export type Snapshot = {
   match_id: number;
   source: string;
   themes: Theme[];

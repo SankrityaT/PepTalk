@@ -359,6 +359,31 @@ class Graph:
             "cleared": cleared,
         }
 
+    def enrich_match(self, statsbomb_id: int, meta: dict, ht: tuple[int, int] = (0, 0)) -> None:
+        """Scoreline and halftime flags for one match.
+
+        The bulk pass (`ingest_all.enrich_scores`) does this for the whole
+        dataset. A newly added game needs the same properties or it is invisible
+        to `/api/browse`, which filters on `m.ht_deficit >= $deficit_min` — a
+        match without the property matches nothing, so it would land in the
+        graph and never appear in the picker.
+        """
+        ht_h, ht_a = ht
+        self.run(
+            "MATCH (mt:Match) WHERE mt.id = $mid "
+            "SET mt.ft_home = $fh, mt.ft_away = $fa, mt.ht_home = $hh, "
+            "mt.ht_away = $ha, mt.ht_deficit = $deficit, mt.recovered = $rec, "
+            "mt.stage = $stage, mt.season = $season",
+            mid=MATCH_ID_BASE + statsbomb_id,
+            fh=int(meta.get("home_score") or 0),
+            fa=int(meta.get("away_score") or 0),
+            hh=int(ht_h), ha=int(ht_a),
+            deficit=int(abs(ht_h - ht_a)),
+            rec=False,
+            stage=(meta.get("competition_stage") or {}).get("name") or "",
+            season=(meta.get("season") or {}).get("season_name") or "",
+        )
+
     def ingest_players(
         self,
         team: str,
