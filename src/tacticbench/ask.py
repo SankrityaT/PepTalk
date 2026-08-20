@@ -136,6 +136,23 @@ def human(o: int) -> str:
     return "present" if o >= OPEN_ENDED else dt.date.fromordinal(o).isoformat()
 
 
+def spoken_on(o: int) -> str:
+    """A prior turn's date, with the weekday already worked out.
+
+    Handed a bare "2026-08-17" the model says "you asked me that on Tuesday",
+    because a coach talks in weekdays and it will convert rather than decline.
+    It converted wrongly: that date was a Monday, and Tuesday was the day of
+    the conversation it was having. A small enough slip to miss and exactly the
+    kind a coach checks, since he knows what day he was in.
+
+    Consistent with the rule the rest of the prompt is built on, which is that
+    the model does not calculate. Give it the weekday and there is nothing to
+    get wrong.
+    """
+    d = dt.date.fromordinal(o)
+    return f"{d.strftime('%A')} {d.isoformat()}"
+
+
 @dataclass
 class Retrieved:
     """What the graph returned, and what the model is allowed to say."""
@@ -218,7 +235,7 @@ def retrieve(
     # responsible for.
     if memory and session_id is not None:
         out.conversation = [
-            {"role": t["role"], "text": t["text"], "when": human(int(t["ts_ord"]))}
+            {"role": t["role"], "text": t["text"], "when": spoken_on(int(t["ts_ord"]))}
             for t in g.recall(team_id_for(team))
         ]
 
@@ -343,6 +360,7 @@ def answer(
     match: dict | None = None,
     model: str = DEFAULT_MODEL,
     session_id: int | None = None,
+    when: int | None = None,
 ) -> dict:
     """Retrieve, then generate. Returns the answer and what it was allowed to use.
 
@@ -356,6 +374,15 @@ def answer(
     next month does not rewrite what Pep said today; the old turn still points
     at the old fact, which is the honest record of what was believed at the
     time.
+
+    `at` and `when` are different dates and conflating them was a bug. `at` is
+    the date the question is *about*, which for a session is the match on
+    screen, and it decides which facts were valid. `when` is the date the
+    conversation happened. Timestamping turns with `at` filed every exchange
+    under the 18th of December 2022, so the thread list offered a coach three
+    conversations he had apparently held during the World Cup final, and "you
+    asked about this on Tuesday" could never be true. `when` defaults to today,
+    which is right for anyone actually talking to it.
     """
     g = Graph()
     try:
@@ -381,9 +408,10 @@ def answer(
         nodes = tuple(int(f["node"]) for f in cited if f.get("node") is not None)
         g = Graph()
         try:
-            g.append_turn(team_id_for(team), session_id, "coach", question, at)
+            spoken = when if when is not None else dt.date.today().toordinal()
+            g.append_turn(team_id_for(team), session_id, "coach", question, spoken)
             g.append_turn(
-                team_id_for(team), session_id, "pep", text.strip(), at, cites=nodes
+                team_id_for(team), session_id, "pep", text.strip(), spoken, cites=nodes
             )
         finally:
             g.close()
