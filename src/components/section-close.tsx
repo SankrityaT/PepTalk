@@ -53,7 +53,15 @@ export function SectionClose() {
               Read the code
             </a>
             <span className="ml-1 font-mono text-[11px] text-muted-2">
-              built on HydraDB · data by StatsBomb
+              built on HydraDB · data by StatsBomb · made by{" "}
+              <a
+                href="https://www.sankrityat.com"
+                target="_blank"
+                rel="noopener"
+                className="underline underline-offset-4 transition-colors hover:text-chalk"
+              >
+                sankritya
+              </a>
             </span>
           </div>
         </motion.div>
